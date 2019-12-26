@@ -7,7 +7,7 @@ csdn下载地址：
 安卓平台接口文档:https://download.csdn.net/download/cdyzfuture/12050698
 
 windows平台demo:https://download.csdn.net/download/cdyzfuture/12050737
-windows平台SDK:
+windows平台SDK:https://download.csdn.net/download/cdyzfuture/12050800
 windows平台接口文档：https://download.csdn.net/download/cdyzfuture/12050726
 
 本SDK支持二代身份证、护照及EID的读取。
