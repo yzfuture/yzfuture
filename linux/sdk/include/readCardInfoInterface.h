@@ -40,7 +40,7 @@ extern "C" {
 	// srcimage长度固定为1024 
 	// outimage大小由外面自己申请，大小不小于40KB
 	// outlen传入时为outimage实际大小，传出时为实际图片大小
-	bool FBC_API_PUBLIC decodeCardImage(unsigned char* srcimage, char* outimage, int& outlen);
+	bool FBC_API_PUBLIC decodeCardImage(unsigned char* srcimage, char* outimage, int* outlen);
 
 #ifdef __cplusplus
 }
