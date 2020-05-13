@@ -1,0 +1,615 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:orientation="horizontal"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
+        <TextView
+            android:id="@+id/process"
+            style="@style/titleTheme"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:text="" />
+
+        <Button
+            android:id="@+id/showBtn"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:background="#00ffffff"
+            android:text=""
+            android:textColor="#00ffffff" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:text="鱼住未来证件识别测试"
+            android:textColor="#000000"
+            android:textSize="18sp" />
+
+
+    </RelativeLayout>
+
+    <ScrollView
+        android:id="@+id/layoutbk"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="5dp"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="23dp"
+                android:paddingRight="23dp"
+                android:paddingTop="5dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="5dp">
+
+                            <TextView
+                                android:id="@+id/titlename"
+                                style="@style/titleTheme"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="3dp"
+                                android:text="姓名" />
+
+                            <TextView
+                                android:id="@+id/edname"
+                                style="@style/textnrTheme"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"/>
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="5dp">
+
+                            <TextView
+                                android:id="@+id/sexTxt"
+                                style="@style/titleTheme"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="3dp"
+                                android:text="性别" />
+
+                            <TextView
+                                android:id="@+id/sexTrue"
+                                style="@style/textnrTheme"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"/>
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="5dp">
+                            <TextView
+                                android:id="@+id/gjTxt"
+                                style="@style/titleTheme"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="3dp"
+                                android:text="国家" />
+
+                            <TextView
+                                android:id="@+id/gjTrue"
+                                style="@style/textnrTheme"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content" />
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="5dp">
+                            <TextView
+                                android:id="@+id/mzTxt"
+                                style="@style/titleTheme"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="3dp"
+                                android:text="民族" />
+
+                            <TextView
+                                android:id="@+id/mzTrue"
+                                style="@style/textnrTheme"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"/>
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                            <TextView
+                                android:id="@+id/birthTxt"
+                                style="@style/titleTheme"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="3dp"
+                                android:layout_marginBottom="5dp"
+                                android:text="出生日期" />
+
+                            <TextView
+                                android:id="@+id/birthTrue"
+                                style="@style/textnrTheme"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"/>
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:id="@+id/titleenname"
+                                style="@style/titleTheme"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="3dp"
+                                android:text="英文名" />
+
+                            <TextView
+                                android:id="@+id/edenname"
+                                style="@style/textnrTheme"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"/>
+                        </LinearLayout>
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@mipmap/card"
+                        android:layout_weight="0"
+                        android:gravity="center">
+
+                        <ImageView
+                            android:id="@+id/idimg"
+                            android:layout_width="106dp"
+                            android:layout_height="125dp"
+                            android:layout_marginLeft="8dp"
+                            android:background="@mipmap/logo"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="23dp"
+                android:layout_marginRight="23dp"
+                android:layout_marginBottom="3dp"
+                android:layout_marginTop="3dp">
+                <TextView
+                    android:id="@+id/cardtype"
+                    style="@style/titleTheme"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="3dp"
+                    android:layout_weight="1"
+                    android:text="证件类型" />
+
+                <TextView
+                    android:id="@+id/edtype"
+                    style="@style/textnrTheme"
+                    android:layout_weight="5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <TextView
+                    android:id="@+id/escapedTxt"
+                    style="@style/titleTheme"
+                    android:layout_width="wrap_content"
+                    android:layout_marginRight="3dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="是否逃犯：" />
+                <TextView
+                    android:id="@+id/escapedTrue"
+                    style="@style/textnrTheme"
+                    android:layout_weight="3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="23dp"
+                android:layout_marginRight="23dp"
+                android:layout_marginBottom="3dp">
+
+                <TextView
+                    android:id="@+id/titleid"
+                    style="@style/titleTheme"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="3dp"
+                    android:text="证件号码" />
+
+                <TextView
+                    android:id="@+id/edid"
+                    style="@style/textnrTheme"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="23dp"
+                android:layout_marginRight="23dp"
+                android:layout_marginBottom="3dp">
+                <TextView
+                    android:id="@+id/addTxt"
+                    style="@style/titleTheme"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="3dp"
+                    android:text="地址" />
+
+                <TextView
+                    android:id="@+id/addTrue"
+                    style="@style/textnrTheme"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="23dp"
+                android:layout_marginRight="23dp"
+                android:layout_marginBottom="3dp">
+                <TextView
+                    android:id="@+id/jgTxt"
+                    style="@style/titleTheme"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="3dp"
+                    android:text="签发机关" />
+
+                <TextView
+                    android:id="@+id/jgTrue"
+                    style="@style/textnrTheme"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="23dp"
+                android:layout_marginRight="23dp"
+                android:layout_marginBottom="3dp">
+
+                <TextView
+                    android:id="@+id/yxqTxt"
+                    style="@style/titleTheme"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="3dp"
+                    android:text="有效期" />
+
+                <TextView
+                    android:id="@+id/yxqTrue"
+                    style="@style/textnrTheme"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="23dp"
+                android:layout_marginRight="23dp"
+                android:layout_marginBottom="3dp">
+                <TextView
+                    android:id="@+id/signTxt"
+                    style="@style/titleTheme"
+                    android:layout_width="wrap_content"
+                    android:layout_marginRight="3dp"
+                    android:layout_height="wrap_content"
+                    android:text="签发次数" />
+
+                <TextView
+                    android:id="@+id/signTrue"
+                    style="@style/textnrTheme"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="3dp"/>
+
+                <TextView
+                    android:id="@+id/othernoTxt"
+                    style="@style/titleTheme"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="3dp"
+                    android:text="通行证号码" />
+
+                <TextView
+                    android:id="@+id/othernoTrue"
+                    style="@style/textnrTheme"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="23dp"
+            android:layout_marginRight="23dp"
+            android:orientation="horizontal"
+            android:layout_marginBottom="3dp">
+        <Button
+            android:id="@+id/otgBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginRight="9dp"
+            android:textColor="#000000"
+            android:text="OTG刷卡" />
+            <Button
+                android:id="@+id/faceDection"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginRight="9dp"
+                android:textColor="#000000"
+                android:text="人脸识别"/>
+        <Button
+            android:id="@+id/resetBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="重置"
+            android:textColor="#000000" />
+        </LinearLayout>
+
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="23dp"
+                android:layout_marginRight="23dp"
+                android:orientation="horizontal"
+                android:layout_marginBottom="3dp">
+                <TextView
+                    android:id="@+id/tmptxt"
+                    style="@style/titleTheme"
+                    android:layout_width="70dp"
+                    android:layout_height="wrap_content"
+                    android:text="剩余次数：" />
+                <TextView
+                    android:id="@+id/numtxt"
+                    style="@style/textnrTheme"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="3dp"
+                    android:text="0" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="23dp"
+                android:layout_marginRight="23dp"
+                android:orientation="horizontal"
+                android:layout_marginBottom="3dp">
+                <TextView
+                    android:id="@+id/appEdittxt"
+                    style="@style/titleTheme"
+                    android:layout_width="70dp"
+                    android:layout_height="wrap_content"
+                    android:text="AppKey：" />
+                <TextView
+                    android:id="@+id/appkeyTxt"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="8"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginRight="3dp"
+                    android:hint="appkey"
+                    style="@style/titleTheme" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="23dp"
+                android:layout_marginRight="23dp"
+                android:orientation="horizontal"
+                android:layout_marginBottom="3dp">
+                <Button
+                    android:id="@+id/regeitBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginRight="9dp"
+                    android:textColor="#000000"
+                    android:text="注册appKey" />
+                <Button
+                    android:id="@+id/modifyBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginRight="9dp"
+                    android:textColor="#000000"
+                    android:text="修改appKey" />
+                <Button
+                    android:id="@+id/findBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginRight="9dp"
+                    android:textColor="#000000"
+                    android:text="找回appKey" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="23dp"
+                android:layout_marginRight="23dp"
+                android:layout_marginTop="9dp"
+                android:layout_marginBottom="3dp">
+
+                <TextView
+                    android:id="@+id/Info"
+                    style="@style/titleTheme"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="3dp"
+                    android:text="二次开发请联系我们：" />
+                <TextView
+                    android:id="@+id/webAddress"
+                    style="@style/titleTheme"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="3dp"
+                    android:autoLink="web"
+                    android:text="http://www.yzfuture.cn" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="23dp"
+                android:layout_marginRight="23dp"
+                android:layout_marginBottom="3dp">
+                <TextView
+                    android:id="@+id/devInfo"
+                    style="@style/titleTheme"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="3dp"
+                    android:text="技术支持:" />
+                <TextView
+                    android:id="@+id/devEmail"
+                    style="@style/titleTheme"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="3dp"
+                    android:autoLink="email"
+                    android:text="faq@yzfuture.cn" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="23dp"
+                android:layout_marginRight="23dp"
+                android:layout_marginBottom="3dp">
+                <TextView
+                    android:id="@+id/serviceInfo"
+                    style="@style/titleTheme"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="3dp"
+                    android:text="售后:" />
+                <TextView
+                    android:id="@+id/serviceEmail"
+                    style="@style/titleTheme"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="3dp"
+                    android:autoLink="email"
+                    android:text="sales@yzfuture.cn" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="23dp"
+                android:layout_marginRight="23dp"
+                android:layout_marginBottom="3dp">
+                <TextView
+                    android:id="@+id/phoneInfo"
+                    style="@style/titleTheme"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="3dp"
+                    android:text="电话:" />
+                <TextView
+                    android:id="@+id/webPhone"
+                    style="@style/titleTheme"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="3dp"
+                    android:autoLink="phone"
+                    android:text="028-82880293" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="23dp"
+                android:layout_marginRight="23dp"
+                android:layout_marginBottom="3dp">
+                <TextView
+                    android:id="@+id/hardInfo"
+                    style="@style/titleTheme"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="3dp"
+                    android:text="读卡器:" />
+                <TextView
+                    android:id="@+id/webHard"
+                    style="@style/titleTheme"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:autoLink="web"
+                    android:text="https://item.taobao.com/item.htm?id=610814936998" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="23dp"
+                android:layout_marginRight="23dp"
+                android:layout_marginBottom="3dp">
+                <TextView
+                    android:id="@+id/twoDevInfo"
+                    style="@style/titleTheme"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="3dp"
+                    android:text="二次开发提供安卓平台NFC和OTG证件解码及Windows平台USB读卡器证件解码，包括：身份证解码、港澳居住证解码、护照解码、EID解码、人脸识别、人脸对比功能接口，方便快速集成" />
+            </LinearLayout>
+            <TextView
+                android:id="@+id/userInfo"
+                style="@style/textnrTheme"
+                android:layout_width="match_parent"
+                android:text=""
+                android:scrollbars="vertical"
+                android:fadeScrollbars="false"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

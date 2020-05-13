@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <paths>
+        <!--<external-path path="" name="download"/>-->
+        <files-path path ="./" name = "download"/>
+        <root-path name="cache" path="Cache/" />
+        <root-path path="" name="camera_photos" />
+        <root-path name="my_images" path="Android/data/demo/files/Pictures/" />
+        <root-path name="images" path="Pictures/" />
+        <root-path name="dcim" path="DCIM/" />
+    </paths>
+</resources>
