@@ -3,6 +3,7 @@
 
 资源下载中心(windows/linux/android):https://www.yzfuture.cn/views/service/index.html?ap=download-center
 里面包含sdk/demo/文档及源码，可以自取
+嵌入式读卡可以定制
 
 本SDK支持二代身份证、护照及EID的读取。
 二代身份证接口添加了身份鉴权操作，只有当鉴权通过的用户才可以使用公司提供的解码服务器进行身份证解码。
