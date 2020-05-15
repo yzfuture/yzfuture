@@ -21,6 +21,4 @@ DEMO源代码提供人脸比对，人证核验功能。
 
 技术支持：faq@yzfuture.cn 
 
-售后：sales@yzfuture.cn 
-
 电话：028-82880293
