@@ -1,11 +1,8 @@
 # yzfuture
 鱼住未来证件云解码相关开发资料
 
-windows平台资源下载(sdk/文档/demo):http://download.yzfuture.cn/%E8%AF%81%E4%BB%B6%E8%A7%A3%E7%A0%81windows_SDK.zip
-
-linux平台资源下载(sdk/demo及源码):http://download.yzfuture.cn/%E8%AF%81%E4%BB%B6%E8%A7%A3%E7%A0%81linux_demo&SDK.zip
-
-android平台资源下载(sdk/文档/demo及源码):http://download.yzfuture.cn/%E8%AF%81%E4%BB%B6%E8%A7%A3%E7%A0%81android_demo&source&sdk.zip
+资源下载中心(windows/linux/android):https://www.yzfuture.cn/views/service/index.html?ap=download-center
+里面包含sdk/demo/文档及源码，可以自取
 
 本SDK支持二代身份证、护照及EID的读取。
 二代身份证接口添加了身份鉴权操作，只有当鉴权通过的用户才可以使用公司提供的解码服务器进行身份证解码。
