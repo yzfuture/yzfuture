@@ -1,6 +1,7 @@
 # yzfuture
 证件云解码相关开发资料
 
+可以直接在上面的项目中下载，也可以去资源下载中心下载，两个都是一样的
 资源下载中心(windows/linux/android):https://www.yzfuture.cn/views/service/index.html?ap=download-center
 里面包含sdk/demo/文档及源码，可以自取。
 嵌入式读卡可以定制
