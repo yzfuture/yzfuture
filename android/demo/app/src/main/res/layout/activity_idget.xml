@@ -51,6 +51,16 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:paddingLeft="23dp"
+                android:paddingRight="23dp"
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:max="19"
+                android:min="0"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"/>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -69,6 +79,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:orientation="vertical">
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"

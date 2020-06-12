@@ -23,11 +23,13 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -112,6 +114,8 @@ public class IDCardScannerActivity extends BaseRecognitionActivity implements Ac
     TextView process;
     @Bind(R.id.escapedTrue)
     TextView escapedTrue;
+    @Bind(R.id.progressBar)
+    ProgressBar progressBar;
 
     private NfcAdapter      mAdapter = null;
     private PendingIntent   pi = null;
@@ -157,9 +161,9 @@ public class IDCardScannerActivity extends BaseRecognitionActivity implements Ac
                             }
                         }
                     }
-                    if (false == mUsbManager.hasPermission(mUsbDevice)) {
-                        mUsbManager.requestPermission(mUsbDevice, mPendingIntent);
-                    }
+//                    if (false == mUsbManager.hasPermission(mUsbDevice)) {
+//                        mUsbManager.requestPermission(mUsbDevice, mPendingIntent);
+//                    }
                 }
             }
         }
@@ -176,6 +180,7 @@ public class IDCardScannerActivity extends BaseRecognitionActivity implements Ac
         filter.addAction(ACTION);
         registerReceiver(usBroadcastReceiver, filter);
 
+        progressBar.setVisibility(View.VISIBLE);
         sharedPreferences= getSharedPreferences("appConfig",MODE_PRIVATE);
         m_szAppKey = sharedPreferences.getString("AppKey", "");
         appkeyTxt.setTextIsSelectable(true);
@@ -242,7 +247,7 @@ public class IDCardScannerActivity extends BaseRecognitionActivity implements Ac
 
         otgBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                mHandler.sendEmptyMessage(1005);
+                startReadCard(null);
             }
         });
         regeitBtn.setOnClickListener(new View.OnClickListener() {
@@ -270,7 +275,7 @@ public class IDCardScannerActivity extends BaseRecognitionActivity implements Ac
         }
         appkeyTxt.setText(m_szAppKey);
 
-        int     nnum = ReadCardAPI.GetAppKeyUseNum(m_szAppKey);
+        int     nnum = ReadCardAPI.GetAppKeyUseNum(m_szAppKey, m_szAppKey);
         if (nnum <= 0) nnum = 0;
         numtxt.setText(String.valueOf(nnum));
 
@@ -278,29 +283,6 @@ public class IDCardScannerActivity extends BaseRecognitionActivity implements Ac
 
         updateLp = new updateApk();
         updateLp.update(this, this, mHandler);
-    }
-
-    private void resetText()
-    {
-        edtype.setText("");
-        edname.setText("");
-        edenname.setText("");
-        edid.setText("");
-
-        addTrue.setText("");
-        sexTrue.setText("");
-        mzTrue.setText("");
-        jgTrue.setText("");
-        birthTrue.setText("");
-
-        yxqTrue.setText("");
-        gjTrue.setText("");
-
-        userInfo.setText("");
-        m_szUserInfo = "";
-        process.setText("");
-        escapedTrue.setText("");
-        idimg.setBackground(new BitmapDrawable(bkbmp));
     }
 
     private void modifyAppkey()
@@ -327,7 +309,7 @@ public class IDCardScannerActivity extends BaseRecognitionActivity implements Ac
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString("AppKey", m_szAppKey);
                     editor.commit();
-                    int     nnum = ReadCardAPI.GetAppKeyUseNum(m_szAppKey);
+                    int     nnum = ReadCardAPI.GetAppKeyUseNum(m_szAppKey, m_szAppKey);
                     if (nnum <= 0) nnum = 0;
                     numtxt.setText(String.valueOf(nnum));
                     appkeyTxt.setText(m_szAppKey);
@@ -419,7 +401,7 @@ public class IDCardScannerActivity extends BaseRecognitionActivity implements Ac
                                     SharedPreferences.Editor editor = sharedPreferences.edit();
                                     editor.putString("AppKey", m_szAppKey);
                                     editor.commit();
-                                    int     nnum = ReadCardAPI.GetAppKeyUseNum(m_szAppKey);
+                                    int     nnum = ReadCardAPI.GetAppKeyUseNum(m_szAppKey, m_szAppKey);
                                     if (nnum <= 0) nnum = 0;
                                     numtxt.setText(String.valueOf(nnum));
                                     appkeyTxt.setText(m_szAppKey);
@@ -464,7 +446,7 @@ public class IDCardScannerActivity extends BaseRecognitionActivity implements Ac
                                     SharedPreferences.Editor editor = sharedPreferences.edit();
                                     editor.putString("AppKey", m_szAppKey);
                                     editor.commit();
-                                    int     nnum = ReadCardAPI.GetAppKeyUseNum(m_szAppKey);
+                                    int     nnum = ReadCardAPI.GetAppKeyUseNum(m_szAppKey,m_szAppKey);
                                     if (nnum <= 0) nnum = 0;
                                     numtxt.setText(String.valueOf(nnum));
                                     appkeyTxt.setText(m_szAppKey);
@@ -506,15 +488,14 @@ public class IDCardScannerActivity extends BaseRecognitionActivity implements Ac
     }
 
     @Override
-    public void onActivityResultOK(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResultOK(int requestCode, int resultCode, Intent data) {
         startActivity(new Intent(this, ResultActivity.class)
                 .putExtra(EXTRA_INTENT_KEY_ORIGIN_BITMAP, ReadCardAPI.GetTwoCardInfo().arrTwoIdPhoto == null ? null : Bytes2Bimap(ReadCardAPI.GetTwoCardInfo().arrTwoIdPhoto))
                 .putExtra(EXTRA_INTENT_KEY_COMPARE_BITMAP_URL, GASystemCamera.getCurrentPhotoPath()));
-
     }
 
     @Override
-    public void recognitionFinish(double dconfidence) {
+    protected void recognitionFinish(double v) {
 
     }
 
@@ -548,7 +529,7 @@ public class IDCardScannerActivity extends BaseRecognitionActivity implements Ac
         ReadCardAPI = new OTGReadCardAPI(getApplicationContext(), this, bNFC);
 
         ArrayList<Serverinfo> twoCardServerlist = new ArrayList<Serverinfo>();
-        twoCardServerlist.add(new Serverinfo("id.yzfuture.cn", 8848));
+        twoCardServerlist.add(new Serverinfo("id.yzfuture.cn", 8848));  // TygerZH server测试
         ReadCardAPI.setServerInfo(twoCardServerlist, null, bTestServer);
         mAdapter = NfcAdapter.getDefaultAdapter(getApplicationContext());
         if (mAdapter != null) {
@@ -584,11 +565,22 @@ public class IDCardScannerActivity extends BaseRecognitionActivity implements Ac
             if (mActivity.get() == null) {
                 return;
             }
-            if (msg.what == 1002)
+            if (msg.what == 0)
+            {
+                mActivity.get().progressBar.setProgress(msg.arg1);
+            }
+            else if (msg.what == -1234)
+            {
+                //mActivity.get().progressBar.setVisibility(View.INVISIBLE);
+                //mActivity.get().progressBar.setProgress(0);
+            }
+            else if (msg.what == 1002)
                 throw new RuntimeException();
             else {
                 try {
                     mActivity.get().todo(msg);
+//                    mActivity.get().progressBar.setVisibility(View.INVISIBLE);
+//                    mActivity.get().progressBar.setProgress(0);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
@@ -614,88 +606,76 @@ public class IDCardScannerActivity extends BaseRecognitionActivity implements Ac
         dialog.show();
     }
 
-    public void todo(Message msg) throws FileNotFoundException {
-        int tt = 0;
-        m_szProcess = "";
+    private void resetText()
+    {
+        edtype.setText("");
+        edname.setText("");
+        edenname.setText("");
+        edid.setText("");
+
+        addTrue.setText("");
+        sexTrue.setText("");
+        mzTrue.setText("");
+        jgTrue.setText("");
+        birthTrue.setText("");
+
+        yxqTrue.setText("");
+        gjTrue.setText("");
+
+        userInfo.setText("");
+        m_szUserInfo = "";
         process.setText("");
-        m_szAppKey = sharedPreferences.getString("AppKey", "");
-        int     nnum = ReadCardAPI.GetAppKeyUseNum(m_szAppKey);
-        if (nnum <= 0) nnum = 0;
-        numtxt.setText(String.valueOf(nnum));
-        if (m_szAppKey.isEmpty() || nnum<=0)
+        progressBar.setProgress(0);
+        idimg.setBackground(new BitmapDrawable(bkbmp));
+    }
+    public void todo(Message msg) throws FileNotFoundException {
+        if (msg.what <= 0)
         {
-            regeditAppkey(true);
+            setdialog("此设备没有解码权限！");
+            resetText();
         }
-        appkeyTxt.setText(m_szAppKey);
-        if (!m_szAppKey.isEmpty() && nnum>0)
+        else
         {
-            if (msg.what == 1 || msg.what==1005)
-            {
-                if (msg.what == 1005)
-                {
-                    inintent = null;
-                }
-                tt = ReadCardAPI.NfcReadCard(m_szAppKey, null, inintent, eCardType.eTwoGeneralCard, "", m_bAuthon);
+            if (ReadCardAPI.GetTwoCardInfo().arrTwoIdPhoto != null) {
+                idimg.setBackground(new BitmapDrawable(Bytes2Bimap(ReadCardAPI.GetTwoCardInfo().arrTwoIdPhoto)));
             }
-            if (m_bshow)
-            {
-                userInfo.setText(m_szUserInfo);
+            if (ReadCardAPI.GetTwoCardInfo().szTwoType.equals("J")) {
+                edtype.setText("港澳居民居住证");
+                othernoTrue.setText(ReadCardAPI.GetTwoCardInfo().szTwoOtherNO);
+                signTrue.setText(ReadCardAPI.GetTwoCardInfo().szTwoSignNum);
+            } else {
+                edtype.setText("居民身份证");
+                othernoTrue.setText("");
+                signTrue.setText("");
             }
-            if (tt == 41)
-            {
-                if (m_berror)
-                {
-                    setdialog("读卡失败！" + ReadCardAPI.GetErrorInfo());
-                }
-                else
-                {
-                    int     nerr = ReadCardAPI.GetErrorCode();
-                    if (nerr==-24997)
-                    {
-                        setdialog("此设备没有解码权限！");
-                    }
-                    else setdialog("读卡失败！");
-                }
+            edid.setText(ReadCardAPI.GetTwoCardInfo().szTwoIdNo.trim());
+            edname.setText(ReadCardAPI.GetTwoCardInfo().szTwoIdName.trim());
+            addTrue.setText(ReadCardAPI.GetTwoCardInfo().szTwoIdAddress.trim());
+            sexTrue.setText(ReadCardAPI.GetTwoCardInfo().szTwoIdSex.trim());
+            mzTrue.setText(ReadCardAPI.GetTwoCardInfo().szTwoIdNation.trim() + "族");
+            gjTrue.setText("中国");
+            jgTrue.setText(ReadCardAPI.GetTwoCardInfo().szTwoIdSignedDepartment.trim());
+            birthTrue.setText(ReadCardAPI.GetTwoCardInfo().szTwoIdBirthday.substring(0, 4) + "-" + ReadCardAPI.GetTwoCardInfo().szTwoIdBirthday.substring(4, 6) + "-" + ReadCardAPI.GetTwoCardInfo().szTwoIdBirthday.substring(6, 8));
 
-                resetText();
+            String startDate = ReadCardAPI.GetTwoCardInfo().szTwoIdValidityPeriodBegin.substring(0, 4) + "-" + ReadCardAPI.GetTwoCardInfo().szTwoIdValidityPeriodBegin.substring(4, 6) + "-" + ReadCardAPI.GetTwoCardInfo().szTwoIdValidityPeriodBegin.substring(6, 8);
+            String endDate = "";
+            int nlen = ReadCardAPI.GetTwoCardInfo().szTwoIdValidityPeriodEnd.indexOf("长期");
+            if (nlen != -1) {
+                endDate = "长期";
+            } else {
+                endDate = ReadCardAPI.GetTwoCardInfo().szTwoIdValidityPeriodEnd.substring(0, 4) + "-" + ReadCardAPI.GetTwoCardInfo().szTwoIdValidityPeriodEnd.substring(4, 6) + "-" + ReadCardAPI.GetTwoCardInfo().szTwoIdValidityPeriodEnd.substring(6, 8);
             }
-            if (tt == 90)
-            {
-                if (ReadCardAPI.GetTwoCardInfo().arrTwoIdPhoto != null) {
-                    idimg.setBackground(new BitmapDrawable(Bytes2Bimap(ReadCardAPI.GetTwoCardInfo().arrTwoIdPhoto)));
-                }
-                if (ReadCardAPI.GetTwoCardInfo().szTwoType.equals("J")) {
-                    edtype.setText("港澳居民居住证");
-                    othernoTrue.setText(ReadCardAPI.GetTwoCardInfo().szTwoOtherNO);
-                    signTrue.setText(ReadCardAPI.GetTwoCardInfo().szTwoSignNum);
-                } else {
-                    edtype.setText("居民身份证");
-                    othernoTrue.setText("");
-                    signTrue.setText("");
-                }
-                edid.setText(ReadCardAPI.GetTwoCardInfo().szTwoIdNo.trim());
-                edname.setText(ReadCardAPI.GetTwoCardInfo().szTwoIdName.trim());
-                addTrue.setText(ReadCardAPI.GetTwoCardInfo().szTwoIdAddress.trim());
-                sexTrue.setText(ReadCardAPI.GetTwoCardInfo().szTwoIdSex.trim());
-                mzTrue.setText(ReadCardAPI.GetTwoCardInfo().szTwoIdNation.trim() + "族");
-                gjTrue.setText("中国");
-                jgTrue.setText(ReadCardAPI.GetTwoCardInfo().szTwoIdSignedDepartment.trim());
-                birthTrue.setText(ReadCardAPI.GetTwoCardInfo().szTwoIdBirthday.substring(0, 4) + "-" + ReadCardAPI.GetTwoCardInfo().szTwoIdBirthday.substring(4, 6) + "-" + ReadCardAPI.GetTwoCardInfo().szTwoIdBirthday.substring(6, 8));
-
-                String startDate = ReadCardAPI.GetTwoCardInfo().szTwoIdValidityPeriodBegin.substring(0, 4) + "-" + ReadCardAPI.GetTwoCardInfo().szTwoIdValidityPeriodBegin.substring(4, 6) + "-" + ReadCardAPI.GetTwoCardInfo().szTwoIdValidityPeriodBegin.substring(6, 8);
-                String endDate = "";
-                int nlen = ReadCardAPI.GetTwoCardInfo().szTwoIdValidityPeriodEnd.indexOf("长期");
-                if (nlen != -1) {
-                    endDate = "长期";
-                } else {
-                    endDate = ReadCardAPI.GetTwoCardInfo().szTwoIdValidityPeriodEnd.substring(0, 4) + "-" + ReadCardAPI.GetTwoCardInfo().szTwoIdValidityPeriodEnd.substring(4, 6) + "-" + ReadCardAPI.GetTwoCardInfo().szTwoIdValidityPeriodEnd.substring(6, 8);
-                }
-                yxqTrue.setText(startDate + "~" + endDate);
-                escapedTrue.setText("否");
-                //process.setText("100");
-                ReadCardAPI.release();
-            }
+            yxqTrue.setText(startDate + "~" + endDate);
+            escapedTrue.setText("否");
+            //process.setText("100");
+            ReadCardAPI.release();
         }
+
+        if (m_bshow)
+        {
+            userInfo.setText(m_szUserInfo);
+        }
+
     }
 
     public Bitmap Bytes2Bimap(byte[] b) {
@@ -732,7 +712,8 @@ public class IDCardScannerActivity extends BaseRecognitionActivity implements Ac
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         inintent = intent;
-        mHandler.sendEmptyMessageDelayed(1, 0);
+        progressBar.setProgress(0);
+        startReadCard(intent);
     }
 
     @Override
@@ -742,9 +723,9 @@ public class IDCardScannerActivity extends BaseRecognitionActivity implements Ac
     }
 
     @Override
-    public void DeviceOpenFailed(boolean b, boolean b1)
+    public void DeviceOpenFailed(boolean bNFCOpen, boolean bOTGOpen)
     {
-        if (!b && !b1)
+        if (!bOTGOpen && !bNFCOpen)
         {
             setdialog("请检查是否打开NFC开关或已插好USB读卡器，然后重新打开程序，否则无法进行后续操作！");
         }
@@ -752,9 +733,61 @@ public class IDCardScannerActivity extends BaseRecognitionActivity implements Ac
 
     @Override
     public void readProgress(int nprocess) {
-        m_szProcess = Integer.toString((nprocess*100)/20);
-        m_szUserInfo += "进度：" + m_szProcess + "\r\n";
+//        m_szProcess = Integer.toString((nprocess*100)/20);
+//        m_szUserInfo += "进度：" + m_szProcess + "\r\n";
+//
+//        process.setText(m_szProcess);
+//        progressBar.setProgress(nprocess);
 
-        //process.setText(m_szProcess);
+        Message msg = Message.obtain();
+        msg.what = 0;
+        msg.arg1 = nprocess;
+        mHandler.sendMessageDelayed(msg, 0);
+        Log.e("aa", "  " + nprocess);
+    }
+
+    private void startReadCard(final Intent intent){
+        m_szProcess = "";
+        progressBar.setProgress(0);
+        process.setText("");
+        m_szAppKey = sharedPreferences.getString("AppKey", "");
+        int     nnum = ReadCardAPI.GetAppKeyUseNum(m_szAppKey, m_szAppKey);
+        if (nnum <= 0) nnum = 0;
+        numtxt.setText(String.valueOf(nnum));
+        if (m_szAppKey.isEmpty() || nnum<=0)
+        {
+            regeditAppkey(true);
+        }
+        appkeyTxt.setText(m_szAppKey);
+
+        if (!m_szAppKey.isEmpty() && nnum>0)
+        {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    int     tt = 0;
+                    tt = ReadCardAPI.NfcReadCard(m_szAppKey, null, intent, eCardType.eTwoGeneralCard, m_szAppKey, m_bAuthon);
+                    if (tt == 41)
+                    {
+                        int     nerr = ReadCardAPI.GetErrorCode();
+                        if (nerr==-24997)
+                        {
+                            Message msg = Message.obtain();
+                            msg.what = -24997;
+                            mHandler.sendMessageDelayed(msg, 0);
+                            return;
+                        }
+                        mHandler.sendEmptyMessageDelayed(-1234, 0);
+                    }
+                    if (tt == 90)
+                    {
+                        Message msg = Message.obtain();
+                        msg.what = 1;
+                        mHandler.sendMessageDelayed(msg, 0);
+                        mHandler.sendEmptyMessageDelayed(-1234, 0);
+                    }
+                }
+            }).start();
+        }
     }
 }
