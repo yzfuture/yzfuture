@@ -1,0 +1,594 @@
+unit duGlob;
+
+interface
+
+uses
+  duType, System.SysUtils, Winapi.Windows, System.IniFiles, Vcl.Controls, Math,
+  WinInet, System.Classes, Vcl.Graphics, System.DateUtils, Winapi.MMSystem, Vcl.ExtCtrls,
+  Registry, Vcl.Imaging.jpeg;
+
+const
+//  cstConfigFolder = 'Config\';
+//  cstSysParamIni = 'SystemParam.ini'; // 系统配置参数文件
+//  cstUSBCaptureIni = 'CaptureParam.ini';
+//  cstPhotoPath = 'Photo\';
+//  cstDBPhotoPath = 'DBPhoto\';
+//  cstPhotoHeadPath = 'PhotoHead\';
+
+  cstIDServerIP = 'id.yzfuture.cn';
+  cstIDServerPort = 8848;
+
+type
+  TMsgSendType = (SendModel, PostModel);
+
+procedure SendStrMsg(AHandle: THandle; AMsg: string);
+
+procedure SaveSystemSettings;
+
+procedure LoadSystemSettings;
+
+procedure PlaySoundSync(AFileName: string);
+
+function Wlt2Bmp(szWltData, szBmpData: PByte): Boolean;
+
+function GetUnixTimeTimeStampFileName(): string; //生成一个文件名
+
+function BitmapToJPG(ABitMem: TMemoryStream; AJPGMem: TMemoryStream): Boolean;//bmp转jpg
+
+//function invokeAliOSS(objName, FileName, method: PChar; AHost, Bucket, AccessKey, AccessSecret: PChar): Boolean; stdcall; external 'AOSS.dll';
+
+procedure DeleteDir(sDirectory: string);
+
+function ValidatePID(const APID: string): string;
+
+function RoundEx(Value: Extended; RoundMode: TFPURoundingMode = rmUp): Int64;   //四舍五入
+
+function IsFileInUse(fName: string): Boolean;//文件是否被使用
+
+function GetFileSizeByGlob(AFileName: string): DWORD;
+
+function SaveAsJPG(AImage: TImage; AFileName: string): Boolean;
+
+function ConvertPICintoJPG(cPic: TPicture; pWidth: Integer; pHeight: Integer): TJPEGImage;
+
+procedure SetSystemDatetime(ADatetime: TDateTime);
+
+function GetUNIXDateTime(AStr: string): TDateTime;
+
+function SendCustomMessage(AType: TMsgSendType; SendHandle: THandle; MsgID: TMSG_ID; WPARAM: TMSG_wParam; lpMsg: LPARAM): NativeInt;
+
+function MouseInWinControl(AControl: TWinControl): Boolean; //判断鼠标是否在控件内
+
+function NetCheckMacAttachNet: Boolean;     //网络是否连通
+
+function CheckInternetConnection_baidu: Boolean;   //网络是否连通
+
+function InternetConnected: Boolean;     //网络是否连通
+
+var
+  G_Param: TParam;
+
+implementation
+
+function InternetConnected: Boolean;
+const
+// local system uses a modem to connect to the Internet.
+  INTERNET_CONNECTION_MODEM = 1;
+// local system uses a local area network to connect to the Internet.
+  INTERNET_CONNECTION_LAN = 2;
+// local system uses a proxy server to connect to the Internet.
+  INTERNET_CONNECTION_PROXY = 4;
+// local system's modem is busy with a non-Internet connection.
+  INTERNET_CONNECTION_MODEM_BUSY = 8;
+var
+  dwConnectionTypes: DWORD;
+begin
+  dwConnectionTypes := INTERNET_CONNECTION_MODEM + INTERNET_CONNECTION_LAN + INTERNET_CONNECTION_PROXY;
+  Result := InternetGetConnectedState(@dwConnectionTypes, 0);
+end;
+
+function CheckInternetConnection_baidu: Boolean;
+begin
+  Result := InternetCheckConnection('http://www.baidu.com/', 1, 0);
+end;
+
+
+{=================================================================
+  功  能: 检测机器是否登入网络
+  参  数: 无
+  返回值: 成功:  True  失败:  False
+  备 注:
+  版 本:
+     1.0  2002/10/03 09:55:00
+=================================================================}
+function NetCheckMacAttachNet: Boolean;
+begin
+  Result := False;
+  if GetSystemMetrics(SM_NETWORK) <> 0 then  //所有连入网的
+    Result := True;
+end;
+
+function SendCustomMessage(AType: TMsgSendType; SendHandle: THandle; MsgID: TMSG_ID; wParam: TMSG_wParam; lpMsg: LPARAM): NativeInt;
+begin
+  if AType = SendModel then
+    Result := SendMessage(SendHandle, Cardinal(MsgID), Cardinal(wParam), lpMsg)
+  else
+    Result := Integer(PostMessage(SendHandle, Cardinal(MsgID), Cardinal(wParam), lpMsg));
+end;
+
+function MouseInWinControl(AControl: TWinControl): Boolean; //判断鼠标是否在控件内
+var
+  AFormRC: TRect;
+  AFormPt: TPoint;
+begin
+  Result := False;
+  GetWindowRect(AControl.Handle, AFormRC); // 取窗体的矩形区域
+  GetCursorPos(AFormPt); // 取得当前鼠标所在位置
+  // AFormRC.Top := AFormRC.Top - lbHotle.Height; // or (not PtInRect(ALableRC, AFormPt))
+  if (PtInRect(AFormRC, AFormPt)) then // 如果鼠标在窗体范围内
+  begin
+    Result := True;
+  end;
+end;
+
+function GetUNIXDateTime(AStr: string): TDateTime;
+var
+  ADatetime: TDateTime;
+  AMilliSecond: Int64;
+begin
+  AMilliSecond := StrToInt64Def(AStr, 0);
+  if AMilliSecond = 0 then
+  begin
+    Result := 25569;
+    Exit;
+  end;
+
+  // FSetting := TFormatSettings.Create(LOCALE_USER_DEFAULT);
+  // FSetting.ShortDateFormat := 'yyyy-MM-dd';
+  // FSetting.DateSeparator := '-';
+  // FSetting.LongTimeFormat := 'hh:mm:ss.zzz';
+  // sec/usec 从1970年1月1日到对应帧的秒和毫秒    25569= 1970年1月1日
+  ADatetime := 25569;
+  // Result := IncSecond(Result, ASecond);
+  ADatetime := IncHour(ADatetime, 8); // 时区   加时区是因为少8小时。。猜测是 时区原因
+  ADatetime := IncMilliSecond(ADatetime, AMilliSecond);
+  Result := ADatetime;
+  // Result := FormatDateTime('yyyy-mm-dd hh:mm:ss', ADatetime);
+end;
+
+procedure SetSystemDatetime(ADatetime: TDateTime);
+var
+  systemtime: TSystemTime;
+  DateTime: TDateTime;
+begin
+  // 获得时间（TDateTime格式）
+  DateTimeToSystemTime(ADatetime, systemtime);
+  // 把Delphi的TDateTime格式转化为API的TSystemTime格式
+  SetLocalTime(systemtime); // 设置系统时间
+  GetLocalTime(systemtime); // 读取系统时间
+  DateTime := SystemTimeToDateTime(systemtime);
+  // 把API的TSystemTime格式   转化为   Delphi的TDateTime格式
+end;
+
+function ConvertPICintoJPG(cPic: TPicture; pWidth: Integer; pHeight: Integer): TJPEGImage;
+begin
+  Result := TJPEGImage.Create;
+  Result.CompressionQuality := 100;
+  Result.Compress;
+  Result.Assign(cPic.Bitmap);
+end;
+
+function SaveAsJPG(AImage: TImage; AFileName: string): Boolean;
+var
+  AJpeg: TJPEGImage; // Requires the "jpeg" unit added to "uses" clause.
+begin
+  Result := False;
+  if AImage.Picture.Graphic is Vcl.Graphics.TBitmap then
+  begin
+    AJpeg := ConvertPICintoJPG(AImage.Picture, AImage.Width, AImage.Height);
+    try
+      if FileExists(AFileName) then
+        while not System.SysUtils.DeleteFile(AFileName) do
+        begin
+          if not FileExists(AFileName) then
+            Break;
+          Sleep(10);
+        end;
+      AJpeg.SaveToFile(AFileName);
+      Result := True;
+    finally
+      AJpeg.Free;
+    end;
+  end
+  else
+  begin
+    if FileExists(AFileName) then
+      while not System.SysUtils.DeleteFile(AFileName) do
+      begin
+        if not FileExists(AFileName) then
+          Break;
+        Sleep(10);
+      end;
+    AImage.Picture.SaveToFile(AFileName);
+    Result := True;
+  end;
+end;
+
+function GetFileSizeByGlob(AFileName: string): DWORD;
+var
+  FileHandle: THandle;
+begin
+  Result := 0;
+  if not FileExists(AFileName) then
+    Exit;
+  FileHandle := FileOpen(AFileName, 0);
+  Result := FileSeek(FileHandle, 0, 2);
+  if FileHandle > 0 then
+    FileClose(FileHandle);
+end;
+
+function IsFileInUse(fName: string): Boolean;
+var
+  HFileRes: HFILE;
+begin
+
+  Result := False;
+
+  if not FileExists(fName) then //如果文件不存在 判断文件是否存在
+    Exit;
+
+  HFileRes := CreateFile(PChar(fName), GENERIC_READ or GENERIC_WRITE, 0 {this is the trick!}, nil, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+
+  Result := (HFileRes = INVALID_HANDLE_VALUE);
+
+  if not Result then
+    CloseHandle(HFileRes);
+
+end;
+
+function RoundEx(Value: Extended; RoundMode: TFPURoundingMode = rmUp): Int64;   //四舍五入
+var
+  RM: TFPURoundingMode;
+begin
+  RM := GetRoundMode;
+  try
+    SetRoundMode(RoundMode);
+    Result := Round(Value);
+  finally
+    SetRoundMode(RM);
+  end;
+end;
+
+function ValidatePID(const APID: string): string;
+{ 内部函数,取身份证号校验位,最后一位,对18位有效 }
+
+  function GetVerifyBit(sIdentityNum: string): Char;
+  var
+    nNum: Integer;
+  begin
+    Result := #0;
+    try
+      nNum := StrToInt(sIdentityNum[1]) * 7 + StrToInt(sIdentityNum[2]) * 9 + StrToInt(sIdentityNum[3]) * 10 + StrToInt(sIdentityNum[4]) * 5 + StrToInt(sIdentityNum[5]) * 8 + StrToInt(sIdentityNum[6]) * 4 + StrToInt(sIdentityNum[7]) * 2 + StrToInt(sIdentityNum[8]) * 1 + StrToInt(sIdentityNum[9]) * 6 + StrToInt(sIdentityNum[10]) * 3 + StrToInt(sIdentityNum[11]) * 7 + StrToInt(sIdentityNum[12]) * 9 + StrToInt(sIdentityNum[13]) * 10 + StrToInt(sIdentityNum[14]) * 5 + StrToInt(sIdentityNum[15]) * 8 + StrToInt(sIdentityNum[16]) * 4 + StrToInt(sIdentityNum[17]) * 2;
+    except
+      Exit;
+    end;
+    nNum := nNum mod 11;
+    case nNum of
+      0:
+        Result := '1';
+      1:
+        Result := '0';
+      2:
+        Result := 'X';
+      3:
+        Result := '9';
+      4:
+        Result := '8';
+      5:
+        Result := '7';
+      6:
+        Result := '6';
+      7:
+        Result := '5';
+      8:
+        Result := '4';
+      9:
+        Result := '3';
+      10:
+        Result := '2';
+    end;
+  end;
+
+var
+  L: Integer;
+  sCentury: string;
+  sYear2Bit: string;
+  sMonth: string;
+  sDate: string;
+  iCentury: Integer;
+  iMonth: Integer;
+  iDate: Integer;
+  CRCFact: string; // 18位证号的实际值
+  CRCTh: string; // 18位证号的理论值
+  FebDayAmt: Byte; // 2月天数
+begin
+  Result := '';
+  try
+    L := Length(APID);
+    if (L in [15, 18]) = False then
+    begin
+      Result := Format('身份证号不是15位或18位(%0:s, 实际位数:%1:d)', [APID, L]);
+      Exit;
+    end;
+    CRCFact := '';
+    if L = 18 then
+    begin
+      sCentury := Copy(APID, 7, 2);
+      iCentury := StrToInt(sCentury);
+      if (iCentury in [18..20]) = False then
+      begin
+        Result := Format('身份证号码无效:18位证号的年份前两位必须在18-20之间(%0:S)', [sCentury]);
+        Exit;
+      end;
+      sYear2Bit := Copy(APID, 9, 2);
+      sMonth := Copy(APID, 11, 2);
+      sDate := Copy(APID, 13, 2);
+      CRCFact := Copy(APID, 18, 1);
+    end
+    else
+    begin
+      sCentury := '19';
+      sYear2Bit := Copy(APID, 7, 2);
+      sMonth := Copy(APID, 9, 2);
+      sDate := Copy(APID, 11, 2);
+    end;
+    iMonth := StrToInt(sMonth);
+    iDate := StrToInt(sDate);
+    if (iMonth in [01..12]) = False then
+    begin
+      Result := Format('身份证号码无效:月份必须在01-12之间(%0:s)', [sMonth]);
+      Exit;
+    end;
+    if (iMonth in [1, 3, 5, 7, 8, 10, 12]) then
+    begin
+      if (iDate in [01..31]) = False then
+      begin
+        Result := Format('身份证号码无效:日期无效,不能为零或超出当月最大值(%0:s)', [sDate]);
+        Exit;
+      end;
+    end;
+    if (iMonth in [4, 6, 9, 11]) then
+    begin
+      if (iDate in [01..30]) = False then
+      begin
+        Result := Format('身份证号码无效:日期无效,不能为零或超出当月最大值(%0:s)', [sDate]);
+        Exit;
+      end;
+    end;
+    if IsLeapYear(StrToInt(sCentury + sYear2Bit)) = True then
+    begin
+      FebDayAmt := 29;
+    end
+    else
+    begin
+      FebDayAmt := 28;
+    end;
+    if (iMonth in [2]) then
+    begin
+      if (iDate in [01..FebDayAmt]) = False then
+      begin
+        Result := Format('身份证号码无效:日期无效,不能为零或超出当月最大值(%0:s)', [sDate]);
+        Exit;
+      end;
+    end;
+    if CRCFact <> '' then
+    begin
+      CRCTh := GetVerifyBit(APID);
+      if CRCFact <> CRCTh then
+      begin
+        Result := Format('身份证号码无效:校验位(第18位)错:(%0:s)', [APID]);
+        Exit;
+      end;
+    end;
+  except
+    Result := '错误的身份证号码！';
+  end;
+
+  // ShowMessage(IntToStr(StrToInt(Copy(FormatDateTime('YYYYMMDD',Now),1,4))-StrToInt(Copy(Edit1.Text,7,4))));
+end;
+
+procedure DeleteDir(sDirectory: string);
+var
+  sr: System.SysUtils.TSearchRec;
+  sPath, sFile: string;
+begin
+  // 检查目录名后面是否有'/'
+  if Copy(sDirectory, Length(sDirectory), 1) <> '\' then
+    sPath := sDirectory + '\'
+  else
+    sPath := sDirectory;
+  // ------------------------------------------------------------------
+  if FindFirst(sPath + '*.*', faAnyFile, sr) = 0 then
+  begin
+    repeat
+      sFile := Trim(sr.Name);
+      if sFile = '.' then
+        Continue;
+      if sFile = '..' then
+        Continue;
+      sFile := sPath + sr.Name;
+      if (sr.Attr and faDirectory) <> 0 then
+        DeleteDir(sFile)
+      else if (sr.Attr and faAnyFile) = sr.Attr then
+        System.SysUtils.DeleteFile(sFile); // 删除文件
+    until System.SysUtils.FindNext(sr) <> 0;
+    System.SysUtils.FindClose(sr);
+  end;
+  RemoveDir(sPath);
+end;
+
+function Wlt2BmpFunction(szWltData: PByte; szBmpData: PByte): Integer; stdcall; external 'gt.dll' name 'Wlt2Bmp';
+
+function Wlt2Bmp(szWltData, szBmpData: PByte): Boolean;
+var
+  nResult: Integer;
+begin
+  Result := Wlt2BmpFunction(szWltData, szBmpData) > 0;
+end;
+
+function BitmapToJPG(ABitMem: TMemoryStream; AJPGMem: TMemoryStream): Boolean;
+var
+  Jpg: TJPEGImage;
+  BMP: TBitmap;
+begin
+  Jpg := TJPEGImage.Create;
+  BMP := TBitmap.Create;
+  try
+    ABitMem.Position := 0;
+    BMP.LoadFromStream(ABitMem);
+    Jpg.Assign(BMP);
+    AJPGMem.Size := 0;
+    AJPGMem.Position := 0;
+    Jpg.SaveToStream(AJPGMem);
+  finally
+    BMP.Free;
+    Jpg.Free;
+  end;
+
+end;
+
+function GetUnixTimeTimeStampFileName(): string;
+var
+  AStartDate: TDateTime;
+begin
+  while True do
+  begin
+    AStartDate := EncodeDateTime(1970, 1, 1, 0, 0, 0, 0);
+
+    Result := IntToStr(MilliSecondsBetween(Now, AStartDate)) + '.jpg';
+
+    if FileExists(Result) then
+    begin
+      Sleep(1);
+    end
+    else
+    begin
+      Break;
+    end;
+  end;
+
+end;
+
+
+// 同步播放指定的声音文件
+procedure PlaySoundSync(AFileName: string);
+begin
+  if FileExists(AFileName) then
+  begin
+    try
+      Winapi.MMSystem.PlaySound(PWideChar(AFileName), 0, SND_ASYNC);
+    except
+      on e: Exception do
+      begin
+        // ...
+      end;
+    end;
+  end;
+end;
+
+procedure SaveSystemSettings;
+var
+  FilePath: string;
+  ini: TIniFile;
+begin
+//  FilePath := G_Param.Path;
+//  if not DirectoryExists(FilePath + cstConfigFolder) then
+//    ForceDirectories(FilePath + cstConfigFolder);
+
+//  ini := TIniFile.Create(FilePath + cstConfigFolder + cstSysParamIni);
+//  try
+//    ini.WriteString('SystemParam', 'URL', G_Param.HostURL);
+//    ini.WriteInteger('SystemParam', 'Https', G_Param.HttpS);
+//    ini.WriteString('SystemParam', 'PlaceName', G_Param.PlaceName);
+//    ini.WriteInteger('SystemParam', 'FaceWorkMode', G_Param.FaceWorkMode);
+//    ini.WriteBool('SystemParam', 'ShowCamera', G_Param.ShowCamera);
+//  finally
+//    ini.Free;
+//  end;
+//
+//  ini := TIniFile.Create(FilePath + cstUSBCaptureIni);
+//  try
+//    ini.WriteString('Capture', 'VideoKeyword', G_Param.USBCameraInfo.VideoKeyword);
+//    ini.WriteString('Capture', 'VideoResolution', G_Param.USBCameraInfo.VideoResolution);
+//    ini.WriteString('Capture', 'AudioKeyword', G_Param.USBCameraInfo.AudioKeyword);
+//    ini.WriteString('Capture', 'HighShotVideo', G_Param.USBCameraInfo.HighShotVideo);
+//    ini.WriteString('Capture', 'HighShotResolution', G_Param.USBCameraInfo.HighShotResolution);
+//
+//
+//
+//  finally
+//    ini.Free;
+//  end;
+
+end;
+
+
+/// 获取网络配置参数文件的参数
+procedure LoadSystemSettings;
+var
+  FilePath: string;
+  ini: TIniFile;
+begin
+//  FilePath := G_Param.Path;
+//  if not DirectoryExists(FilePath + cstConfigFolder) then
+//    ForceDirectories(FilePath + cstConfigFolder);
+//
+//  ini := TIniFile.Create(FilePath + cstConfigFolder + cstSysParamIni);
+//  try
+//    G_Param.HostURL := ini.ReadString('SystemParam', 'URL', '127.0.0.1');
+//    G_Param.HttpS := ini.ReadInteger('SystemParam', 'Https', 1);
+//    G_Param.PlaceName := ini.ReadString('SystemParam', 'PlaceName', '');
+//    G_Param.FaceWorkMode := ini.ReadInteger('SystemParam', 'FaceWorkMode', 1);
+//    G_Param.ShowCamera := ini.ReadBool('SystemParam', 'ShowCamera', True);
+//  finally
+//    ini.Free;
+//  end;
+//
+//  ini := TIniFile.Create(FilePath + cstUSBCaptureIni);
+//  try
+//    G_Param.USBCameraInfo.VideoKeyword := ini.ReadString('Capture', 'VideoKeyword', '');
+//    G_Param.USBCameraInfo.AudioKeyword := ini.ReadString('Capture', 'AudioKeyword', '');
+//    G_Param.USBCameraInfo.HighShotVideo := ini.ReadString('Capture', 'HighShotVideo', '');
+//    G_Param.USBCameraInfo.VideoResolution := ini.ReadString('Capture', 'VideoResolution', '1280*720');
+//    G_Param.USBCameraInfo.HighShotResolution := ini.ReadString('Capture', 'HighShotResolution', '1280*720');
+//
+//  finally
+//    ini.Free;
+//  end;
+end;
+
+procedure SendStrMsg(AHandle: THandle; AMsg: string);
+var
+  pMsg: pStr_MSG;
+  FMsg: AnsiString;
+begin
+
+  if not ReportMemoryLeaksOnShutdown then
+    Exit;
+  pMsg := nil;
+  try
+    GetMem(pMsg, SizeOf(TStr_MSG));
+    FMsg := AnsiString(AMsg);
+    StrCopy(@(pMsg.MSG), PAnsiChar(FMsg));
+    SendMessage(AHandle, UINT(TMSG_ID_SendStr), 0, LPARAM(pMsg));
+  finally
+    FreeMem(pMsg, SizeOf(TStr_MSG));
+  end;
+end;
+
+initialization
+
+finalization
+
+end.
+

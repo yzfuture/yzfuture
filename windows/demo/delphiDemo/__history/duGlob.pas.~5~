@@ -1,0 +1,43 @@
+unit duGlob;
+
+interface
+
+uses
+  duType, System.SysUtils, Winapi.Windows, System.IniFiles, Vcl.Controls, Math,
+  WinInet, System.Classes, Vcl.Graphics, System.DateUtils, Winapi.MMSystem, Vcl.ExtCtrls,
+  Registry, Vcl.Imaging.jpeg;
+
+const
+
+  cstIDServerIP = 'id.yzfuture.cn';
+  cstIDServerPort = 8848;
+ cstIDKey= 'd3185e027e96e3915939a99a70ffb7bc';//'99ffb2f98a29071107c7a09ad2c6d096';
+
+type
+  TMsgSendType = (SendModel, PostModel);
+
+  function SendCustomMessage(AType: TMsgSendType; SendHandle: THandle; MsgID: TMSG_ID; WPARAM: TMSG_wParam; lpMsg: LPARAM): NativeInt;
+
+
+var
+  G_Param: TParam;
+
+implementation
+
+
+
+function SendCustomMessage(AType: TMsgSendType; SendHandle: THandle; MsgID: TMSG_ID; wParam: TMSG_wParam; lpMsg: LPARAM): NativeInt;
+begin
+  if AType = SendModel then
+    Result := SendMessage(SendHandle, Cardinal(MsgID), Cardinal(wParam), lpMsg)
+  else
+    Result := Integer(PostMessage(SendHandle, Cardinal(MsgID), Cardinal(wParam), lpMsg));
+end;
+
+
+initialization
+
+finalization
+
+end.
+

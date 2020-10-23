@@ -9,6 +9,32 @@ typedef long long YZWLHandle;				//针对句柄单独搞个类型 便于改动
 typedef long YZWLHandle;				//针对句柄单独搞个类型 便于改动
 #endif
 
+#define		COS_RESULT_BUFFER_LENGTH		256
+#define		COS_SEND_BUFFER_LENGTH			256
+
+
+typedef bool(__stdcall *userApduCommand)(char* inbuf, int ninbuf, unsigned char* outbuf, int &noutbuf, void* userdata);
+
+typedef enum cardType
+{
+	unkwonType = -1,
+	ACardType = 0,
+	BCardType = 1
+};
+
+typedef enum readCardType
+{
+	unknowType = -1,
+	crulType = 0,
+	serialPortType = 2,
+	hidType = 3,
+	userType = 4, // 用户自定义类型
+	socketType = 5, // 用户外部控制连接，内部进行数据传输
+	yzwlSDKType = 6, // 公司自己读卡器
+	yzwlFlashType = 7, // 透传读卡器
+};
+
+
 #if 1 //作为VC demo调用头文件 把0改为1
 typedef int		 					BOOL;
 typedef unsigned char		 		byte;
@@ -73,6 +99,106 @@ typedef enum ErrorType
 	YZWL_SENDDATAFAILED, //  数据发送失败
 	YZWL_TALKDATAFAILED, // 与服务器交互失败
 };
+
+
+//二代证错误编码
+typedef enum _TwoIdErrorCode
+{
+	TIEC_NO_ERROR = 0,					//正常执行 没有错误
+	TIEC_IPADDRESS,						//错误IP地址 格式错误
+	TIEC_REQUESTB,						//寻卡错误
+	TIEC_SELECTB,						//选卡错误
+	TIEC_GET_NO,						//获取卡号错误 执行卡ID COS指令失败
+	TIEC_GET_NO_RESULT,					//获取卡号错误结果 没有返回9000
+	TIEC_GET_NO_OTHER,					//获取卡号其他错误
+	TIEC_GET_RANDOM,					//取随机数错误
+	TIEC_GET_RANDOM_RESULT,				//取随机数错误结果 没有返回9000
+	TIEC_SELECT_FIRST_FILE,				//选第一个文件错误
+	TIEC_SELECT_FIRST_FILE_RESULT,		//选第一个文件错误结果 没有返回9000
+	TIEC_READ_FIRST_FILE,				//读第一个文件错误
+	TIEC_READ_FIRST_FILE_RESULT,		//选第一个文件错误结果 没有返回9000
+	TIEC_RECEIVE_INTERNAL_AUTHENTICATE,	//接收内部认证 TCP 动作
+	TIEC_EXEC_INTERNAL_AUTHENTICATE,	//执行内部认证
+	TIEC_SEND_INTERNAL_AUTHENTICATE,	//发送内部认证结果 TCP
+	TIEC_EXEC_GET_RANDOM,				//获取随机数
+	TIEC_SEND_RANDOM,					//发送随机数 TCP
+	TIEC_RECEIVE_EXTERNAL_AUTHENTICATE,	//接收外部认证 TCP 动作
+	TIEC_EXEC_EXTERNAL_AUTHENTICATE,	//执行外部认证
+	TIEC_READ_SEND_SECOND_FILE,			//读取并发送第二个文件
+	TIEC_READ_SEND_THIRD_FILE,			//读取并发送第三个文件
+	TIEC_READ_SEND_FOURTH_FILE,			//读取并发送第四个文件
+	TIEC_RECEIVE_LAST_DATA,				//接收最后的数据
+	TIEC_CONNECT_SERVER,				//连接服务器失败
+	TIEC_SAMV_BUSY,						//服务器端SAMV 繁忙
+	TIEC_READ_SEND_FIFTH_FILE,			//读取并发送第五个文件
+
+}TwoIdErrorCode;
+
+typedef struct _YZWLParamStruct
+{
+	/**
+	* 卡片类型
+	*/
+	int nCardType;
+	/**
+	* 8字节卡号
+	*/
+	byte arrCardNo[8];
+
+	/**
+	* 卡片容量大小
+	*/
+	int nCardSize;
+
+	/**
+	* 读写缓冲
+	*/
+	byte arrBuffer[64];
+
+	int nBufferSize;
+
+	/**
+	* 密钥
+	*/
+	byte arrKeys[64];
+	int nKeysSize;
+	/**
+	* pCosResultBuffer COS执行结果缓冲
+	*/
+	byte arrCosResultBuffer[COS_RESULT_BUFFER_LENGTH];
+	/**
+	* unCosReultBufferLength COS执行结果缓冲长度
+	*/
+	unsigned int unCosReultBufferLength;
+	/**
+	* pCosSendBuffer COS指令发送缓冲
+	*/
+	byte arrCosSendBuffer[COS_SEND_BUFFER_LENGTH];
+	/**
+	* unCosSendBufferLength COS指令发送缓冲长度
+	*/
+	unsigned int unCosSendBufferLength;
+}YZWLParamStruct;
+
+//二代证信息结构
+typedef struct _TwoIdInfoStruct {
+	char arrTwoIdName[30];					//姓名 UNICODE
+	char arrTwoIdSex[2];					//性别 UNICODE
+	char arrTwoIdNation[4];					//民族 UNICODE
+	char arrTwoIdBirthday[16];				//出生日期 UNICODE YYYYMMDD
+	char arrTwoIdAddress[70];				//住址 UNICODE
+	char arrTwoIdNo[36];					//身份证号码 UNICODE
+	char arrTwoIdSignedDepartment[30];		//签发机关 UNICODE
+	char arrTwoIdValidityPeriodBegin[16];	//有效期起始日期 UNICODE YYYYMMDD
+	char arrTwoIdValidityPeriodEnd[16];		//有效期截止日期 UNICODE YYYYMMDD 有效期为长期时存储“长期”
+
+	char arrTwoIdNewAddress[70];			//最新住址 UNICODE
+	char arrReserve[2];						//保留字节 字节对齐用
+	unsigned char arrTwoIdPhoto[1024];		//照片信息
+	unsigned char arrTwoIdFingerprint[1024];//指纹信息
+	unsigned char arrTwoIdPhotoJpeg[4096];	//照片信息 JPEG 格式
+	unsigned int  unTwoIdPhotoJpegLength;	//照片信息长度 JPEG格式
+}TwoIdInfoStruct;
 
 typedef struct TwoIdInfoStructEx
 {

@@ -1,0 +1,126 @@
+unit fmReadCard;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
+  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ComCtrls, Vcl.ExtCtrls,
+  duNFCReader, fuIDInfoChild, Vcl.StdCtrls;
+
+type
+  TFormReadCard = class(TForm)
+    pnlIDInf: TPanel;
+    ProgressBar1: TProgressBar;
+    procedure FormCreate(Sender: TObject);
+    procedure FormHide(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+  private
+    FNFCReader: TIDReadCard;
+    fmIDInfoChild: TfmIDInfoChild;
+    { Private declarations }
+  public
+    { Public declarations }
+    procedure ClearUI();
+    procedure LoadIDInfo(pIDInfo: Pointer);
+    procedure WriteInfo(AInfo: string);
+        procedure WMReadIDCard(var MSG: TMessage); message Integer(TMSG_ID_ReadIDCard);
+  end;
+
+var
+  FormReadCard: TFormReadCard;
+
+implementation
+
+{$R *.dfm}
+
+uses
+  duGlob;
+
+procedure TFormReadCard.ClearUI;
+begin
+  fmIDInfoChild.ClearUI;
+end;
+
+procedure TFormReadCard.FormCreate(Sender: TObject);
+begin
+  fmIDInfoChild := TfmIDInfoChild.Create(pnlIDInf);
+  fmIDInfoChild.Parent := pnlIDInf;
+  fmIDInfoChild.ClearUI;
+  fmIDInfoChild.Visible := True;
+  pnlIDInf.BevelOuter := bvNone;
+end;
+
+procedure TFormReadCard.FormHide(Sender: TObject);
+begin
+//  G_IDReader.StartedRead := False;
+  ClearUI;
+  if Assigned(FNFCReader) then
+  begin
+    FNFCReader.Terminate;
+    if FNFCReader.Suspended then
+      FNFCReader.Suspended := False;
+    FNFCReader.WaitFor;
+    FreeAndNil(FNFCReader);
+  end
+
+end;
+
+procedure TFormReadCard.FormShow(Sender: TObject);
+begin
+ // G_IDReader.StartedRead := True;
+  if not Assigned(FNFCReader) then
+    FNFCReader := TIDReadCard.Create(G_Param.MainHandle);
+end;
+
+procedure TFormReadCard.LoadIDInfo(pIDInfo: Pointer);
+begin
+  fmIDInfoChild.LoadIDInfo(pIDInfo);
+end;
+
+procedure TFormReadCard.WMReadIDCard(var MSG: TMessage);
+var
+  AReadIDCardInfo: pYZWLReadIDCardInfo;
+begin
+  case TMSG_wParam(MSG.WParam) of
+    TMSG_wParam_ReaderProgress: //½ø¶ÈÌõ
+      begin
+        case MSG.LParam of
+          -1:
+            begin
+              fmReadCard.ProgressBar1.Hide;
+            end;
+          0:
+            begin
+              fmReadCard.ProgressBar1.Position := 0;
+              fmReadCard.ProgressBar1.Show;
+            end;
+        else
+          begin
+            fmReadCard.ProgressBar1.Position := MSG.LParam;
+          end;
+
+        end;
+      end;
+    TMSG_wParam_ReadIDCard:
+      begin
+        AReadIDCardInfo := pYZWLReadIDCardInfo(MSG.LParam);
+        if AReadIDCardInfo.ReadState = 1 then
+        begin
+          fmReadCard.LoadIDInfo(AReadIDCardInfo);
+        end
+        else
+        begin
+          fmReadCard.WriteInfo('¶Á¿¨Ê§°Ü£¡');
+        end;
+      end;
+
+  end;
+end;
+
+procedure TFormReadCard.WriteInfo(AInfo: string);
+begin
+//  Memo1.Lines.Add(FormatDateTime('yyyy-mm-dd hh:nn:ss', Now) + ':' + AInfo);
+end;
+
+end.
+
