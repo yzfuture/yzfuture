@@ -3,6 +3,14 @@
 
 typedef void(__stdcall *cardReadProgress)(unsigned int nProgress, YZWLHandle nhandle);
 
+typedef enum _eDeviceType
+{
+	yzwlType = 0,
+	sdtapiType = 1
+}eDeviceType;
+
+void __stdcall setDeviceType(int nDeviceType);
+
 YZWLHandle __stdcall cardOpenDevice(int nouttime, int nDeviceNo = 0);
 
 bool __stdcall cardReadTwoCard(YZWLHandle nDeviceHandle, cardReadProgress cardCB, 
