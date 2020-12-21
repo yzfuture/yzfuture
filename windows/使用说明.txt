@@ -1,1 +1,0 @@
-使用前请先运行bin目录下面的UpDateClient.exe同步接口文档及运行库
