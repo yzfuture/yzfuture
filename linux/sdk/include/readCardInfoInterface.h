@@ -8,7 +8,7 @@
 extern "C" {
 #endif
 
-	typedef void(FBC_API_PUBLIC *cardReadProgress)(unsigned int nProgress);
+	typedef void(FBC_API_PUBLIC *cardReadProgress)(void* userData, unsigned int nProgress);
 
 	YZWLHandle FBC_API_PUBLIC cardOpenDevice(int nouttime, int nDeviceNo = 0);
 	bool FBC_API_PUBLIC setCardType(YZWLHandle nDeviceHandle);
@@ -20,7 +20,7 @@ extern "C" {
 	bool FBC_API_PUBLIC cardGetDeviceNO(YZWLHandle nDeviceHandle, char* szno, int &nlen);
 	bool FBC_API_PUBLIC cardGetDeviceSN(YZWLHandle nDeviceHandle, char* szsn, int &nlen);
 
-	bool FBC_API_PUBLIC cardReadTwoCard(YZWLHandle nDeviceHandle, cardReadProgress cardCB,
+	bool FBC_API_PUBLIC cardReadTwoCard(YZWLHandle nDeviceHandle, cardReadProgress cardCB, void* userData,
 		char* szFactoryFlag, char* szServerIp, int nServerPort,
 		TwoIdInfoStructEx &cardinfo, bool bTest);
 
@@ -34,13 +34,11 @@ extern "C" {
 
 	void FBC_API_PUBLIC cardCloseDevice(YZWLHandle nDeviceHandle);
 
-	void FBC_API_PUBLIC convertCardInfoUncodeToUtf8(TwoIdInfoStructEx &cardinfo);
-	void FBC_API_PUBLIC convertCardInfoUtf8ToUncode(TwoIdInfoStructEx &cardinfo);
-
 	// srcimage长度固定为1024 
 	// outimage大小由外面自己申请，大小不小于40KB
 	// outlen传入时为outimage实际大小，传出时为实际图片大小
 	bool FBC_API_PUBLIC decodeCardImage(unsigned char* srcimage, char* outimage, int* outlen);
+
 
 #ifdef __cplusplus
 }
