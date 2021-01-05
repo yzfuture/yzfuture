@@ -150,6 +150,11 @@ int readCardInfo()
 		char	szError[1024] = { 0 };
 		cardGetErrorInfo(hlHandle, szError, nlen, -19997);
 	}
+	if (hlHandle >= 0)
+	{
+		cardCloseDevice(hlHandle);
+		hlHandle = -1;
+	}
 	return 0;
 }
 
