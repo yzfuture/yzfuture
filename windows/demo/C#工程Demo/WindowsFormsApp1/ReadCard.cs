@@ -24,22 +24,26 @@ namespace WindowsFormsApp1
         [DllImport("readCardInfo.dll")]//readCardInfo.dll
         public static extern int cardOpenDevice(int nouttime, int nDeviceNo);//打开读卡器硬件设备
 
-
         [DllImport("readCardInfo.dll")]//readCardInfo.dll
+        [return: MarshalAs(UnmanagedType.I1)]
         public static extern bool setCardType(int nDeviceHandle, int ctype);//设置卡片类型
 
 
         [DllImport("readCardInfo.dll")]//readCardInfo.dll
+        [return: MarshalAs(UnmanagedType.I1)]
         public static extern bool cardFindCard(int nDeviceHandle, ref bool bmove);//寻卡
 
         [DllImport("readCardInfo.dll",CharSet = CharSet.Ansi, ExactSpelling = false,
              CallingConvention = CallingConvention.StdCall)]//readCardInfo.dll
+        [return: MarshalAs(UnmanagedType.I1)]
         public static extern bool cardReadTwoCard(int nDeviceHandle, int cardCB, string szFactoryFlag, string szServerIp, int nServerPort, ref TwoIdInfoStruct cardinfo, bool bTest);//读卡
 
         [DllImport("readCardInfo.dll")]//readCardInfo.dll
+        [return: MarshalAs(UnmanagedType.I1)]
         public static extern bool decodeCardImage(byte[] srcimage, byte[] outimage, ref int outlen);
 
         [DllImport("readCardInfo.dll")]//readCardInfo.dll
+        [return: MarshalAs(UnmanagedType.I1)]
         public static extern bool cardCloseDevice(int nDeviceHandle);//关闭
 
         public static bool decodeImage(byte[] srcimage, byte[] outimage, ref int outlen)
