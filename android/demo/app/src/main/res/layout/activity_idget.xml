@@ -17,14 +17,6 @@
             android:layout_height="wrap_content"
             android:text="" />
 
-        <Button
-            android:id="@+id/showBtn"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:background="#00ffffff"
-            android:text=""
-            android:textColor="#00ffffff" />
-
         <TextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
@@ -368,119 +360,69 @@
                     android:layout_height="wrap_content"/>
             </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="23dp"
-            android:layout_marginRight="23dp"
-            android:orientation="horizontal"
-            android:layout_marginBottom="3dp">
-        <Button
-            android:id="@+id/otgBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginRight="9dp"
-            android:textColor="#000000"
-            android:text="OTG刷卡" />
-            <Button
-                android:id="@+id/faceDection"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="23dp"
+                android:layout_marginRight="23dp"
+                android:orientation="horizontal"
+                android:layout_marginBottom="3dp">
+
+                <Button
+                    android:id="@+id/otgBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginRight="9dp"
+                    android:textColor="#000000"
+                    android:text="OTG刷卡" />
+
+                <Button
+                    android:id="@+id/resetBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="重置"
+                    android:textColor="#000000" />
+            </LinearLayout>
+
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="23dp"
+                android:layout_marginRight="23dp"
+                android:orientation="horizontal"
+                android:layout_marginBottom="3dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="23dp"
+                android:layout_marginRight="23dp"
+                android:orientation="horizontal"
+                android:layout_marginBottom="3dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="23dp"
+                android:layout_marginRight="23dp"
+                android:orientation="horizontal"
+                android:layout_marginBottom="3dp"/>
+
+
+            <TextView
+                android:id="@+id/userInfo"
+                style="@style/textnrTheme"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginRight="9dp"
-                android:textColor="#000000"
-                android:text="人脸识别"/>
-        <Button
-            android:id="@+id/resetBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="重置"
-            android:textColor="#000000" />
-        </LinearLayout>
+                android:fadeScrollbars="false"
+                android:scrollbars="vertical"
+                android:text="" />
 
-
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="23dp"
-                android:layout_marginRight="23dp"
-                android:orientation="horizontal"
-                android:layout_marginBottom="3dp">
-                <TextView
-                    android:id="@+id/tmptxt"
-                    style="@style/titleTheme"
-                    android:layout_width="70dp"
-                    android:layout_height="wrap_content"
-                    android:text="剩余次数：" />
-                <TextView
-                    android:id="@+id/numtxt"
-                    style="@style/textnrTheme"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="3dp"
-                    android:text="0" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="23dp"
-                android:layout_marginRight="23dp"
-                android:orientation="horizontal"
-                android:layout_marginBottom="3dp">
-                <TextView
-                    android:id="@+id/appEdittxt"
-                    style="@style/titleTheme"
-                    android:layout_width="70dp"
-                    android:layout_height="wrap_content"
-                    android:text="AppKey：" />
-                <TextView
-                    android:id="@+id/appkeyTxt"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="8"
-                    android:layout_marginTop="0dp"
-                    android:layout_marginRight="3dp"
-                    android:hint="appkey"
-                    style="@style/titleTheme" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="23dp"
-                android:layout_marginRight="23dp"
-                android:orientation="horizontal"
-                android:layout_marginBottom="3dp">
-                <Button
-                    android:id="@+id/regeitBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginRight="9dp"
-                    android:textColor="#000000"
-                    android:text="注册appKey" />
-                <Button
-                    android:id="@+id/modifyBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginRight="9dp"
-                    android:textColor="#000000"
-                    android:text="修改appKey" />
-                <Button
-                    android:id="@+id/findBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginRight="9dp"
-                    android:textColor="#000000"
-                    android:text="找回appKey" />
-            </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -612,14 +554,6 @@
                     android:layout_marginRight="3dp"
                     android:text="二次开发提供安卓平台NFC和OTG证件解码及Windows平台USB读卡器证件解码，包括：身份证解码、港澳居住证解码、护照解码、EID解码、人脸识别、人脸对比功能接口，方便快速集成" />
             </LinearLayout>
-            <TextView
-                android:id="@+id/userInfo"
-                style="@style/textnrTheme"
-                android:layout_width="match_parent"
-                android:text=""
-                android:scrollbars="vertical"
-                android:fadeScrollbars="false"
-                android:layout_height="wrap_content" />
 
         </LinearLayout>
     </ScrollView>

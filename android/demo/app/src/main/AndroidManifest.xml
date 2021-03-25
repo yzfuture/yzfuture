@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.android.readtwogeneralcard.myapplication">
 
-
     <uses-feature
         android:name="android.hardware.usb.host"
         android:required="true" />
@@ -23,8 +22,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
-
-    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.hardware.camera" />
     <uses-permission android:name="android.hardware.camera.autofocus" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -37,6 +35,7 @@
     <uses-feature
         android:name="android.hardware.nfc"
         android:required="true" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -44,6 +43,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity
+            android:name=".ui.login.testJump"
+            android:label="@string/title_activity_test_jump" />
         <activity android:name=".IDCardScannerActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -53,32 +55,27 @@
             <intent-filter>
                 <action android:name="android.nfc.action.TECH_DISCOVERED" />
             </intent-filter>
-            <!--适配全面屏-->
+            <!-- 适配全面屏 -->
             <meta-data
                 android:name="android.max_aspect"
                 android:value="2.2" />
             <meta-data
                 android:name="android.nfc.action.TECH_DISCOVERED"
                 android:resource="@xml/nfc_tech_filter" />
-        </activity>
-        <activity
-            android:name=".ResultActivity"
-            android:screenOrientation="portrait" />
-<!--        <receiver android:name=".updateApk$DownLoadCompleteReceiver">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.DOWNLOAD_COMPLETE"/>-->
-<!--            </intent-filter>-->
-<!--        </receiver>-->
+        </activity> <!-- <receiver android:name=".updateApk$DownLoadCompleteReceiver"> -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="android.intent.action.DOWNLOAD_COMPLETE"/> -->
+        <!-- </intent-filter> -->
+        <!-- </receiver> -->
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.android.readtwogeneralcard.myapplication.fileprovider"
-            android:grantUriPermissions="true"
-            android:exported="false">
+            android:exported="false"
+            android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-
     </application>
 
 </manifest>
