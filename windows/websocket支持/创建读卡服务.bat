@@ -9,6 +9,7 @@ exit /B
 :UACAdmin
 cd /d "%~dp0"
 
+copy "%~dp0Config.ini" "c:\\Config.ini"
 sc create yzwlReadCard start= auto binPath= "%~dp0yzwlReadCard_Server.exe"
 sc create yzwlServiceAlive start= auto binPath= "%~dp0yzwlServiceAlive.exe"
 sc start yzwlReadCard
