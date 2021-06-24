@@ -14,6 +14,11 @@ public class ReadCardDemo {
         int yzwlHandle = lib.cardOpenDevice(0, 0);
         String  szkey = "99ffb2f98a29071107c7a09ad2c6d096";
         String  szIP = "id.yzfuture.cn";
+        Memory szDeviceDN = new Memory(100);
+        IntByReference nDeviceDN = new IntByReference(100) ;
+        lib.cardGetDeviceSN(yzwlHandle, szDeviceDN, nDeviceDN);
+        String  szDN = new String(szDeviceDN.getByteArray(0, nDeviceDN.getValue()));;
+        System.out.println("Device DN："+szDN);
         for (int i=0; i<100; i++)
         {
             mycallBack cb = new mycallBack();

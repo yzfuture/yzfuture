@@ -20,5 +20,8 @@ public interface ReadCardInfoLib extends StdCallLibrary {
     boolean cardReadTwoCard(int nDeviceHandle, mycallBack cb,
                             String szFactoryFlag, String szServerIp, int nServerPort,
                             TwoCardByteArray cardinfo, boolean bTest);
+
+    boolean cardGetDeviceNO(int nDeviceHandle, Memory szno, IntByReference nlen);
+    boolean cardGetDeviceSN(int nDeviceHandle, Memory szsn, IntByReference nlen);
     void cardCloseDevice(int nDeviceHandle);
 }
