@@ -1,0 +1,2 @@
+1。请从SDK\dll中拷贝所有文件到需要的位置(一般在system32或syswow64下)
+2。修改 demo\vbDemo\Form4.frm 中cardReadTwoCard的第三个参数修改为你们注册的appkey

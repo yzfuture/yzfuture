@@ -15,6 +15,8 @@ cd /d "%~dp0"
 sc stop yzwlReadCard
 sc stop yzwlServiceAlive
 
+sc delete yzwlReadCard
+sc delete yzwlServiceAlive
 
 
 

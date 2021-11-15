@@ -1,0 +1,5 @@
+编译前请先将以下目录拷过来
+SDK\dll  里面的文件拷到  C#Demo\WindowsFormsApp1\bin\Debug
+
+
+2。修改 demo\C#Demo\WindowsFormsApp1\ReadCard.cs 中的szAppKey为你们注册的实际内容

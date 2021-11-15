@@ -53,22 +53,35 @@ Private Declare Function cardReadTwoCard Lib "readCardInfo.dll" (ByVal nDeviceHa
 Private Declare Function cardCloseDevice Lib "readCardInfo.dll" (ByVal nDeviceHandle As Long) As Long
 Private Declare Function decodeCardImage Lib "readCardInfo.dll" (ByVal srcimage As String, ByVal outimage As String, outlen As Long) As Boolean
 Private Declare Function cardBeep Lib "readCardInfo.dll" (ByVal nDeviceHandle As Long) As Long
-
+Private Declare Sub setDeviceType Lib "readCardInfo.dll" (ByVal nDeviceType As Long)
+Private Declare Function setCardType Lib "readCardInfo.dll" (ByVal nDeviceHandle As Long, ByVal ctype As Long) As Boolean
 
 
 Private Sub Command1_Click()
-    Dim a As Long, b As Boolean, tmpCardInfo As TwoIdInfoStructEx
-    a = cardOpenDevice(2, 0)
+    Dim a As Long， nDeviceNo As Long, b As Boolean, tmpCardInfo As TwoIdInfoStructEx
+    Dim k1() As Byte
+    Dim  S1 As String,S2 As String
+    s1 = "中文出现乱码处理方式"
+    k1 = s1
+    s2 = k1
+    If 离线读卡器 = 1 Then
+        nDeviceNo = 1001
+        setDeviceType (1)
+    Else
+        nDeviceNo = 0
+        setDeviceType (0)
+    End If
+    a = cardOpenDevice(2, nDeviceNo)
     Debug.Print a
     If a > 0 Then
         b = cardReadTwoCard(a, 0, "99ffb2f98a29071107c7a09ad2c6d096", "id.yzfuture.cn", 8848, tmpCardInfo, False)
         Call cardBeep(a)
         Debug.Print "cardReadTwoCard:", b
-        Debug.Print StrConv(tmpCardInfo.arrTwoIdName, vbFromUnicode)
-        
-        'Debug.Print StrConv(tmpCardInfo.arrTwoIdName, vbWide)
-        Debug.Print StrConv(tmpCardInfo.arrTwoIdAddress, vbFromUnicode)
-        'Debug.Print StrConv(tmpCardInfo.arrTwoIdAddress, vbUnicode)
+
+        Text1.Text = ""
+        S2 = d
+        Text1.Text = s2
+
         Call cardCloseDevice(a)
     Debug.Print "ok"
     End If

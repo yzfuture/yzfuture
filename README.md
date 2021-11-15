@@ -1,3 +1,6 @@
+由于国内经常连接不上github，所以本SDK以后更新会延迟，如需最新版本，请移步下面网址下载：
+https://www.yzfuture.cn/views/service/index.html?ap=download-center
+
 # yzfuture
 证件云解码相关开发资料
 

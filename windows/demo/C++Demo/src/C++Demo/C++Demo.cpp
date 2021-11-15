@@ -67,10 +67,34 @@ int _tmain(int argc, _TCHAR* argv[])
 								fclose(fp);
 							}
 						}
+						else
+						{
+							printf("Ω‚Õº∆¨ ß∞‹\r\n");
+						}
+					}
+					else
+					{
+						printf("∂¡…Ì∑›÷§ ß∞‹\r\n");
 					}
 				}
+				else
+				{
+					printf("ªÒ»°ø®∆¨SN ß∞‹\r\n");
+				}
+			}
+			else
+			{
+				printf("—∞ø® ß∞‹\r\n");
 			}
 		}
+		else
+		{
+			printf("…Ë÷√ø®¿‡–Õ ß∞‹\r\n");
+		}
+	}
+	else
+	{
+		printf("¥Úø™∂¡ø®∆˜ ß∞‹\r\n");
 	}
 	cardCloseDevice(hlHandle);
 	getchar();

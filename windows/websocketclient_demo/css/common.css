@@ -1,0 +1,23 @@
+button:active {
+	transform: translate(1px, 1px);
+}
+button {
+  position: relative;
+	border: 0px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	box-sizing: border-box;
+  padding: 0 10px;
+	font-size: 13px;
+	height: 28px;
+	line-height: 1;
+	text-align: center;
+	text-decoration: none;
+	overflow: visible;
+	margin-left: initial;
+	transform: translate(0px, 0px);
+	margin-right: initial;  
+  border-radius: 3px;
+  cursor: pointer;
+}

@@ -1,0 +1,4 @@
+1。编译前请先将以下目录拷过来
+    SDK\dll 里面的文件拷到demo\delphiDemo\bin
+
+2。修改AppKey为你们注册的实际内容

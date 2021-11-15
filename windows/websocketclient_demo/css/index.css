@@ -1,0 +1,213 @@
+body{
+  background-image: url(../images/background.svg);
+  color: #333333;
+}
+
+.container {
+  width: 1366px;
+  margin: 0 auto;
+}
+
+.container>.head {
+  margin: 20px 0;
+  color: #333333;
+}
+
+.container>.head>.logo {
+  width: 80px;
+  height: 80px;
+  margin-right: 20px;
+}
+
+.container>.content {
+  background-color: #FFF;  
+  border: 1px solid #eee;
+  box-shadow: 0px 0px 10px #ccc;
+  border-radius: 5px;
+  margin: 0 auto;
+  padding: 40px 10px;
+}
+
+.container>.content>div{
+  padding: 0 15px;
+}
+.container>.content .block-title {
+  margin: 0;
+  margin-bottom: 10px;
+  padding: 0 20px;
+  color: #333333;
+  position: relative;
+}
+.container>.content .block-title::before{
+  content: "";
+  width: 5px;
+  height: 80%;
+  background-color: #0081ff;
+  position: absolute;
+  left: 5px;
+  top: 3px;
+}
+
+.container>.content .func-card {
+  padding: 55px 20px;
+  box-sizing: border-box;
+  width: 420px;
+}
+.container>.content .func-card.websocket {
+  background: url(../images/blue_square.png) no-repeat;
+  background-size: 109%;
+  background-position: center;
+}
+.container>.content .func-card.webapi {
+  background: url(../images/orange_square.png) no-repeat;
+  background-size: 109%;
+  background-position: center;
+}
+
+.container>.content .func-card p {
+  margin: 0;
+  margin-bottom: 5px;
+}
+.container>.content .func-card p.title{
+  color: #fff;
+  font-size: 18px;
+  font-weight: bold;
+}
+.container>.content .func-card p.sub-title{
+  color: #fff;
+  font-size: 12px;
+}
+.container>.content .func-card .btn-area{
+  margin-top: 20px;
+}
+
+.container>.content .websocket button{
+  background-color: rgba(0,129,255,0.5);
+  box-shadow: 0px 0px 3px #C7E0FA;
+  margin: 5px;
+  color: #fff;
+}
+
+.container>.content .webapi button{
+  background-color: rgba(243,123,29,0.5);
+  box-shadow: 0px 0px 3px #f5ddca;
+  margin: 5px;
+  color: #fff;
+}
+
+
+#process-content{
+  width: 100%;
+  height: 590px;
+  resize: none;
+  border: none;
+  background-color: #f0f0f0;
+  padding: 10px;
+  box-sizing: border-box;
+  color: #666;
+}
+#clean-process {
+  background-color: #0081ff;
+  color: #fff;
+  font-size: 14px;
+  width: 360px;
+  height: 36px;
+  margin-top: 15px;
+}
+
+
+.ID-card{
+  height: 235px;  
+  background-size: 90%;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+}
+.ID-card.card-front{
+  background-image: url(../images/card_front.png);
+  margin-bottom: 20px;
+}
+.ID-card.card-back{
+  background-image: url(../images/card_back.png);
+}
+
+.ID-card>p{
+  margin: 0;
+  position: absolute;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+
+#image{
+  position: absolute;
+  top: 40px;
+  right: 40px;
+  width: 100px;
+  height: 120px;
+}
+#image[src=""],#image:not([src]){
+  opacity: 0;
+}
+
+#name{
+  top: 35px;
+  left: 90px;
+  font-size: 16px;
+}
+#sex{
+  top: 66px;
+  left: 90px;
+}
+#nation{
+  top: 66px;
+  left: 175px;
+}
+#year{
+  top: 94px;
+  left: 90px;
+}
+#month{
+  top: 94px;
+  left: 145px;
+  width: 25px;
+  text-align: center;
+}
+#date{
+  top: 94px;
+  left: 183px;
+  width: 25px;
+  text-align: center;
+}
+#address{
+  top: 121px;
+  left: 90px;
+  width: 180px;
+  text-align: left;
+  letter-spacing: 2px;
+}
+#number{
+  top: 190px;
+  left: 150px;
+  font-size: 15px;
+  letter-spacing: 2px;
+}
+#department{
+  bottom: 54px;
+  left: 175px;
+}
+#expiry{
+  bottom: 25px;
+  left: 175px;
+}
+
+
+.copyright{
+  font-size: 14px;
+  padding: 20px 0;
+  text-align: center;
+  color: #666;
+}
+.copyright .copyright-item{
+  margin-right: 10px;
+}

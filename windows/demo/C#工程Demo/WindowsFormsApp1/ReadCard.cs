@@ -28,6 +28,9 @@ namespace WindowsFormsApp1
         [return: MarshalAs(UnmanagedType.I1)]
         public static extern bool setCardType(int nDeviceHandle, int ctype);//设置卡片类型
 
+        [DllImport("readCardInfo.dll")]//readCardInfo.dll
+        [return: MarshalAs(UnmanagedType.I1)]
+        public static extern void setDeviceType(int nDeviceType);//设置读卡器类型
 
         [DllImport("readCardInfo.dll")]//readCardInfo.dll
         [return: MarshalAs(UnmanagedType.I1)]
@@ -41,6 +44,14 @@ namespace WindowsFormsApp1
         [DllImport("readCardInfo.dll")]//readCardInfo.dll
         [return: MarshalAs(UnmanagedType.I1)]
         public static extern bool decodeCardImage(byte[] srcimage, byte[] outimage, ref int outlen);
+
+        [DllImport("readCardInfo.dll")]//readCardInfo.dll
+        [return: MarshalAs(UnmanagedType.I1)]
+        public static extern bool cardGetCardDN(int nDeviceHandle, byte[] szsn, ref int nlen);
+
+        [DllImport("readCardInfo.dll")]//readCardInfo.dll
+        [return: MarshalAs(UnmanagedType.I1)]
+        public static extern bool cardGetCardSN(int nDeviceHandle, byte[] szsn, ref int nlen);
 
         [DllImport("readCardInfo.dll")]//readCardInfo.dll
         [return: MarshalAs(UnmanagedType.I1)]
@@ -77,7 +88,18 @@ namespace WindowsFormsApp1
             sttTwoIdInfo.arrTwoIdPhotoJpeg = new byte[4096];	//照片信息 JPEG 格式
             sttTwoIdInfo.unTwoIdPhotoJpegLength = 0;	//照片信息长度 JPEG格式
 
-            int hlHandle = cardOpenDevice(5, 0);
+            int 	ndeviceIndex = 0;
+            if (离线读卡器)
+            {
+                   setDeviceType(1);
+                   ndeviceIndex = 1001;
+            }
+            else
+            {
+                   setDeviceType(0);
+                   ndeviceIndex = 0;
+            }
+            int hlHandle = cardOpenDevice(5, ndeviceIndex);
             if (hlHandle > 0)
             {
                 bool bmove = true;
@@ -85,6 +107,13 @@ namespace WindowsFormsApp1
                 {
                     if (cardFindCard(hlHandle, ref bmove))
                     {
+                        byte[] szsn = new byte[50];
+                        byte[] szdn = new byte[50];
+                        int nsn = 30;
+                        int ndn = 30;
+                        bool snFlag = cardGetCardSN(hlHandle, szsn, ref nsn);
+                        bool dnFlag = cardGetCardSN(hlHandle, szdn, ref ndn);
+
                         int cb = 0;
                         string szAppkey = "99ffb2f98a29071107c7a09ad2c6d096";
                         string szip = "id.yzfuture.cn";

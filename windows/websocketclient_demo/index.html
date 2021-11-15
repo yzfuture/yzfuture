@@ -1,0 +1,110 @@
+﻿<!DOCTYPE html>
+
+<html lang='zh-CN'>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Websocket/Web API 使用 Demo</title>
+
+  <link rel="stylesheet" href="./css/flex-layout.css">
+  <link rel="stylesheet" href="./css/common.css">
+  <link rel="stylesheet" href="./css/index.css">
+</head>
+
+<body>
+  <div class="container">
+    <div class="head flex justify-start align-center" style="margin-bottom: 20px;">
+      <img class="logo" src="./images/logo.png" alt="LOGO">
+      <h2>鱼住未来身份识别服务使用 Demo</h2>
+    </div>    
+
+    <div class="content flex justify-start">
+      <!-- 功能使用  -->
+      <div class="flex-sub" style="border-right: 1px solid #eee;">
+        <h3 class="block-title">功能使用</h3>
+        <div class="flex justify-start align-center" style="color: #5c6063;">
+          <p>填写连接地址：</p>
+          <input id="connect-address" value="127.0.0.1:30004"></input>
+        </div>
+        <div class="flex flex-direction align-center" style="height: 535px;">
+          <div class="func-card websocket flex-sub">
+            <p class="title">Websocket 使用 Demo</p>
+            <p class="sub-title">( 点击按钮读取相应信息；支持被动接收和主动请求两种方式。 )</p>
+            <div class="btn-area">
+              <div class="flex">
+                <button id="on-websocket" class="flex-sub">连接到webSocket</button>
+                <button id="off-websocket" class="flex-sub">断开webSocket</button>
+              </div>
+              <div class="flex flex-wrap">
+                <button id="websocket-ID" class="flex-sub">身份证</button>
+                <button id="websocket-ID-sn" class="flex-sub">身份证SN</button>
+                <button id="websocket-A-sn" class="flex-sub">A卡SN</button>            
+                <button id="websocket-device-No" class="flex-sub">设备唯一号</button>
+              </div>
+            </div>
+          </div>
+          <div class="func-card webapi flex-sub">
+            <p class="title">Web API 使用 Demo</p>
+            <p class="sub-title">( 点击按钮读取相应信息；支持主动请求方式。 )</p>
+            <div class="btn-area">
+              <div class="flex flex-wrap">
+                <button id="http-ID" class="flex-sub">身份证</button>
+                <button id="http-ID-sn" class="flex-sub">身份证SN</button>
+              </div>
+              <div class="flex flex-wrap">
+                <button id="http-A-sn" class="flex-sub">A卡SN</button>
+                <button id="http-device-No" class="flex-sub">设备唯一号</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 读取过程  -->
+      <div class="flex-sub" style="border-right: 1px solid #eee;">
+        <h3 class="block-title">读取过程</h3>
+        <textarea name="process" id="process-content" readonly="readonly"></textarea>
+      </div>
+      <!-- 读取结果  -->
+      <div class="result-container flex-sub">
+        <h3 class="block-title">读取结果</h3>
+        <div class="flex justify-start align-center" style="padding-left: 25px;color: #5c6063;">
+          <p>SN 号：</p>
+          <p id="SN-content"></p>
+        </div>
+        <div class="ID-card card-front">
+          <img id="image" src="" alt="证件照">
+          <p id="name"></p>
+          <p id="sex"></p>
+          <p id="nation"></p>
+          <p id="year"></p>
+          <p id="month"></p>
+          <p id="date"></p>
+          <p id="address"></p>
+          <p id="number"></p>          
+        </div>
+        <div class="ID-card card-back">
+          <p id="department"></p>
+          <p id="expiry"></p>
+        </div>
+
+        <div class="flex justify-center">
+          <button id="clean-process">清空</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="copyright">
+    <span class="copyright-item" id="copyright-text">
+      <script type="text/javascript">
+        document.getElementById("copyright-text").innerText = "成都鱼住未来科技有限公司版权所有 ©2019 - "+ new Date().getFullYear()
+      </script>
+    </span>
+  </div>
+
+
+  <script type="text/javascript" src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script type="text/javascript" src="./index.js"></script>
+</body>
+</html>
