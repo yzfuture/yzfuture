@@ -24,7 +24,7 @@
             android:layout_centerInParent="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="10dp"
-            android:text="鱼住未来证件识别测试"
+            android:text="鱼住未来证件识别测试V2"
             android:textColor="#000000"
             android:textSize="18sp" />
 
@@ -52,6 +52,23 @@
                 android:max="19"
                 android:min="0"
                 style="@style/Widget.AppCompat.ProgressBar.Horizontal"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="23dp"
+                android:layout_marginRight="23dp"
+                android:orientation="horizontal"
+                android:layout_marginBottom="3dp">
+                <Switch
+                    android:id="@+id/deviceType"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textOff="标准版"
+                    android:textOn="离线版"
+                    android:showText="true"
+                    android:layout_weight="1"/>
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -367,7 +384,14 @@
                 android:layout_marginRight="23dp"
                 android:orientation="horizontal"
                 android:layout_marginBottom="3dp">
-
+                <Button
+                    android:id="@+id/numBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginRight="9dp"
+                    android:textColor="#000000"
+                    android:text="剩余次数" />
                 <Button
                     android:id="@+id/otgBtn"
                     android:layout_width="wrap_content"
@@ -376,7 +400,6 @@
                     android:layout_marginRight="9dp"
                     android:textColor="#000000"
                     android:text="OTG刷卡" />
-
                 <Button
                     android:id="@+id/resetBtn"
                     android:layout_width="wrap_content"
@@ -387,7 +410,40 @@
             </LinearLayout>
 
 
-
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="23dp"
+                android:layout_marginRight="23dp"
+                android:orientation="horizontal"
+                android:layout_marginBottom="3dp">
+                <TextView
+                    android:id="@+id/tmptxt"
+                    style="@style/titleTheme"
+                    android:layout_width="70dp"
+                    android:layout_height="wrap_content"
+                    android:text="剩余次数：" />
+                <TextView
+                    android:id="@+id/numtxt"
+                    style="@style/textnrTheme"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="3dp"
+                    android:text="0" />
+                <TextView
+                    android:id="@+id/tmptimetxt"
+                    style="@style/titleTheme"
+                    android:layout_width="70dp"
+                    android:layout_height="wrap_content"
+                    android:text="到期时间：" />
+                <TextView
+                    android:id="@+id/numtimetxt"
+                    style="@style/textnrTheme"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="3dp"
+                    android:text="" />
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -395,7 +451,23 @@
                 android:layout_marginLeft="23dp"
                 android:layout_marginRight="23dp"
                 android:orientation="horizontal"
-                android:layout_marginBottom="3dp"/>
+                android:layout_marginBottom="3dp">
+                <TextView
+                    android:id="@+id/appEdittxt"
+                    style="@style/titleTheme"
+                    android:layout_width="70dp"
+                    android:layout_height="wrap_content"
+                    android:text="AppKey：" />
+                <TextView
+                    android:id="@+id/appkeyTxt"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="8"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginRight="3dp"
+                    android:hint="appkey"
+                    style="@style/titleTheme" />
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -403,7 +475,82 @@
                 android:layout_marginLeft="23dp"
                 android:layout_marginRight="23dp"
                 android:orientation="horizontal"
-                android:layout_marginBottom="3dp"/>
+                android:layout_marginBottom="3dp">
+
+                <TextView
+                    android:id="@+id/appSecret"
+                    style="@style/titleTheme"
+                    android:layout_width="70dp"
+                    android:layout_height="wrap_content"
+                    android:text="Secret：" />
+                <TextView
+                    android:id="@+id/appSecretTxt"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="8"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginRight="3dp"
+                    android:hint="appsecret"
+                    style="@style/titleTheme" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="23dp"
+                android:layout_marginRight="23dp"
+                android:orientation="horizontal"
+                android:layout_marginBottom="3dp">
+
+                <TextView
+                    android:id="@+id/appUserData"
+                    style="@style/titleTheme"
+                    android:layout_width="70dp"
+                    android:layout_height="wrap_content"
+                    android:text="UserData：" />
+                <TextView
+                    android:id="@+id/appUserDataTxt"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="8"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginRight="3dp"
+                    android:hint="appuserdata"
+                    style="@style/titleTheme" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="23dp"
+                android:layout_marginRight="23dp"
+                android:orientation="horizontal"
+                android:layout_marginBottom="3dp">
+                <Button
+                    android:id="@+id/appkeyBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginRight="9dp"
+                    android:textColor="#000000"
+                    android:text="修改appKey" />
+                <Button
+                    android:id="@+id/secretBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginRight="9dp"
+                    android:textColor="#000000"
+                    android:text="修改Secret" />
+                <Button
+                    android:id="@+id/userBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginRight="9dp"
+                    android:textColor="#000000"
+                    android:text="修改UserData" />
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"

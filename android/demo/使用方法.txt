@@ -1,0 +1,2 @@
+将yzwlnfcreadcard.aar包拷贝到demo/app/libs下面进行编译即可
+Demo 中用的 gradle 版本是 gradle-5.4.1-all.zip

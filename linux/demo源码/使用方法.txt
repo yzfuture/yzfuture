@@ -1,0 +1,30 @@
+1.将SDK中lib文件夹整体拷贝到“demo源码”目录下
+拷贝后结构为：
+demo源码->lib->arm_himix200/arm_RaspberryPi/x86_linux
+
+2.修改CMakeLists.txt
+
+#set(LINUXVERSION "x86_linux")
+#set(LINUXVERSION "arm_Rpi")
+set(LINUXVERSION "arm-himix200")
+上面三行分别对应，x86_64/arm树莓派/arm himix200 三个平台
+将所需要的平台前注释去掉，其它平台请注释掉
+
+3.创建bin目录，并且在bin目录中执行以下命令进行cmake编译
+>> cmake ..
+>> make
+
+4.连接读卡器，放上身份证，保证网络畅通
+
+5.拷贝Config.ini到bin目录
+
+6.修改Config.ini文件在FactoryFlag后面添加自己的appkey/secret及用户标识
+
+FactoryFlag=
+AppSecret=
+AppUserId=
+
+7. 设置demo源码->lib下对应平台路径到系统变量
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:demo源码/lib/(arm_himix200/arm_RaspberryPi/x86_linux)
+
+8.运行./readCardDemo即可

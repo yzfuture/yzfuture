@@ -9,13 +9,13 @@ typedef enum _eDeviceType
 	sdtapiType = 1
 }eDeviceType;
 
+void __stdcall cardReadInit(); // 初始化操作，最开始程序构造的时候调用
+
 void __stdcall setDeviceType(int nDeviceType);
 
-YZWLHandle __stdcall cardOpenDevice(int nouttime, int nDeviceNo = 0);
+YZWLHandle __stdcall cardOpenDevice(char* szAppkey, char* szAppSecret, char* szip, int nport, char* userData, int nouttime, int nDeviceNo = 0);
 
-bool __stdcall cardReadTwoCard(YZWLHandle nDeviceHandle, cardReadProgress cardCB, 
-	char* szFactoryFlag, char* szServerIp, int nServerPort,
-	TwoIdInfoStructEx &cardinfo, bool bTest);
+bool __stdcall cardReadTwoCard(YZWLHandle nDeviceHandle, cardReadProgress cardCB, TwoIdInfoStructEx &cardinfo);
 
 const char* __stdcall cardGetSerialNumber(YZWLHandle nDeviceHandle);
 
@@ -42,3 +42,6 @@ void __stdcall convertCardInfoToUncode(TwoIdInfoStructEx &cardinfo);
 // outimage大小由外面自己申请，大小不小于40KB
 // outlen传入时为outimage实际大小，传出时为实际图片大小
 bool __stdcall decodeCardImage(unsigned char* srcimage, char* outimage, int& outlen);
+
+
+void __stdcall cardReadUninit(); // 反初始化操作，最后程序析构的时候调用

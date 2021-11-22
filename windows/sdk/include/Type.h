@@ -1,19 +1,12 @@
 #pragma once
 
 #include <stdint.h>
-
-//#define		FOR_WINDOWS10					//WINDOWS 10 用long long
+				
 #ifdef FOR_WINDOWS10
-typedef long long YZWLHandle;				//针对句柄单独搞个类型 便于改动
+typedef long long YZWLHandle;				
 #else
-typedef long YZWLHandle;				//针对句柄单独搞个类型 便于改动
+typedef long YZWLHandle;				
 #endif
-
-#define		COS_RESULT_BUFFER_LENGTH		256
-#define		COS_SEND_BUFFER_LENGTH			256
-
-
-typedef bool(__stdcall *userApduCommand)(char* inbuf, int ninbuf, unsigned char* outbuf, int &noutbuf, void* userdata);
 
 typedef enum cardType
 {
@@ -21,18 +14,6 @@ typedef enum cardType
 	ACardType = 0,
 	BCardType = 1
 };
-
-
-#if 1 //作为VC demo调用头文件 把0改为1
-typedef int		 					BOOL;
-typedef unsigned char		 		byte;
-
-#define		RT_NOT_HALT				0x26
-#define		RT_ALL					0x52
-
-#define		AM_A					0x60
-#define		AM_B					0x61
-#endif
 
 typedef struct TwoIdInfoStructEx
 {
@@ -59,4 +40,3 @@ typedef struct TwoIdInfoStructEx
 	unsigned char arrTwoIdPhotoJpeg[4096];	//照片信息 JPEG 格式
 	unsigned int  unTwoIdPhotoJpegLength;	//照片信息长度 JPEG格式
 };
-

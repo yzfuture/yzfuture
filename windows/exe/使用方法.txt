@@ -1,0 +1,6 @@
+使用前请先将以下目录拷过来
+
+SDK\dll 里面的文件拷到exe当前目录
+
+
+2。修改 yzwlConfig.ini配置文件中的appkey/secret/AppUserId为你们申请的实际内容，请参照《NFC服务注册流程 V2.pdf》申请

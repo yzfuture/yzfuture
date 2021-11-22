@@ -2,7 +2,7 @@
     SDK\dll 里面的文件拷到demo\javaDemo
 
 
-2。修改 demo\javaDemo\src\main\java\ReadCardDemo.java中的AppKey为你们注册的实际内容
+2。修改 demo\javaDemo\src\main\java\ReadCardDemo.java中的szAppKey/szAppSecret/szUserData为你们申请的实际内容，请参照《NFC服务注册流程 V2.pdf》申请
 
 3。使用32位jdk
 

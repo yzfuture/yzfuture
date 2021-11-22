@@ -14,13 +14,36 @@ void __stdcall onCardReadProgress(unsigned int nProgress, YZWLHandle nhandle)
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	std::string	szFactoryFlag = "99ffb2f98a29071107c7a09ad2c6d096";
+	cardReadInit();
+	char	ctype = '0';
+	do
+	{
+		printf("请选择读卡器:(0-标准读卡器 1-离线读卡器)\r\n");
+		ctype = getchar();
+	} while ((ctype != '0') && (ctype != '1'));
+	printf("读卡中，请稍候......\r\n");
+
+ 	std::string	szAppKey = "请参照《NFC服务注册流程 V2.pdf》申请";
+ 	std::string szAppSecret = "请参照《NFC服务注册流程 V2.pdf》申请";
+ 	std::string szUserData = "请参照《NFC服务注册流程 V2.pdf》申请";
 	std::string szServerIP = "id.yzfuture.cn";
-	int			nServerPort = 8848;
+	int			nServerPort = 443;
 	int			nindex = 0;
-	bool		bTest = true;
 	TwoIdInfoStructEx cardinfo;
-	YZWLHandle hlHandle = cardOpenDevice(2);
+
+	if (ctype=='0')
+	{
+		nindex = 0;
+		setDeviceType(0);
+	}
+	else
+	{
+		nindex = 1001;
+		setDeviceType(1);
+	}
+
+	YZWLHandle hlHandle = cardOpenDevice((char*)szAppKey.c_str(), (char*)szAppSecret.c_str(),
+		(char*)szServerIP.c_str(), nServerPort, (char*)szUserData.c_str(), 2, nindex);
 	if (hlHandle >= 0)
 	{
 		if (setCardType(hlHandle, BCardType))
@@ -29,75 +52,45 @@ int _tmain(int argc, _TCHAR* argv[])
 			bool		bfind(cardFindCard(hlHandle, bmove));
 			if (bfind)
 			{
-				char		szSN[100] = { 0 };
-				int			nSNlen = 99;
-				//					bool		bselect(cardSelectCard(hlHandle));
-				if (cardGetCardSN(hlHandle, szSN, nSNlen))
+				bool		bret = cardReadTwoCard(hlHandle, &onCardReadProgress, cardinfo);
+				if (bret)
 				{
-					printf("cardGetCardSN[%s]\r\n", szSN);
-					bool		bret = cardReadTwoCard(hlHandle, &onCardReadProgress,
-						(char*)szFactoryFlag.c_str(), (char*)szServerIP.c_str(),
-						nServerPort, cardinfo, bTest);
-					if (bret)
+					cardBeep(hlHandle);
+					convertCardInfoToAnsi(cardinfo);
+
+					printf("身份证号：%s\r\n", cardinfo.arrTwoIdNo);
+					printf("姓名：%s\r\n", cardinfo.arrTwoIdName);
+					printf("地址：%s\r\n", cardinfo.arrTwoIdAddress);
+					printf("出生日期：%s\r\n", cardinfo.arrTwoIdBirthday);
+					printf("有效期：%s~%s\r\n", cardinfo.arrTwoIdValidityPeriodBegin, cardinfo.arrTwoIdValidityPeriodEnd);
+					printf("签发机关：%s\r\n", cardinfo.arrTwoIdSignedDepartment);
+
+					char szBmp[1024 * 40] = { 0 };
+					int outlen = 1024 * 40;
+					if (decodeCardImage(cardinfo.arrTwoIdPhoto, szBmp, outlen))
 					{
-						cardBeep(hlHandle);
-						convertCardInfoToAnsi(cardinfo);
-
-						printf("身份证号：%s", cardinfo.arrTwoIdNo);
-						printf("姓名：%s", cardinfo.arrTwoIdName);
-						printf("地址：%s", cardinfo.arrTwoIdAddress);
-						printf("出生日期：%s", cardinfo.arrTwoIdBirthday);
-						printf("有效期：%s~%s", cardinfo.arrTwoIdValidityPeriodBegin, cardinfo.arrTwoIdValidityPeriodEnd);
-						printf("签发机关：%s", cardinfo.arrTwoIdSignedDepartment);
-
-						char szBmp[1024 * 40] = { 0 };
-						int outlen = 1024 * 40;
-						if (decodeCardImage(cardinfo.arrTwoIdPhoto, szBmp, outlen))
+						FILE* fpwlt(fopen("a.wlt", "wb"));
+						if (fpwlt)
 						{
-							FILE* fpwlt(fopen("a.wlt", "wb"));
-							if (fpwlt)
-							{
-								fwrite(cardinfo.arrTwoIdPhoto, 1024, 1, fpwlt);
-								fclose(fpwlt);
-							}
-							FILE* fp(fopen("a.bmp", "wb"));
-							if (fp)
-							{
-								fwrite(szBmp, outlen, 1, fp);
-								fclose(fp);
-							}
+							fwrite(cardinfo.arrTwoIdPhoto, 1024, 1, fpwlt);
+							fclose(fpwlt);
 						}
-						else
+						FILE* fp(fopen("a.bmp", "wb"));
+						if (fp)
 						{
-							printf("解图片失败\r\n");
+							fwrite(szBmp, outlen, 1, fp);
+							fclose(fp);
 						}
 					}
-					else
-					{
-						printf("读身份证失败\r\n");
-					}
-				}
-				else
-				{
-					printf("获取卡片SN失败\r\n");
 				}
 			}
-			else
-			{
-				printf("寻卡失败\r\n");
-			}
 		}
-		else
-		{
-			printf("设置卡类型失败\r\n");
-		}
-	}
-	else
-	{
-		printf("打开读卡器失败\r\n");
 	}
 	cardCloseDevice(hlHandle);
+	printf("任意键退出\r\n");
 	getchar();
+	getchar();
+	cardReadUninit();
 	return 0;
 }
 

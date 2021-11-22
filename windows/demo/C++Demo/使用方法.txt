@@ -1,8 +1,8 @@
 编译前请先将以下三个目录拷过来
 
-SDK\dll 里面的文件拷到demo\C++Demo\bin，没有文件夹请创建bin
-SDK\include 里面的文件拷到demo\C++Demo\include，没有文件夹请创建include
-SDK\lib 里面的文件拷到demo\C++Demo\lib，没有文件夹请创建lib
+SDK\dll 里面的文件拷到demo\C++Demo\bin
+SDK\include 里面的文件拷到demo\C++Demo\include
+SDK\lib 里面的文件拷到demo\C++Demo\lib
 
 
-2。修改 demo\C++Demo\src\C++Demo\C++Demo.cpp 中的szAppKey为你们注册的实际内容
+2。修改 demo\C++Demo\src\C++Demo\C++Demo.cpp中的szAppKey/szAppSecret/szUserData为你们申请的实际内容，请参照《NFC服务注册流程 V2.pdf》申请

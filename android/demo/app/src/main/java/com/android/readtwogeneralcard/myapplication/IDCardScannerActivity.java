@@ -37,10 +37,12 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.blankj.utilcode.util.SPUtils;
 import com.readTwoGeneralCard.ActiveCallBack;
 import com.readTwoGeneralCard.OTGReadCardAPI;
 import com.readTwoGeneralCard.PermissionUtil;
 import com.readTwoGeneralCard.Serverinfo;
+import com.readTwoGeneralCard.clientAuthInfo;
 import com.readTwoGeneralCard.eCardType;
 import com.readePassport.ePassportInfo;
 import com.recognition.BaseRecognitionActivity;
@@ -51,7 +53,10 @@ import org.json.JSONObject;
 
 import java.io.FileNotFoundException;
 import java.lang.ref.WeakReference;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 import butterknife.Bind;
@@ -84,6 +89,18 @@ public class IDCardScannerActivity extends Activity implements ActiveCallBack {
     @Bind(R.id.userInfo)
     TextView userInfo;
 
+    @Bind(R.id.numtxt)
+    TextView numtxt;
+    @Bind(R.id.numtimetxt)
+    TextView numtimetxt;
+
+    @Bind(R.id.appkeyTxt)
+    TextView appkeyTxt;
+    @Bind(R.id.appSecretTxt)
+    TextView appSecretTxt;
+    @Bind(R.id.appUserDataTxt)
+    TextView appUserDataTxt;
+
     @Bind(R.id.edtype)
     TextView edtype;
     @Bind(R.id.othernoTrue)
@@ -97,6 +114,8 @@ public class IDCardScannerActivity extends Activity implements ActiveCallBack {
     Button resetBtn;
     @Bind(R.id.otgBtn)
     Button otgBtn;
+    @Bind(R.id.numBtn)
+    Button numBtn;
 
     @Bind(R.id.process)
     TextView process;
@@ -104,26 +123,34 @@ public class IDCardScannerActivity extends Activity implements ActiveCallBack {
     TextView escapedTrue;
     @Bind(R.id.progressBar)
     ProgressBar progressBar;
+    @Bind(R.id.deviceType)
+    Switch deviceTypeBtn;
+
+    @Bind(R.id.appkeyBtn)
+    Button appkeyBtn;
+    @Bind(R.id.secretBtn)
+    Button secretBtn;
+    @Bind(R.id.userBtn)
+    Button userBtn;
 
     private NfcAdapter      mAdapter = null;
     private PendingIntent   pi = null;
     private IntentFilter    tagDetected = null;
     private String[][]      mTechLists;
-    private Intent          inintent = null;
     private final Handler   mHandler = new MyHandler(this);
     private OTGReadCardAPI  ReadCardAPI;
-    private boolean         bTestServer = false;
     private boolean         bNFC = false;
 
     private String          m_szUserInfo = "";
-    private boolean         m_bshow = false;
-    private boolean         m_bAuthon = true;
-    private boolean         m_berror = false;
-    private String          m_szProcess = "";
-    private String          m_szAppKey="99ffb2f98a29071107c7a09ad2c6d096";
     private Bitmap          bkbmp = null;
 
-    private final static String ACTION ="android.hardware.usb.action.USB_STATE";
+    public static final String SP_FILE = "config_file";
+    public static final String SPKEY_APPKEY = "SPKEY_APPKEY";
+    public static final String SPKEY_SECRET = "SPKEY_SECRET";
+    public static final String SPKEY_USERDATA = "SPKEY_USERDATA";
+
+    private String          m_szServerIP = "id.yzfuture.cn";
+    private int             m_nServerPort = 443;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,36 +159,130 @@ public class IDCardScannerActivity extends Activity implements ActiveCallBack {
         ButterKnife.bind(this);
         Resources res = getResources();
 
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
+        filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
+
         String dataDir = this.getApplicationContext().getFilesDir().getAbsolutePath();
 
         progressBar.setVisibility(View.VISIBLE);
+        appkeyTxt.setTextIsSelectable(true);
+        appSecretTxt.setTextIsSelectable(true);
+        appUserDataTxt.setTextIsSelectable(true);
+
+        String  szkey = SPUtils.getInstance(SP_FILE).getString(SPKEY_APPKEY, "");
+        String   szsecret = SPUtils.getInstance(SP_FILE).getString(SPKEY_SECRET, "");
+        String  szuser = SPUtils.getInstance(SP_FILE).getString(SPKEY_USERDATA, "");
+        appkeyTxt.setText(szkey);
+        appSecretTxt.setText(szsecret);
+        appUserDataTxt.setText(szuser);
+
         init();
         bkbmp = BitmapFactory.decodeResource(res, R.mipmap.logo);
         userInfo.setMovementMethod(ScrollingMovementMethod.getInstance());
+        numBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getAuthInfo();
+            }
+        });
         resetBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 resetText();
             }
         });
+        deviceTypeBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if(isChecked){
+                    if (ReadCardAPI != null)
+                    {
+                        ReadCardAPI.setDeviceType(1);
+                    }
+                }else{
+                    if (ReadCardAPI != null)
+                    {
+                        ReadCardAPI.setDeviceType(0);
+                    }
+                }
+            }
+        });
+
         otgBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 startReadCard(null);
             }
         });
+        PermissionUtil.grantNeedPermission(this);
+
+        appkeyBtn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                modifyValue(appkeyTxt, SPKEY_APPKEY);
+            }
+        });
+        secretBtn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                modifyValue(appSecretTxt, SPKEY_SECRET);
+            }
+        });
+        userBtn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                modifyValue(appUserDataTxt, SPKEY_USERDATA);
+            }
+        });
+    }
+
+
+    private void modifyValue(final TextView textView, final String key)
+    {
+        LayoutInflater li = LayoutInflater.from(IDCardScannerActivity.this);
+        View promptsView = li.inflate(R.layout.modifyappkey_idget, null);
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(IDCardScannerActivity.this);
+        alertDialogBuilder.setView(promptsView);
+        final EditText    newtxt = (EditText) promptsView.findViewById(R.id.newtxt);
+        Button modifybtn = (Button)promptsView.findViewById(R.id.modifybtn);
+        String oldTxt = textView.getText().toString();
+        newtxt.setText(oldTxt);
+        final AlertDialog alertDialog = alertDialogBuilder.create();
+        modifybtn.setOnClickListener(new Button.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                String  sznewValue = newtxt.getText().toString();
+                SPUtils.getInstance(SP_FILE).put(key, sznewValue);
+                textView.setText(sznewValue);
+
+                if (ReadCardAPI != null)
+                {
+                    final String      szAppKey = appkeyTxt.getText().toString();
+                    final String      szAppSecret = appSecretTxt.getText().toString();
+                    final String      szAppUserData = appUserDataTxt.getText().toString();
+                    ReadCardAPI.initReadCard(m_szServerIP, m_nServerPort, szAppKey, szAppSecret, szAppUserData);
+                    getAuthInfo();
+                }
+
+                alertDialog.dismiss();
+            }
+        });
+        alertDialog.show();
     }
 
     public void init() {
-        ReadCardAPI = new OTGReadCardAPI(getApplicationContext(), this, bNFC);
-
-        ArrayList<Serverinfo> twoCardServerlist = new ArrayList<Serverinfo>();
-        twoCardServerlist.add(new Serverinfo("id.yzfuture.cn", 8848));  // TygerZH server测试
-        ReadCardAPI.setServerInfo(twoCardServerlist, null, bTestServer);
-        mAdapter = NfcAdapter.getDefaultAdapter(getApplicationContext());
-        if (mAdapter != null) {
-            init_NFC();
-        } else {
-            if (ReadCardAPI != null) {
-                setdialog("本机不支持NFC功能！");
+        ReadCardAPI = new OTGReadCardAPI(getApplicationContext(), this);
+        if (ReadCardAPI != null)
+        {
+            final String      szAppKey = appkeyTxt.getText().toString();
+            final String      szAppSecret = appSecretTxt.getText().toString();
+            final String      szAppUserData = appUserDataTxt.getText().toString();
+            ReadCardAPI.initReadCard(m_szServerIP, m_nServerPort, szAppKey, szAppSecret, szAppUserData);
+            getAuthInfo();
+            mAdapter = NfcAdapter.getDefaultAdapter(getApplicationContext());
+            if (mAdapter != null) {
+                init_NFC();
+            } else {
+                if (ReadCardAPI != null) {
+                    setdialog("本机不支持NFC功能！");
+                }
             }
         }
     }
@@ -193,11 +314,7 @@ public class IDCardScannerActivity extends Activity implements ActiveCallBack {
             if (msg.what == 0)
             {
                 mActivity.get().progressBar.setProgress(msg.arg1);
-
-                //if (m_bshow)
-                {
-                    mActivity.get().userInfo.setText(mActivity.get().m_szUserInfo);
-                }
+                mActivity.get().userInfo.setText(mActivity.get().m_szUserInfo);
             }
             else if (msg.what == 1002)
                 throw new RuntimeException();
@@ -290,9 +407,8 @@ public class IDCardScannerActivity extends Activity implements ActiveCallBack {
             }
             yxqTrue.setText(startDate + "~" + endDate);
             //process.setText("100");
-            ReadCardAPI.release();
         }
-        else
+        if (msg.what == -9999)
         {
             String  szerr = ReadCardAPI.GetErrorInfo();
             setdialog(szerr);
@@ -332,7 +448,6 @@ public class IDCardScannerActivity extends Activity implements ActiveCallBack {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        inintent = intent;
         progressBar.setProgress(0);
         startReadCard(intent);
     }
@@ -343,44 +458,39 @@ public class IDCardScannerActivity extends Activity implements ActiveCallBack {
         //m_szUserInfo += s + "\r\n";
     }
 
-    @Override
-    public void DeviceOpenFailed(boolean bNFCOpen, boolean bOTGOpen)
+    private void getAuthInfo()
     {
-        if (!bOTGOpen && !bNFCOpen)
-        {
-            setdialog("请检查是否打开NFC开关或已插好USB读卡器，然后重新打开程序，否则无法进行后续操作！");
+        clientAuthInfo authInfo = ReadCardAPI.GetAppKeyUseNum();
+        if (authInfo == null) {
+            return;
         }
+
+        numtxt.setText(String.valueOf(authInfo.nNum));
+        numtimetxt.setText(new String(authInfo.szDate));
     }
 
     @Override
     public void readProgress(int nprocess, String szinfo) {
-//        m_szProcess = Integer.toString((nprocess*100)/20);
         m_szUserInfo += szinfo + "\r\n";
-//
-//        process.setText(m_szProcess);
-//        progressBar.setProgress(nprocess);
-
         Message msg = Message.obtain();
         msg.what = 0;
         msg.arg1 = nprocess;
         mHandler.sendMessageDelayed(msg, 0);
-//        Log.e("YZWL_CARD_DRIVER", "  " + szinfo);
     }
 
     private void startReadCard(final Intent intent){
-        m_szProcess = "";
         progressBar.setProgress(0);
         process.setText("");
 
-        if (!m_szAppKey.isEmpty())
-        {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
+        getAuthInfo();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                eCardType etype = ReadCardAPI.cardType(intent);
+                if (etype == eCardType.eTwoGeneralCard)
+                {
                     int     tt = 0;
-                    Log.e("YZWL_CARD_DRIVER", " 开始读卡 ");
-                    tt = ReadCardAPI.NfcReadCard(m_szAppKey, null, intent, eCardType.eTwoGeneralCard, m_szAppKey, m_bAuthon);
-                    Log.e("YZWL_CARD_DRIVER", " 读卡结束 ");
+                    tt = ReadCardAPI.NfcReadCard(intent);
                     if (tt == 41)
                     {
                         mHandler.sendEmptyMessageDelayed(-9999, 0);
@@ -392,7 +502,7 @@ public class IDCardScannerActivity extends Activity implements ActiveCallBack {
                         mHandler.sendMessageDelayed(msg, 0);
                     }
                 }
-            }).start();
-        }
+            }
+        }).start();
     }
 }

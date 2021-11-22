@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.android.readtwogeneralcard.myapplication">
 
     <uses-feature
@@ -62,19 +63,17 @@
             <meta-data
                 android:name="android.nfc.action.TECH_DISCOVERED"
                 android:resource="@xml/nfc_tech_filter" />
-        </activity> <!-- <receiver android:name=".updateApk$DownLoadCompleteReceiver"> -->
-        <!-- <intent-filter> -->
-        <!-- <action android:name="android.intent.action.DOWNLOAD_COMPLETE"/> -->
-        <!-- </intent-filter> -->
-        <!-- </receiver> -->
+        </activity>
         <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="com.android.readtwogeneralcard.myapplication.fileprovider"
+            android:authorities="${applicationId}.fileprovider"
             android:exported="false"
-            android:grantUriPermissions="true">
+            android:grantUriPermissions="true"
+            tools:replace="android:authorities">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths" />
+                android:resource="@xml/file_paths"
+                tools:replace="android:resource" />
         </provider>
     </application>
 

@@ -1,0 +1,2 @@
+1。请从SDK\dll中拷贝所有文件到需要的位置
+2。修改 demo\vbDemo\Form4.frm 中的szAppKey/szAppSecret/szUserData为你们申请的实际内容，请参照《NFC服务注册流程 V2.pdf》申请

@@ -1,0 +1,12 @@
+1.修改Config.ini文件在FactoryFlag后面添加自己的appkey/secret及用户标识
+
+FactoryFlag=
+AppSecret=
+AppUserId=
+
+2.将SDK中lib文件夹下对应平台的so拷贝到demo对应平台目录，并在此目录设置：
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:./
+
+3.连接读卡器，放上身份证，保证网络畅通
+
+4.运行./readCardDemo即可

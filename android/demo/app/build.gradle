@@ -50,7 +50,7 @@ dependencies {
     implementation 'com.android.support:multidex:1.0.1'
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support:design:26.1.0'
-    implementation 'com.rmtheis:tess-two:9.0.0'
+    //implementation 'com.rmtheis:tess-two:9.0.0'
     implementation(name: 'yzwlnfcreadcard', ext: 'aar')
     implementation files('libs/butterknife-7.0.1.jar')
     implementation 'io.reactivex:rxjava:1.2.3'
@@ -58,5 +58,5 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
     implementation 'com.android.support:support-annotations:26.1.0'
-    implementation 'android.arch.lifecycle:extensions:1.1.1'
+    implementation 'com.blankj:utilcode:1.30.6'
 }

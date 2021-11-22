@@ -2,18 +2,14 @@ program NFCDemo;
 
 uses
   Vcl.Forms,
-  fmReadCard in 'fmReadCard.pas' {FormReadCard},
-  fuIDInfoChild in 'fuIDInfoChild.pas' {fmIDInfoChild},
-  duNFCReader in 'duNFCReader.pas',
-  duGlob in 'duGlob.pas',
-  duType in 'duType.pas';
+  fmMain in 'fmMain.pas' {Form4},
+  duNFCReader in 'duNFCReader.pas';
 
 {$R *.res}
 
 begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
-  Application.CreateForm(TFormReadCard, FormReadCard);
+  Application.CreateForm(TForm4, Form4);
   Application.Run;
 end.
-
