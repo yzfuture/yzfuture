@@ -13,7 +13,7 @@ void __stdcall cardReadInit(); // 初始化操作，最开始程序构造的时候调用
 
 void __stdcall setDeviceType(int nDeviceType);
 
-YZWLHandle __stdcall cardOpenDevice(char* szAppkey, char* szAppSecret, char* szip, int nport, char* userData, int nouttime, int nDeviceNo = 0);
+YZWLHandle __stdcall cardOpenDevice(char* szAppkey, char* szAppSecret, char* szip, int nport, char* userData, int nouttime, int &nerr, int nDeviceNo = 0);
 
 bool __stdcall cardReadTwoCard(YZWLHandle nDeviceHandle, cardReadProgress cardCB, TwoIdInfoStructEx &cardinfo);
 

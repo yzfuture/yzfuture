@@ -60,7 +60,7 @@ Private Declare Sub cardReadInit Lib "readCardInfo.dll" ()
 
 Private Declare Sub setDeviceType Lib "readCardInfo.dll" (ByVal nDeviceType As Long)
 
-Private Declare Function cardOpenDevice Lib "readCardInfo.dll" (ByVal szAppKey As String, ByVal szAppSecret As String, ByVal szServerIp As String, ByVal nServerPort As Long, ByVal userData As String, ByVal nouttime As Long, ByVal nDeviceNo As Long) As Boolean
+Private Declare Function cardOpenDevice Lib "readCardInfo.dll" (ByVal szAppKey As String, ByVal szAppSecret As String, ByVal szServerIp As String, ByVal nServerPort As Long, ByVal userData As String, ByVal nouttime As Long , nerr As Long, ByVal nDeviceNo As Long) As Boolean
 
 Private Declare Function setCardType Lib "readCardInfo.dll" (ByVal nDeviceHandle As Long, ByVal ctype As Long) As Boolean
 Private Declare Function cardFindCard Lib "readCardInfo.dll" (ByVal nDeviceHandle As Long, bmove As Long) As Boolean
@@ -94,8 +94,9 @@ Private Sub Command1_Click()
         nDeviceNo = 0
         setDeviceType (0)
     End If
-    
-    yzwlHandle = cardOpenDevice(szAppKey, szAppSecret, szip, 443, szUserData, 2, 0)
+
+    Dim nerr As Long
+    yzwlHandle = cardOpenDevice(szAppKey, szAppSecret, szip, 443, szUserData, 2, nerr, 0)
     If yzwlHandle > 0 Then
         If setCardType(yzwlHandle, 1) Then
             Dim bmove As Long

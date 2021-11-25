@@ -158,6 +158,7 @@ var
   memTmp: TMemoryStream;
   ANewIDCardSN: array[0..48 - 1] of AnsiChar;
   AIDSNLen: Integer;
+  AErrCode:Integer;
   AMove: Boolean;
   szAppKey, szAppSecret, szAppUserData: AnsiString;
 var
@@ -178,7 +179,7 @@ begin
     setDeviceType(1);
   end;
 
-  ADeviceHandle := cardOpenDevice(PAnsiChar(szAppKey), PAnsiChar(szAppSecret), 'id.yzfuture.cn', 443, PAnsiChar(szAppUserData), edtTimeOut.Value, edtReadIndex.Value);
+  ADeviceHandle := cardOpenDevice(PAnsiChar(szAppKey), PAnsiChar(szAppSecret), 'id.yzfuture.cn', 443, PAnsiChar(szAppUserData), edtTimeOut.Value, @AErrCode, edtReadIndex.Value);
   if ADeviceHandle <= 0 then
   begin
     WriteLog('打开设备失败!');

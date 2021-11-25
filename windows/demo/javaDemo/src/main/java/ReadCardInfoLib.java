@@ -18,7 +18,7 @@ public interface ReadCardInfoLib extends StdCallLibrary {
 
     void    setDeviceType(int nDeviceType);
 
-    int     cardOpenDevice(String szAppKey, String szAppSecret, String szServerIp, int nServerPort, String szUserData, int nouttime,int nDeviceNo);
+    int     cardOpenDevice(String szAppKey, String szAppSecret, String szServerIp, int nServerPort, String szUserData, int nouttime, IntByReference nerr,int nDeviceNo);
 
     boolean cardBeep(long nDeviceHandle);
 

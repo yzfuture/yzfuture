@@ -22,7 +22,7 @@ namespace WindowsFormsApp1
         [DllImport("readCardInfo.dll", CharSet = CharSet.Ansi, ExactSpelling = false,
              CallingConvention = CallingConvention.StdCall)]//readCardInfo.dll
         public static extern int cardOpenDevice(string szAppKey, string szAppSecret,
-            string szServerIp, int nServerPort, string szUserData, int nouttime, int nDeviceNo);//打开读卡器硬件设备
+            string szServerIp, int nServerPort, string szUserData, int nouttime,ref int nerr, int nDeviceNo);//打开读卡器硬件设备
 
         [DllImport("readCardInfo.dll")]//readCardInfo.dll
         [return: MarshalAs(UnmanagedType.I1)]
@@ -85,6 +85,7 @@ namespace WindowsFormsApp1
             string szUserData = "请参照《NFC服务注册流程 V2.pdf》申请";
             string szip = "id.yzfuture.cn";
             int nindex = 0;
+            int nerr = 0;
             if (!bonLine)
             {
                 nindex = 0;
@@ -96,7 +97,7 @@ namespace WindowsFormsApp1
                 setDeviceType(1);
             }
 
-            int hlHandle = cardOpenDevice(szAppKey, szAppSecret, szip, 443, szUserData, 2, nindex);
+            int hlHandle = cardOpenDevice(szAppKey, szAppSecret, szip, 443, szUserData, 2, ref nerr, nindex);
             if (hlHandle > 0)
             {
                 bool bmove = true;

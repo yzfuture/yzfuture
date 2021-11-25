@@ -42,8 +42,9 @@ int _tmain(int argc, _TCHAR* argv[])
 		setDeviceType(1);
 	}
 
+	int 	nerr = 0;
 	YZWLHandle hlHandle = cardOpenDevice((char*)szAppKey.c_str(), (char*)szAppSecret.c_str(),
-		(char*)szServerIP.c_str(), nServerPort, (char*)szUserData.c_str(), 2, nindex);
+		(char*)szServerIP.c_str(), nServerPort, (char*)szUserData.c_str(), 2, nerr, nindex);
 	if (hlHandle >= 0)
 	{
 		if (setCardType(hlHandle, BCardType))

@@ -53,7 +53,7 @@ procedure cardReadInit(); stdcall; external DllName;// ³õÊ¼»¯²Ù×÷£¬×î¿ªÊ¼³ÌÐò¹¹Ô
 procedure cardReadUninit(); stdcall; external DllName;// ·´³õÊ¼»¯²Ù×÷£¬×îºó³ÌÐòÎö¹¹µÄÊ±ºòµ÷ÓÃ// ³õÊ¼»¯²Ù×÷£¬×î¿ªÊ¼³ÌÐò¹¹ÔìµÄÊ±ºòµ÷ÓÃ
 
 
-function cardOpenDevice(szAppkey: PAnsiChar; szAppSecret: PAnsiChar; szServerIp: PAnsiChar; nServerPort: Int32; userData: PAnsiChar; unRecvTimeOut: Integer; nDeviceNo: Integer): Integer; stdcall; external DllName;
+function cardOpenDevice(szAppkey: PAnsiChar; szAppSecret: PAnsiChar; szServerIp: PAnsiChar; nServerPort: Int32; userData: PAnsiChar; unRecvTimeOut: Integer;nerr: PInteger; nDeviceNo: Integer): Integer; stdcall; external DllName;
 
 function cardReadTwoCard(nDeviceHandle: Integer; cardReadProgress: TcardReadProgress; cardinfo: PTwoIdInfoStruct): Boolean; stdcall; external DllName;
 
