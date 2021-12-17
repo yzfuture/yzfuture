@@ -21,8 +21,12 @@ namespace WindowsFormsApp1
         // szUserData:请参照《NFC服务注册流程 V2.pdf》申请
         [DllImport("readCardInfo.dll", CharSet = CharSet.Ansi, ExactSpelling = false,
              CallingConvention = CallingConvention.StdCall)]//readCardInfo.dll
-        public static extern int cardOpenDevice(string szAppKey, string szAppSecret,
-            string szServerIp, int nServerPort, string szUserData, int nouttime,ref int nerr, int nDeviceNo);//打开读卡器硬件设备
+        public static extern bool loginCardServer(string szServerIp, int nServerPort,
+            string szAppKey, string szAppSecret, string szAppUserId, ref int nerr);//登录解码服务器
+
+        [DllImport("readCardInfo.dll", CharSet = CharSet.Ansi, ExactSpelling = false,
+             CallingConvention = CallingConvention.StdCall)]//readCardInfo.dll
+        public static extern int cardOpenDevice(int nouttime, ref int nerr, int nDeviceNo);//打开读卡器硬件设备
 
         [DllImport("readCardInfo.dll")]//readCardInfo.dll
         [return: MarshalAs(UnmanagedType.I1)]
@@ -45,6 +49,9 @@ namespace WindowsFormsApp1
         [DllImport("readCardInfo.dll")]//readCardInfo.dll
         [return: MarshalAs(UnmanagedType.I1)]
         public static extern bool cardCloseDevice(int nDeviceHandle);//关闭
+
+        [DllImport("readCardInfo.dll")]//readCardInfo.dll
+        public static extern void logoutCardServer();// 登出服务器
 
         [DllImport("readCardInfo.dll")]//readCardInfo.dll
         public static extern void cardReadUninit();// 反初始化操作
@@ -79,42 +86,55 @@ namespace WindowsFormsApp1
             sttTwoIdInfo.arrTwoIdFingerprint = new byte[1024];//指纹信息
             sttTwoIdInfo.arrTwoIdPhotoJpeg = new byte[4096];	//照片信息 JPEG 格式
             sttTwoIdInfo.unTwoIdPhotoJpegLength = 0;	//照片信息长度 JPEG格式
-            
+
+            /*
+             * cardReadInit
+             * loginCardServer
+             * logoutCardServer
+             * cardReadUninit
+             * 以上四个接口就自己按照自己的程序逻辑处理，此处只是展示用法做为示例用
+             */
+            cardReadInit();
             string szAppKey = "请参照《NFC服务注册流程 V2.pdf》申请";
             string szAppSecret = "请参照《NFC服务注册流程 V2.pdf》申请";
             string szUserData = "请参照《NFC服务注册流程 V2.pdf》申请";
             string szip = "id.yzfuture.cn";
             int nindex = 0;
             int nerr = 0;
-            if (!bonLine)
+            if (loginCardServer(szip, 443, szAppKey, szAppSecret, szUserData, ref nerr))
             {
-                nindex = 0;
-                setDeviceType(0);
-            }
-            else
-            {
-                nindex = 1001;
-                setDeviceType(1);
-            }
-
-            int hlHandle = cardOpenDevice(szAppKey, szAppSecret, szip, 443, szUserData, 2, ref nerr, nindex);
-            if (hlHandle > 0)
-            {
-                bool bmove = true;
-                if (setCardType(hlHandle, 1))
+                if (!bonLine)
                 {
-                    if (cardFindCard(hlHandle, ref bmove))
+                    nindex = 0;
+                    setDeviceType(0);
+                }
+                else
+                {
+                    nindex = 1001;
+                    setDeviceType(1);
+                }
+
+                int hlHandle = cardOpenDevice(szAppKey, szAppSecret, szip, 443, szUserData, 2, ref nerr, nindex);
+                if (hlHandle > 0)
+                {
+                    bool bmove = true;
+                    if (setCardType(hlHandle, 1))
                     {
-                        int cb = 0;
-                        bool bret = cardReadTwoCard(hlHandle, cb, ref sttTwoIdInfo);
-                        if (!bret)
+                        if (cardFindCard(hlHandle, ref bmove))
                         {
-                            MessageBox.Show("解码失败请重试");
+                            int cb = 0;
+                            bool bret = cardReadTwoCard(hlHandle, cb, ref sttTwoIdInfo);
+                            if (!bret)
+                            {
+                                MessageBox.Show("解码失败请重试");
+                            }
                         }
                     }
+                    cardCloseDevice(hlHandle);
                 }
-                cardCloseDevice(hlHandle);
             }
+            logoutCardServer();
+            cardReadUninit();
             return sttTwoIdInfo;
 
         }

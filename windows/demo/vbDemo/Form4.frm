@@ -58,9 +58,11 @@ End Type
 
 Private Declare Sub cardReadInit Lib "readCardInfo.dll" ()
 
+Private Declare Function loginCardServer Lib "readCardInfo.dll" (ByVal szServerIp As String, ByVal nServerPort As Long, ByVal szAppKey As String, ByVal szAppSecret As String, ByVal userData As String, nerr As Long) As Boolean
+
 Private Declare Sub setDeviceType Lib "readCardInfo.dll" (ByVal nDeviceType As Long)
 
-Private Declare Function cardOpenDevice Lib "readCardInfo.dll" (ByVal szAppKey As String, ByVal szAppSecret As String, ByVal szServerIp As String, ByVal nServerPort As Long, ByVal userData As String, ByVal nouttime As Long , nerr As Long, ByVal nDeviceNo As Long) As Boolean
+Private Declare Function cardOpenDevice Lib "readCardInfo.dll" (ByVal nouttime As Long , nerr As Long, ByVal nDeviceNo As Long) As Boolean
 
 Private Declare Function setCardType Lib "readCardInfo.dll" (ByVal nDeviceHandle As Long, ByVal ctype As Long) As Boolean
 Private Declare Function cardFindCard Lib "readCardInfo.dll" (ByVal nDeviceHandle As Long, bmove As Long) As Boolean
@@ -72,10 +74,17 @@ Private Declare Sub cardCloseDevice Lib "readCardInfo.dll" (ByVal nDeviceHandle 
 
 Private Declare Function decodeCardImage Lib "readCardInfo.dll" (ByVal srcimage As String, ByVal outimage As String, outlen As Long) As Boolean
 
-
+Private Declare Sub logoutCardServer Lib "readCardInfo.dll" ()
 
 Private Declare Sub cardReadUninit Lib "readCardInfo.dll" ()
 
+            /*
+             * cardReadInit
+             * loginCardServer
+             * logoutCardServer
+             * cardReadUninit
+             * 以上四个接口就自己按照自己的程序逻辑处理，此处只是展示用法做为示例用
+             */
 
 
 Private Sub Command1_Click()
@@ -96,22 +105,25 @@ Private Sub Command1_Click()
     End If
 
     Dim nerr As Long
-    yzwlHandle = cardOpenDevice(szAppKey, szAppSecret, szip, 443, szUserData, 2, nerr, 0)
-    If yzwlHandle > 0 Then
-        If setCardType(yzwlHandle, 1) Then
-            Dim bmove As Long
-            If cardFindCard(yzwlHandle, bmove) Then
-                If cardSelectCard(yzwlHandle) Then
-                    If cardReadTwoCard(yzwlHandle, 0, tmpCardInfo) Then
-                        Call cardBeep(yzwlHandle)
-                        Debug.Print "解码成功:"
-                        Debug.Print StrConv(tmpCardInfo.arrTwoIdName, vbFromUnicode)
+    If loginCardServer(szip, 443, szAppKey, szAppSecret, szUserData, nerr) Then
+        yzwlHandle = cardOpenDevice(szAppKey, szAppSecret, szip, 443, szUserData, 2, nerr, 0)
+        If yzwlHandle > 0 Then
+            If setCardType(yzwlHandle, 1) Then
+                Dim bmove As Long
+                If cardFindCard(yzwlHandle, bmove) Then
+                    If cardSelectCard(yzwlHandle) Then
+                        If cardReadTwoCard(yzwlHandle, 0, tmpCardInfo) Then
+                            Call cardBeep(yzwlHandle)
+                            Debug.Print "解码成功:"
+                            Debug.Print StrConv(tmpCardInfo.arrTwoIdName, vbFromUnicode)
+                        End If
                     End If
                 End If
             End If
+            Call cardCloseDevice(a)
         End If
-        Call cardCloseDevice(a)
     End If
+    logoutCardServer()
 End Sub
 Private Sub Form_Load()
     Call cardReadInit

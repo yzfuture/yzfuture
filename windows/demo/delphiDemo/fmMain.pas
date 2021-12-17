@@ -170,6 +170,13 @@ begin
 
   ProgressBar1.Position := 0;
 
+  // 登录只做展示用，请自己按需要加入到程序逻辑中
+  if not loginCardServer('id.yzfuture.cn', 443, PAnsiChar(szAppKey), PAnsiChar(szAppSecret),PAnsiChar(szAppUserData), @AErrCode) then
+  begin
+     WriteLog('登录失败！');
+     Exit;
+  end;
+
   if radbtn.ItemIndex = 0 then //标准读卡器
   begin
     setDeviceType(0);
@@ -179,7 +186,7 @@ begin
     setDeviceType(1);
   end;
 
-  ADeviceHandle := cardOpenDevice(PAnsiChar(szAppKey), PAnsiChar(szAppSecret), 'id.yzfuture.cn', 443, PAnsiChar(szAppUserData), edtTimeOut.Value, @AErrCode, edtReadIndex.Value);
+  ADeviceHandle := cardOpenDevice(edtTimeOut.Value, @AErrCode, edtReadIndex.Value);
   if ADeviceHandle <= 0 then
   begin
     WriteLog('打开设备失败!');
@@ -252,6 +259,7 @@ end;
 
 procedure TForm4.FormDestroy(Sender: TObject);
 begin
+  logoutCardServer;//登出
   cardReadUninit;  //反初始化
 end;
 

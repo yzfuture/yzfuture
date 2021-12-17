@@ -17,67 +17,78 @@ public class ReadCardDemo {
         int     nindex = 0;
         int     yzwlHandle=0;
 
-        for (int i=0; i<100; i++)
+        /*
+         * cardReadInit
+         * loginCardServer
+         * logoutCardServer
+         * cardReadUninit
+         * 以上四个接口就自己按照自己的程序逻辑处理，此处只是展示用法做为示例用
+         */
+        IntByReference nerrCode = new IntByReference(100) ;
+        if (lib.loginCardServer(szip, 443, szAppKey, szAppSecret, szUserData, nerrCode))
         {
-            Scanner sc = new Scanner(System.in);
-            String  str = "";
-            do {
-                System.out.println("请选择读卡器:(0-标准读卡器 1-离线读卡器)");
-                str = sc.next();
-            }while(!str.equals("0") && !str.equals("1"));
-
-            if (str.equals("0"))
+            for (int i=0; i<100; i++)
             {
-                nindex = 0;
-                lib.setDeviceType(0);
-            }
-            else
-            {
-                nindex = 1001;
-                lib.setDeviceType(1);
-            }
+                Scanner sc = new Scanner(System.in);
+                String  str = "";
+                do {
+                    System.out.println("请选择读卡器:(0-标准读卡器 1-离线读卡器)");
+                    str = sc.next();
+                }while(!str.equals("0") && !str.equals("1"));
 
-            IntByReference nerrCode = new IntByReference(100) ;
-            yzwlHandle = lib.cardOpenDevice(szAppKey, szAppSecret, szip, 443, szUserData, 2, nerrCode, nindex);
-            Memory szDeviceDN = new Memory(100);
-            IntByReference nDeviceDN = new IntByReference(100) ;
-            lib.cardGetDeviceSN(yzwlHandle, szDeviceDN, nDeviceDN);
-            String  szDN = new String(szDeviceDN.getByteArray(0, nDeviceDN.getValue()));;
-            System.out.println("Device DN："+szDN);
-
-            if (lib.setCardType(yzwlHandle, 1))
-            {
-                IntByReference nmove = new IntByReference(100) ;
-                if (lib.cardFindCard(yzwlHandle, nmove))
+                if (str.equals("0"))
                 {
-                    if (lib.cardSelectCard(yzwlHandle))
+                    nindex = 0;
+                    lib.setDeviceType(0);
+                }
+                else
+                {
+                    nindex = 1001;
+                    lib.setDeviceType(1);
+                }
+
+                yzwlHandle = lib.cardOpenDevice(szAppKey, szAppSecret, szip, 443, szUserData, 2, nerrCode, nindex);
+                Memory szDeviceDN = new Memory(100);
+                IntByReference nDeviceDN = new IntByReference(100) ;
+                lib.cardGetDeviceSN(yzwlHandle, szDeviceDN, nDeviceDN);
+                String  szDN = new String(szDeviceDN.getByteArray(0, nDeviceDN.getValue()));;
+                System.out.println("Device DN："+szDN);
+
+                if (lib.setCardType(yzwlHandle, 1))
+                {
+                    IntByReference nmove = new IntByReference(100) ;
+                    if (lib.cardFindCard(yzwlHandle, nmove))
                     {
-                        mycallBack cb = new mycallBack();
-                        TwoCardByteArray  info = new TwoCardByteArray();
-                        if (lib.cardReadTwoCard(yzwlHandle,cb, info))
+                        if (lib.cardSelectCard(yzwlHandle))
                         {
-                            String  szName = new String(info.arrTwoIdName, 0, info.arrTwoIdName.length, "UTF-16LE").trim();
-                            if (!szName.isEmpty())
+                            mycallBack cb = new mycallBack();
+                            TwoCardByteArray  info = new TwoCardByteArray();
+                            if (lib.cardReadTwoCard(yzwlHandle,cb, info))
                             {
-                                lib.cardBeep(yzwlHandle);
-                                System.out.println("解码完成："+szName);
+                                String  szName = new String(info.arrTwoIdName, 0, info.arrTwoIdName.length, "UTF-16LE").trim();
+                                if (!szName.isEmpty())
+                                {
+                                    lib.cardBeep(yzwlHandle);
+                                    System.out.println("解码完成："+szName);
+                                }
+                                else
+                                {
+                                    System.out.println("解码失败");
+                                }
                             }
                             else
                             {
-                                System.out.println("解码失败");
+                                int     nerrorCode = lib.cardGetLastErrorCode(yzwlHandle);
+                                System.out.println("解码失败:" + nerrorCode);
                             }
-                        }
-                        else
-                        {
-                            int     nerrorCode = lib.cardGetLastErrorCode(yzwlHandle);
-                            System.out.println("解码失败:" + nerrorCode);
                         }
                     }
                 }
             }
-        }
 
-        lib.cardCloseDevice(yzwlHandle);
+            lib.cardCloseDevice(yzwlHandle);
+        }
+        lib.logoutCardServer();
         lib.cardReadUninit();
     }
 }

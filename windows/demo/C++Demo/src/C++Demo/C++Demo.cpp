@@ -14,6 +14,13 @@ void __stdcall onCardReadProgress(unsigned int nProgress, YZWLHandle nhandle)
 
 int _tmain(int argc, _TCHAR* argv[])
 {
+	/*
+	* cardReadInit
+	* loginCardServer
+	* logoutCardServer
+	* cardReadUninit
+	* 以上四个接口就自己按照自己的程序逻辑处理，此处只是展示用法做为示例用
+	*/
 	cardReadInit();
 	char	ctype = '0';
 	do
@@ -42,55 +49,59 @@ int _tmain(int argc, _TCHAR* argv[])
 		setDeviceType(1);
 	}
 
-	int 	nerr = 0;
-	YZWLHandle hlHandle = cardOpenDevice((char*)szAppKey.c_str(), (char*)szAppSecret.c_str(),
-		(char*)szServerIP.c_str(), nServerPort, (char*)szUserData.c_str(), 2, nerr, nindex);
-	if (hlHandle >= 0)
+	int			nerr;
+	if (loginCardServer("id.yzfuture.cn", 443, "appKey：按自己实际内容填写", "appSecret：按自己实际内容填写",
+		"终端标识userData：按自己实际内容填写", nerr))
 	{
-		if (setCardType(hlHandle, BCardType))
+		YZWLHandle hlHandle = cardOpenDevice(2, nerr, nindex);
+		if (hlHandle >= 0)
 		{
-			bool		bmove(true);
-			bool		bfind(cardFindCard(hlHandle, bmove));
-			if (bfind)
+			if (setCardType(hlHandle, BCardType))
 			{
-				bool		bret = cardReadTwoCard(hlHandle, &onCardReadProgress, cardinfo);
-				if (bret)
+				bool		bmove(true);
+				bool		bfind(cardFindCard(hlHandle, bmove));
+				if (bfind)
 				{
-					cardBeep(hlHandle);
-					convertCardInfoToAnsi(cardinfo);
-
-					printf("身份证号：%s\r\n", cardinfo.arrTwoIdNo);
-					printf("姓名：%s\r\n", cardinfo.arrTwoIdName);
-					printf("地址：%s\r\n", cardinfo.arrTwoIdAddress);
-					printf("出生日期：%s\r\n", cardinfo.arrTwoIdBirthday);
-					printf("有效期：%s~%s\r\n", cardinfo.arrTwoIdValidityPeriodBegin, cardinfo.arrTwoIdValidityPeriodEnd);
-					printf("签发机关：%s\r\n", cardinfo.arrTwoIdSignedDepartment);
-
-					char szBmp[1024 * 40] = { 0 };
-					int outlen = 1024 * 40;
-					if (decodeCardImage(cardinfo.arrTwoIdPhoto, szBmp, outlen))
+					bool		bret = cardReadTwoCard(hlHandle, &onCardReadProgress, cardinfo);
+					if (bret)
 					{
-						FILE* fpwlt(fopen("a.wlt", "wb"));
-						if (fpwlt)
+						cardBeep(hlHandle);
+						convertCardInfoToAnsi(cardinfo);
+
+						printf("身份证号：%s\r\n", cardinfo.arrTwoIdNo);
+						printf("姓名：%s\r\n", cardinfo.arrTwoIdName);
+						printf("地址：%s\r\n", cardinfo.arrTwoIdAddress);
+						printf("出生日期：%s\r\n", cardinfo.arrTwoIdBirthday);
+						printf("有效期：%s~%s\r\n", cardinfo.arrTwoIdValidityPeriodBegin, cardinfo.arrTwoIdValidityPeriodEnd);
+						printf("签发机关：%s\r\n", cardinfo.arrTwoIdSignedDepartment);
+
+						char szBmp[1024 * 40] = { 0 };
+						int outlen = 1024 * 40;
+						if (decodeCardImage(cardinfo.arrTwoIdPhoto, szBmp, outlen))
 						{
-							fwrite(cardinfo.arrTwoIdPhoto, 1024, 1, fpwlt);
-							fclose(fpwlt);
-						}
-						FILE* fp(fopen("a.bmp", "wb"));
-						if (fp)
-						{
-							fwrite(szBmp, outlen, 1, fp);
-							fclose(fp);
+							FILE* fpwlt(fopen("a.wlt", "wb"));
+							if (fpwlt)
+							{
+								fwrite(cardinfo.arrTwoIdPhoto, 1024, 1, fpwlt);
+								fclose(fpwlt);
+							}
+							FILE* fp(fopen("a.bmp", "wb"));
+							if (fp)
+							{
+								fwrite(szBmp, outlen, 1, fp);
+								fclose(fp);
+							}
 						}
 					}
 				}
 			}
 		}
+		cardCloseDevice(hlHandle);
 	}
-	cardCloseDevice(hlHandle);
 	printf("任意键退出\r\n");
 	getchar();
 	getchar();
+	logoutCardServer();
 	cardReadUninit();
 	return 0;
 }

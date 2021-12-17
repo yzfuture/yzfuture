@@ -18,7 +18,9 @@ public interface ReadCardInfoLib extends StdCallLibrary {
 
     void    setDeviceType(int nDeviceType);
 
-    int     cardOpenDevice(String szAppKey, String szAppSecret, String szServerIp, int nServerPort, String szUserData, int nouttime, IntByReference nerr,int nDeviceNo);
+    boolean loginCardServer(String szip, int nport, String szAppkey, String szAppSecret, String szAppUserId, IntByReference nerr);
+
+    int     cardOpenDevice(int nouttime, IntByReference nerr,int nDeviceNo);
 
     boolean cardBeep(long nDeviceHandle);
 
@@ -35,6 +37,8 @@ public interface ReadCardInfoLib extends StdCallLibrary {
     int     cardGetLastErrorCode(int nDeviceHandle);
 
     void    cardCloseDevice(int nDeviceHandle);
+
+    void    logoutCardServer();
 
     void    cardReadUninit();
 }
