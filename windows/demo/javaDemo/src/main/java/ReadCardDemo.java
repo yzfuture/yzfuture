@@ -47,7 +47,7 @@ public class ReadCardDemo {
                     lib.setDeviceType(1);
                 }
 
-                yzwlHandle = lib.cardOpenDevice(szAppKey, szAppSecret, szip, 443, szUserData, 2, nerrCode, nindex);
+                yzwlHandle = lib.cardOpenDevice(2, nerrCode, nindex);
                 Memory szDeviceDN = new Memory(100);
                 IntByReference nDeviceDN = new IntByReference(100) ;
                 lib.cardGetDeviceSN(yzwlHandle, szDeviceDN, nDeviceDN);
