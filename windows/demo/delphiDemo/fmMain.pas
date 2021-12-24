@@ -3,9 +3,10 @@ unit fmMain;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, duNFCReader,
-  Vcl.ComCtrls, Vcl.Samples.Spin, Vcl.StdCtrls, Vcl.Controls, Vcl.ExtCtrls,
-  Vcl.Imaging.pngimage, System.Classes, Vcl.Graphics, Vcl.Forms, Vcl.Dialogs;
+  Windows, Messages, SysUtils, Variants, duNFCReader,
+  ComCtrls,
+  pngimage,  Graphics, Forms, Dialogs,
+   Spin, StdCtrls, Controls, ExtCtrls, pngimage_ml, Classes;
 
 type
   TForm4 = class(TForm)

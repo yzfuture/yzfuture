@@ -1,7 +1,7 @@
 program NFCDemo;
 
 uses
-  Vcl.Forms,
+  Forms,
   fmMain in 'fmMain.pas' {Form4},
   duNFCReader in 'duNFCReader.pas';
 
@@ -9,7 +9,6 @@ uses
 
 begin
   Application.Initialize;
-  Application.MainFormOnTaskbar := True;
-  Application.CreateForm(TForm4, Form4);
+   Application.CreateForm(TForm4, Form4);
   Application.Run;
 end.
