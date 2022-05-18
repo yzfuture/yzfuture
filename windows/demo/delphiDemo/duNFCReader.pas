@@ -52,6 +52,8 @@ procedure cardReadInit(); stdcall; external DllName;// ³õÊ¼»¯²Ù×÷£¬×î¿ªÊ¼³ÌĞò¹¹Ô
 
 procedure cardReadUninit(); stdcall; external DllName;// ·´³õÊ¼»¯²Ù×÷£¬×îºó³ÌĞòÎö¹¹µÄÊ±ºòµ÷ÓÃ// ³õÊ¼»¯²Ù×÷£¬×î¿ªÊ¼³ÌĞò¹¹ÔìµÄÊ±ºòµ÷ÓÃ
 
+function loginCardServerEx(szServerIp: PAnsiChar; nServerPort: Int32;nerr: PInteger): Boolean; stdcall; external DllName; // µÇÂ¼·şÎñÆ÷
+
 function loginCardServer(szServerIp: PAnsiChar; nServerPort: Int32;szAppkey: PAnsiChar; szAppSecret: PAnsiChar;userData: PAnsiChar;nerr: PInteger): Boolean; stdcall; external DllName; // µÇÂ¼·şÎñÆ÷
 
 procedure logoutCardServer(); stdcall; external DllName; // µÇ³ö

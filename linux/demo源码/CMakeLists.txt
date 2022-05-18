@@ -9,9 +9,10 @@ project(readCardDemo)
 #set(LINUXVERSION "arm_Rpi")
 #set(LINUXVERSION "arm-himix200")
 set(LINUXVERSION "arm-linux")
+#set(LINUXVERSION "arm-uclinux")
 
 
-set(INCLUDEPATH ${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/../readCardInfo/include)
+set(INCLUDEPATH ${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/include)
 
 MESSAGE( STATUS "this var = ${LINUXVERSION}.")
 
@@ -20,7 +21,7 @@ MESSAGE( STATUS "The x86_linux in.")
 SET(CMAKE_SYSTEM_NAME linux)
 set(CMAKE_CXX_COMPILER g++)
 set(CMAKE_C_COMPILER   gcc)
-set(LIBDLLPATH ${CMAKE_SOURCE_DIR}/../readCardInfo/lib/x86_linux/)
+set(LIBDLLPATH ${CMAKE_SOURCE_DIR}/lib/x86_linux/)
 set(LIBSUFFIX ".so")
 
 elseif(${LINUXVERSION} STREQUAL "arm_Rpi")
@@ -28,7 +29,7 @@ MESSAGE( STATUS "The arm_Rpi in.")
 SET(CMAKE_SYSTEM_NAME linux)
 set(CMAKE_CXX_COMPILER g++)
 set(CMAKE_C_COMPILER   gcc)
-set(LIBDLLPATH ${CMAKE_SOURCE_DIR}/../readCardInfo/lib/arm_RaspberryPi/)
+set(LIBDLLPATH ${CMAKE_SOURCE_DIR}/lib/arm_RaspberryPi/)
 set(LIBSUFFIX ".so")
 
 elseif(${LINUXVERSION} STREQUAL "arm-himix200")
@@ -36,7 +37,7 @@ MESSAGE( STATUS "The arm-himix200 in.")
 SET(CMAKE_SYSTEM_NAME arm-himix200-linux)
 SET(CMAKE_CXX_COMPILER /opt/hisi-linux/x86-arm/arm-himix200-linux/bin/arm-himix200-linux-c++)
 SET(CMAKE_C_COMPILER /opt/hisi-linux/x86-arm/arm-himix200-linux/bin/arm-himix200-linux-gcc)
-set(LIBDLLPATH ${CMAKE_SOURCE_DIR}/../readCardInfo/lib/arm_himix200/)
+set(LIBDLLPATH ${CMAKE_SOURCE_DIR}/lib/arm_himix200/)
 set(LIBSUFFIX ".so")
 
 add_library( udevlib SHARED  IMPORTED )
@@ -48,12 +49,18 @@ MESSAGE( STATUS "The arm-linux in.")
 SET(CMAKE_SYSTEM_NAME arm-linux)
 SET(CMAKE_CXX_COMPILER /Tyger/arm_linux/gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabihf/bin/arm-linux-gnueabihf-c++)
 SET(CMAKE_C_COMPILER /Tyger/arm_linux/gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabihf/bin/arm-linux-gnueabihf-gcc)
-set(LIBDLLPATH ${CMAKE_SOURCE_DIR}/../readCardInfo/lib/arm_linux/)
+set(LIBDLLPATH ${CMAKE_SOURCE_DIR}/lib/arm_linux/)
 set(LIBSUFFIX ".so")
 
 add_library( udevlib SHARED  IMPORTED )
 set_target_properties( udevlib PROPERTIES IMPORTED_LOCATION  ${LIBDLLPATH}libudev${LIBSUFFIX} )
 
+elseif(${LINUXVERSION} STREQUAL "arm-uclinux")
+SET(CMAKE_CXX_COMPILER /Tyger/arm_uclinux/toolchain/gcc-linaro-5.5.0-2017.10-x86_64_arm-linux-gnueabihf/bin/arm-linux-gnueabihf-c++)
+SET(CMAKE_C_COMPILER /Tyger/arm_uclinux/toolchain/gcc-linaro-5.5.0-2017.10-x86_64_arm-linux-gnueabihf/bin/arm-linux-gnueabihf-gcc)
+set(LIBDLLPATH ${CMAKE_SOURCE_DIR}/lib/arm_uclinux/)
+set(LIDSOPATH ${CMAKE_SOURCE_DIR}/lib/arm_uclinux/)
+set(LIBSUFFIX ".so")
 
 endif()
 
@@ -101,7 +108,7 @@ set_target_properties( hidapi-libusb PROPERTIES IMPORTED_LOCATION  ${LIBDLLPATH}
 
 
 add_library( zyreadcard SHARED  IMPORTED )
-set_target_properties( zyreadcard PROPERTIES IMPORTED_LOCATION  ${CMAKE_SOURCE_DIR}/bin/libreadCardInfo.so )
+set_target_properties( zyreadcard PROPERTIES IMPORTED_LOCATION  ${LIBDLLPATH}libreadCardInfo${LIBSUFFIX} )
 
 
 

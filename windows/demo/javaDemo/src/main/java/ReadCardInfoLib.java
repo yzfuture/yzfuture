@@ -1,6 +1,7 @@
 import com.sun.jna.Memory;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
+import com.sun.jna.ptr.ByteByReference;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.win32.StdCallLibrary;
 
@@ -18,6 +19,8 @@ public interface ReadCardInfoLib extends StdCallLibrary {
 
     void    setDeviceType(int nDeviceType);
 
+    boolean loginCardServerEx(String szip, int nport, IntByReference nerr);
+
     boolean loginCardServer(String szip, int nport, String szAppkey, String szAppSecret, String szAppUserId, IntByReference nerr);
 
     int     cardOpenDevice(int nouttime, IntByReference nerr,int nDeviceNo);
@@ -33,6 +36,8 @@ public interface ReadCardInfoLib extends StdCallLibrary {
 
     boolean cardGetDeviceNO(int nDeviceHandle, Memory szno, IntByReference nlen);
     boolean cardGetDeviceSN(int nDeviceHandle, Memory szsn, IntByReference nlen);
+
+    boolean decodeCardImage(byte[] srcimage, Memory  outimage, IntByReference outlen);
 
     int     cardGetLastErrorCode(int nDeviceHandle);
 

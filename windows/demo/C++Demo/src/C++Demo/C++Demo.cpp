@@ -30,9 +30,6 @@ int _tmain(int argc, _TCHAR* argv[])
 	} while ((ctype != '0') && (ctype != '1'));
 	printf("读卡中，请稍候......\r\n");
 
- 	std::string	szAppKey = "请参照《NFC服务注册流程 V2.pdf》申请";
- 	std::string szAppSecret = "请参照《NFC服务注册流程 V2.pdf》申请";
- 	std::string szUserData = "请参照《NFC服务注册流程 V2.pdf》申请";
 	std::string szServerIP = "id.yzfuture.cn";
 	int			nServerPort = 443;
 	int			nindex = 0;
@@ -50,8 +47,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	}
 
 	int			nerr;
-	if (loginCardServer("id.yzfuture.cn", 443, "appKey：按自己实际内容填写", "appSecret：按自己实际内容填写",
-		"终端标识userData：按自己实际内容填写", nerr))
+	if (loginCardServerEx("id.yzfuture.cn", 443, nerr))
 	{
 		YZWLHandle hlHandle = cardOpenDevice(2, nerr, nindex);
 		if (hlHandle >= 0)

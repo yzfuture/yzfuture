@@ -117,7 +117,14 @@ $(document).ready(function(){
         } else if (jsonobject.Cmd == 20511) {
           const szparam = JSON.parse(window.atob(jsonobject.UserParam))
           processContent.text('websocket 协议 读卡器唯一号：' + szparam.SN)
-        }
+        }else if (jsonobject.Cmd == 1000) {
+            szparam = JSON.parse(window.atob(jsonobject.UserParam));
+            if (szparam.State == 0)
+            {
+          	processContent.text('读卡器已被拔出')
+            }
+            else processContent.text('读卡器已插入')
+          }
       } else {
         processContent.text('websocket 协议调用失败，原因：' + jsonobject.ErrInfo)
       }

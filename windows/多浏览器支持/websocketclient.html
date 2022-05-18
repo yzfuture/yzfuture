@@ -121,6 +121,13 @@
           } else if (jsonobject.Cmd == 20401) {
             szparam = JSON.parse(window.atob(jsonobject.UserParam));
             document.getElementById("cHelp").value = "websocket 协议 读取身份证卡片SN成功：" + szparam.SN;
+          }else if (jsonobject.Cmd == 1000) {
+            szparam = JSON.parse(window.atob(jsonobject.UserParam));
+            if (szparam.State == 0)
+            {
+            	document.getElementById("cHelp").value = "读卡器已被拔出";
+            }
+            else document.getElementById("cHelp").value = "读卡器已插入";
           }
         }
         else{

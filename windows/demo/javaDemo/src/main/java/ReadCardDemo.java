@@ -10,9 +10,9 @@ public class ReadCardDemo {
         ReadCardInfoLib lib = Native.load("readCardInfo.dll", ReadCardInfoLib.class);
         lib.cardReadInit();
 
-        String  szAppKey = "请参照《NFC服务注册流程 V2.pdf》申请";
-        String  szAppSecret = "请参照《NFC服务注册流程 V2.pdf》申请";
-        String  szUserData = "请参照《NFC服务注册流程 V2.pdf》申请";
+        //String  szAppKey = "请参照《NFC服务注册流程 V2.pdf》申请";
+        //String  szAppSecret = "请参照《NFC服务注册流程 V2.pdf》申请";
+        //String  szUserData = "请参照《NFC服务注册流程 V2.pdf》申请";
         String  szip = "id.yzfuture.cn";
         int     nindex = 0;
         int     yzwlHandle=0;
@@ -25,7 +25,7 @@ public class ReadCardDemo {
          * 以上四个接口就自己按照自己的程序逻辑处理，此处只是展示用法做为示例用
          */
         IntByReference nerrCode = new IntByReference(100) ;
-        if (lib.loginCardServer(szip, 443, szAppKey, szAppSecret, szUserData, nerrCode))
+        if (lib.loginCardServerEx(szip, 443, nerrCode))
         {
             for (int i=0; i<100; i++)
             {
@@ -69,7 +69,31 @@ public class ReadCardDemo {
                                 if (!szName.isEmpty())
                                 {
                                     lib.cardBeep(yzwlHandle);
-                                    System.out.println("解码完成："+szName);
+
+                                    Memory  szoutbmp = new Memory(40*1024);
+                                    IntByReference nbmplen = new IntByReference(40*1024) ;
+                                    if (lib.decodeCardImage(info.arrTwoIdPhoto, szoutbmp, nbmplen))
+                                    {
+                                        System.out.println("解码完成："+szName + ":"+nbmplen.toString());
+
+                                        try{
+                                            File file = new File("wlt.bmp");
+                                            //为写入文件提供流通道
+                                            FileOutputStream outputStream = new FileOutputStream(file);
+                                            //将内存的字节数组内容 弄进 文件中
+                                            outputStream.write(szoutbmp.getByteArray(0, nbmplen.getValue()),
+                                                    0,nbmplen.getValue());
+                                            //关闭流
+                                            outputStream.close();
+
+                                        }catch(IOException e){
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                else
+                                {
+                                    System.out.println("解码图片失败");
+                                }
                                 }
                                 else
                                 {

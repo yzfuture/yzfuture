@@ -23,6 +23,7 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.os.StrictMode;
 import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
@@ -48,6 +49,7 @@ import com.readePassport.ePassportInfo;
 import com.recognition.BaseRecognitionActivity;
 import com.util.GASystemCamera;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -58,6 +60,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -119,12 +122,12 @@ public class IDCardScannerActivity extends Activity implements ActiveCallBack {
 
     @Bind(R.id.process)
     TextView process;
-    @Bind(R.id.escapedTrue)
-    TextView escapedTrue;
     @Bind(R.id.progressBar)
     ProgressBar progressBar;
     @Bind(R.id.deviceType)
     Switch deviceTypeBtn;
+    @Bind(R.id.tryBtn)
+    Button tryBtn;
 
     @Bind(R.id.appkeyBtn)
     Button appkeyBtn;
@@ -138,7 +141,7 @@ public class IDCardScannerActivity extends Activity implements ActiveCallBack {
     private IntentFilter    tagDetected = null;
     private String[][]      mTechLists;
     private final Handler   mHandler = new MyHandler(this);
-    private OTGReadCardAPI  ReadCardAPI;
+    private OTGReadCardAPI  readCard;
     private boolean         bNFC = false;
 
     private String          m_szUserInfo = "";
@@ -151,6 +154,9 @@ public class IDCardScannerActivity extends Activity implements ActiveCallBack {
 
     private String          m_szServerIP = "id.yzfuture.cn";
     private int             m_nServerPort = 443;
+    private boolean         m_bonDevice = true;
+
+    private Button          timeButton = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -195,16 +201,23 @@ public class IDCardScannerActivity extends Activity implements ActiveCallBack {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if(isChecked){
-                    if (ReadCardAPI != null)
+                    if (readCard != null)
                     {
-                        ReadCardAPI.setDeviceType(1);
+                        readCard.setDeviceType(1);
+                        m_bonDevice = false;
                     }
                 }else{
-                    if (ReadCardAPI != null)
+                    if (readCard != null)
                     {
-                        ReadCardAPI.setDeviceType(0);
+                        readCard.setDeviceType(0);
+                        m_bonDevice = true;
                     }
                 }
+            }
+        });
+        tryBtn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                trialDevice();
             }
         });
 
@@ -231,7 +244,154 @@ public class IDCardScannerActivity extends Activity implements ActiveCallBack {
             }
         });
     }
+    //倒计时函数
+    private class MyCountDownTimer extends CountDownTimer {
 
+        public MyCountDownTimer(long millisInFuture, long countDownInterval) {
+            super(millisInFuture, countDownInterval);
+        }
+
+        //计时过程
+        @Override
+        public void onTick(long l) {
+            //防止计时过程中重复点击
+            timeButton.setClickable(false);
+            timeButton.setText(l/1000+"秒");
+
+        }
+
+        //计时完毕的方法
+        @Override
+        public void onFinish() {
+            //重新给Button设置文字
+            timeButton.setText("重新获取");
+            //设置可点击
+            timeButton.setClickable(true);
+        }
+    }
+
+    private boolean isMobileNO(String mobileNums)
+    {
+        /**
+         * 判断字符串是否符合手机号码格式
+         * 移动号段: 134,135,136,137,138,139,147,150,151,152,157,158,159,170,178,182,183,184,187,188
+         * 联通号段: 130,131,132,145,155,156,170,171,175,176,185,186
+         * 电信号段: 133,149,153,170,173,177,180,181,189
+         * @param str
+         * @return 待检测的字符串
+         */
+        String telRegex = "^((13[0-9])|(14[5,7,9])|(15[^4])|(18[0-9])|(17[0,1,3,5,6,7,8]))\\d{8}$";// "[1]"代表第1位为数字1，"[358]"代表第二位可以为3、5、8中的一个，"\\d{9}"代表后面是可以是0～9的数字，有9位。
+        if (TextUtils.isEmpty(mobileNums))
+            return false;
+        else
+            return mobileNums.matches(telRegex);
+    }
+
+    private void trialDevice()
+    {
+        LayoutInflater li = LayoutInflater.from(IDCardScannerActivity.this);
+        View promptsView = li.inflate(R.layout.register_idget, null);
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(IDCardScannerActivity.this);
+        alertDialogBuilder.setView(promptsView);
+        final EditText    phonetxt = (EditText) promptsView.findViewById(R.id.phonetxt);
+        final EditText    codetxt = (EditText) promptsView.findViewById(R.id.codetxt);
+        final RegisterUser regit = new RegisterUser();
+        timeButton = (Button)promptsView.findViewById(R.id.timebtn);
+        Button      tryBtn = (Button)promptsView.findViewById(R.id.trybtn);
+        final AlertDialog alertDialog = alertDialogBuilder.create();
+        final MyCountDownTimer myCountDownTimer = new MyCountDownTimer(60000,1000);
+        if (android.os.Build.VERSION.SDK_INT > 9) {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
+        timeButton.setOnClickListener(new Button.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                String  szPhoneTxt = phonetxt.getText().toString();
+                if (isMobileNO(szPhoneTxt))
+                {
+                    boolean     bsucc = regit.getCode(szPhoneTxt);
+                    if (bsucc)
+                    {
+                        myCountDownTimer.start();
+                        setdialog("短信已发出，请注意查收");
+                    }
+                    else
+                    {
+                        setdialog("短信发送失败，请重试");
+                    }
+                }
+                else
+                {
+                    setdialog("手机号码格式不对，请重新输入");
+                }
+            }
+        });
+
+        tryBtn.setOnClickListener(new Button.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                String  szPhoneTxt = phonetxt.getText().toString();
+                String  szCodeTxt = codetxt.getText().toString();
+                if (szPhoneTxt.isEmpty() || szCodeTxt.isEmpty())
+                {
+                    setdialog("以上信息不能为空");
+                }
+                else
+                {
+                    RegisterUser.RetParam retParam = regit.registrUser(szPhoneTxt, szCodeTxt);
+                    if (retParam == null)
+                    {
+                        setdialog("注册失败，请重获取验证码");
+                    }
+                    else
+                    {
+                        if (retParam.nRetCode == 1)
+                        {
+                            if (retParam.appArray.size() >= 1)
+                            {
+                                // *** 注意：这里有可能会有多个应用appkey返回，实际应用中可以列出一个列表让用户选择
+                                //           由于demo只展示逻辑调用，所以默认用第一个appkey，如需其它appkey请用户自己修改
+                                Map<String, String> appMap = retParam.appArray.get(0);
+                                SPUtils.getInstance(SP_FILE).put(SPKEY_APPKEY, appMap.get("appKey"));
+                                SPUtils.getInstance(SP_FILE).put(SPKEY_SECRET, appMap.get("appSecret"));
+                                SPUtils.getInstance(SP_FILE).put(SPKEY_USERDATA, "");
+                                appkeyTxt.setText(appMap.get("appKey"));
+                                appSecretTxt.setText(appMap.get("appSecret"));
+                                appUserDataTxt.setText("");
+
+                                if (retParam.appArray.size() > 1)
+                                {
+                                    setdialog("找回成功，appKey已保存");
+                                }
+                                else
+                                {
+                                    setdialog("注册成功，用户名/密码：" + retParam.szUser + "/" + retParam.szPwd + ", 如需管理应用，请登录：https://login.aidoing.com.cn/");
+                                }
+                                final String      szAppKey = appkeyTxt.getText().toString();
+                                final String      szAppSecret = appSecretTxt.getText().toString();
+                                final String      szAppUserData = appUserDataTxt.getText().toString();
+                                readCard.initReadCard(m_szServerIP, m_nServerPort, szAppKey, szAppSecret, szAppUserData);
+                                getAuthInfo();
+                            }
+                            else
+                            {
+                                setdialog("创建失败，原因：账号已存在且应用列表为空，请登录后台自行管理应用：https://login.aidoing.com.cn/");
+                            }
+                        }
+                        else
+                        {
+                            setdialog("注册失败，原因:" + retParam.szError);
+                        }
+                        alertDialog.dismiss();
+                    }
+                }
+            }
+        });
+
+        alertDialog.show();
+    }
 
     private void modifyValue(final TextView textView, final String key)
     {
@@ -252,35 +412,36 @@ public class IDCardScannerActivity extends Activity implements ActiveCallBack {
                 SPUtils.getInstance(SP_FILE).put(key, sznewValue);
                 textView.setText(sznewValue);
 
-                if (ReadCardAPI != null)
+                if (readCard != null)
                 {
                     final String      szAppKey = appkeyTxt.getText().toString();
                     final String      szAppSecret = appSecretTxt.getText().toString();
                     final String      szAppUserData = appUserDataTxt.getText().toString();
-                    ReadCardAPI.initReadCard(m_szServerIP, m_nServerPort, szAppKey, szAppSecret, szAppUserData);
+                    readCard.initReadCard(m_szServerIP, m_nServerPort, szAppKey, szAppSecret, szAppUserData);
                     getAuthInfo();
                 }
 
                 alertDialog.dismiss();
             }
         });
+
         alertDialog.show();
     }
 
     public void init() {
-        ReadCardAPI = new OTGReadCardAPI(getApplicationContext(), this);
-        if (ReadCardAPI != null)
+        readCard = new OTGReadCardAPI(getApplicationContext(), this);
+        if (readCard != null)
         {
             final String      szAppKey = appkeyTxt.getText().toString();
             final String      szAppSecret = appSecretTxt.getText().toString();
             final String      szAppUserData = appUserDataTxt.getText().toString();
-            ReadCardAPI.initReadCard(m_szServerIP, m_nServerPort, szAppKey, szAppSecret, szAppUserData);
+            readCard.initReadCard(m_szServerIP, m_nServerPort, szAppKey, szAppSecret, szAppUserData);
             getAuthInfo();
             mAdapter = NfcAdapter.getDefaultAdapter(getApplicationContext());
             if (mAdapter != null) {
                 init_NFC();
             } else {
-                if (ReadCardAPI != null) {
+                if (readCard != null) {
                     setdialog("本机不支持NFC功能！");
                 }
             }
@@ -376,41 +537,41 @@ public class IDCardScannerActivity extends Activity implements ActiveCallBack {
         }
         else if (msg.what == 1)
         {
-            if (ReadCardAPI.GetTwoCardInfo().arrTwoIdPhoto != null) {
-                idimg.setBackground(new BitmapDrawable(Bytes2Bimap(ReadCardAPI.GetTwoCardInfo().arrTwoIdPhoto)));
+            if (readCard.GetTwoCardInfo().arrTwoIdPhoto != null) {
+                idimg.setBackground(new BitmapDrawable(Bytes2Bimap(readCard.GetTwoCardInfo().arrTwoIdPhoto)));
             }
-            if (ReadCardAPI.GetTwoCardInfo().szTwoType.equals("J")) {
+            if (readCard.GetTwoCardInfo().szTwoType.equals("J")) {
                 edtype.setText("港澳居民居住证");
-                othernoTrue.setText(ReadCardAPI.GetTwoCardInfo().szTwoOtherNO);
-                signTrue.setText(ReadCardAPI.GetTwoCardInfo().szTwoSignNum);
+                othernoTrue.setText(readCard.GetTwoCardInfo().szTwoOtherNO);
+                signTrue.setText(readCard.GetTwoCardInfo().szTwoSignNum);
             } else {
                 edtype.setText("居民身份证");
                 othernoTrue.setText("");
                 signTrue.setText("");
             }
-            edid.setText(ReadCardAPI.GetTwoCardInfo().szTwoIdNo.trim());
-            edname.setText(ReadCardAPI.GetTwoCardInfo().szTwoIdName.trim());
-            addTrue.setText(ReadCardAPI.GetTwoCardInfo().szTwoIdAddress.trim());
-            sexTrue.setText(ReadCardAPI.GetTwoCardInfo().szTwoIdSex.trim());
-            mzTrue.setText(ReadCardAPI.GetTwoCardInfo().szTwoIdNation.trim() + "族");
+            edid.setText(readCard.GetTwoCardInfo().szTwoIdNo.trim());
+            edname.setText(readCard.GetTwoCardInfo().szTwoIdName.trim());
+            addTrue.setText(readCard.GetTwoCardInfo().szTwoIdAddress.trim());
+            sexTrue.setText(readCard.GetTwoCardInfo().szTwoIdSex.trim());
+            mzTrue.setText(readCard.GetTwoCardInfo().szTwoIdNation.trim() + "族");
             gjTrue.setText("中国");
-            jgTrue.setText(ReadCardAPI.GetTwoCardInfo().szTwoIdSignedDepartment.trim());
-            birthTrue.setText(ReadCardAPI.GetTwoCardInfo().szTwoIdBirthday.substring(0, 4) + "-" + ReadCardAPI.GetTwoCardInfo().szTwoIdBirthday.substring(4, 6) + "-" + ReadCardAPI.GetTwoCardInfo().szTwoIdBirthday.substring(6, 8));
+            jgTrue.setText(readCard.GetTwoCardInfo().szTwoIdSignedDepartment.trim());
+            birthTrue.setText(readCard.GetTwoCardInfo().szTwoIdBirthday.substring(0, 4) + "-" + readCard.GetTwoCardInfo().szTwoIdBirthday.substring(4, 6) + "-" + readCard.GetTwoCardInfo().szTwoIdBirthday.substring(6, 8));
 
-            String startDate = ReadCardAPI.GetTwoCardInfo().szTwoIdValidityPeriodBegin.substring(0, 4) + "-" + ReadCardAPI.GetTwoCardInfo().szTwoIdValidityPeriodBegin.substring(4, 6) + "-" + ReadCardAPI.GetTwoCardInfo().szTwoIdValidityPeriodBegin.substring(6, 8);
+            String startDate = readCard.GetTwoCardInfo().szTwoIdValidityPeriodBegin.substring(0, 4) + "-" + readCard.GetTwoCardInfo().szTwoIdValidityPeriodBegin.substring(4, 6) + "-" + readCard.GetTwoCardInfo().szTwoIdValidityPeriodBegin.substring(6, 8);
             String endDate = "";
-            int nlen = ReadCardAPI.GetTwoCardInfo().szTwoIdValidityPeriodEnd.indexOf("长期");
+            int nlen = readCard.GetTwoCardInfo().szTwoIdValidityPeriodEnd.indexOf("长期");
             if (nlen != -1) {
                 endDate = "长期";
             } else {
-                endDate = ReadCardAPI.GetTwoCardInfo().szTwoIdValidityPeriodEnd.substring(0, 4) + "-" + ReadCardAPI.GetTwoCardInfo().szTwoIdValidityPeriodEnd.substring(4, 6) + "-" + ReadCardAPI.GetTwoCardInfo().szTwoIdValidityPeriodEnd.substring(6, 8);
+                endDate = readCard.GetTwoCardInfo().szTwoIdValidityPeriodEnd.substring(0, 4) + "-" + readCard.GetTwoCardInfo().szTwoIdValidityPeriodEnd.substring(4, 6) + "-" + readCard.GetTwoCardInfo().szTwoIdValidityPeriodEnd.substring(6, 8);
             }
             yxqTrue.setText(startDate + "~" + endDate);
             //process.setText("100");
         }
         if (msg.what == -9999)
         {
-            String  szerr = ReadCardAPI.GetErrorInfo();
+            String  szerr = readCard.GetErrorInfo();
             setdialog(szerr);
         }
     }
@@ -460,7 +621,7 @@ public class IDCardScannerActivity extends Activity implements ActiveCallBack {
 
     private void getAuthInfo()
     {
-        clientAuthInfo authInfo = ReadCardAPI.GetAppKeyUseNum();
+        clientAuthInfo authInfo = readCard.GetAppKeyUseNum();
         if (authInfo == null) {
             return;
         }
@@ -486,21 +647,25 @@ public class IDCardScannerActivity extends Activity implements ActiveCallBack {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                eCardType etype = ReadCardAPI.cardType(intent);
-                if (etype == eCardType.eTwoGeneralCard)
+                int     tt = 0;
+                if (m_bonDevice)
                 {
-                    int     tt = 0;
-                    tt = ReadCardAPI.NfcReadCard(intent);
-                    if (tt == 41)
-                    {
-                        mHandler.sendEmptyMessageDelayed(-9999, 0);
-                    }
-                    if (tt == 90)
-                    {
-                        Message msg = Message.obtain();
-                        msg.what = 1;
-                        mHandler.sendMessageDelayed(msg, 0);
-                    }
+                    readCard.setDeviceType(0);
+                }
+                else
+                {
+                    readCard.setDeviceType(1);
+                }
+                tt = readCard.NfcReadCard(intent);
+                if (tt == 41)
+                {
+                    mHandler.sendEmptyMessageDelayed(-9999, 0);
+                }
+                if (tt == 90)
+                {
+                    Message msg = Message.obtain();
+                    msg.what = 1;
+                    mHandler.sendMessageDelayed(msg, 0);
                 }
             }
         }).start();

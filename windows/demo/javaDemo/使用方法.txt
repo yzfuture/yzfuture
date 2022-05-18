@@ -1,12 +1,9 @@
 1。编译前请先将以下目录拷过来
     SDK\dll 里面的文件拷到demo\javaDemo
 
+2。使用32位jdk
 
-2。修改 demo\javaDemo\src\main\java\ReadCardDemo.java中的szAppKey/szAppSecret/szUserData为你们申请的实际内容，请参照《NFC服务注册流程 V2.pdf》申请
-
-3。使用32位jdk
-
-4。如果编译出错如下：
+3。如果编译出错如下：
     Error:Internal error: (java.lang.ClassNotFoundException) com.google.wireless.android.sdk.stats.IntellijIndexingStats$Index
 java.lang.ClassNotFoundException: com.google.wireless.android.sdk.stats.IntellijIndexingStats$Index
 	at java.net.URLClassLoader.findClass(URLClassLoader.java:382)

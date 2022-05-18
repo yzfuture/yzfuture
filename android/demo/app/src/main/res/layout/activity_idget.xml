@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -52,23 +53,6 @@
                 android:max="19"
                 android:min="0"
                 style="@style/Widget.AppCompat.ProgressBar.Horizontal"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="23dp"
-                android:layout_marginRight="23dp"
-                android:orientation="horizontal"
-                android:layout_marginBottom="3dp">
-                <Switch
-                    android:id="@+id/deviceType"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textOff="标准版"
-                    android:textOn="离线版"
-                    android:showText="true"
-                    android:layout_weight="1"/>
-            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -223,9 +207,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="23dp"
-                android:layout_marginRight="23dp"
-                android:layout_marginBottom="3dp"
-                android:layout_marginTop="3dp">
+                android:layout_marginRight="23dp">
                 <TextView
                     android:id="@+id/cardtype"
                     style="@style/titleTheme"
@@ -241,20 +223,15 @@
                     android:layout_weight="5"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
-                <TextView
-                    android:id="@+id/escapedTxt"
-                    style="@style/titleTheme"
+
+                <Button
+                    android:id="@+id/resetBtn"
                     android:layout_width="wrap_content"
-                    android:layout_marginRight="3dp"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="是否逃犯：" />
-                <TextView
-                    android:id="@+id/escapedTrue"
-                    style="@style/textnrTheme"
-                    android:layout_weight="3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_weight="1"
+                    android:minHeight="10dip"
+                    android:text="清空"
+                    android:textColor="#000000" />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -295,7 +272,7 @@
                     android:id="@+id/addTrue"
                     style="@style/textnrTheme"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="wrap_content" />
             </LinearLayout>
 
 
@@ -384,32 +361,69 @@
                 android:layout_marginRight="23dp"
                 android:orientation="horizontal"
                 android:layout_marginBottom="3dp">
-                <Button
-                    android:id="@+id/numBtn"
-                    android:layout_width="wrap_content"
+
+                <Switch
+                    android:id="@+id/deviceType"
+                    android:layout_width="80dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginRight="9dp"
-                    android:textColor="#000000"
-                    android:text="剩余次数" />
+                    android:showText="true"
+                    android:textOff="标准版读卡器"
+                    android:textOn="离线版读卡器" />
+
                 <Button
                     android:id="@+id/otgBtn"
-                    android:layout_width="wrap_content"
+                    android:layout_width="30dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginRight="0dp"
                     android:layout_weight="1"
-                    android:layout_marginRight="9dp"
-                    android:textColor="#000000"
-                    android:text="OTG刷卡" />
-                <Button
-                    android:id="@+id/resetBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="重置"
+                    android:text="读卡器读卡"
                     android:textColor="#000000" />
             </LinearLayout>
-
-
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="23dp"
+                android:layout_marginRight="23dp"
+                android:layout_marginBottom="3dp"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/tmptxt"
+                        style="@style/titleTheme"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="剩余次数：" />
+                    <TextView
+                        android:id="@+id/numtxt"
+                        style="@style/textnrTheme"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="3dp"
+                        android:text="0" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/tmptimetxt"
+                        style="@style/titleTheme"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="到期时间：" />
+                    <TextView
+                        android:id="@+id/numtimetxt"
+                        style="@style/textnrTheme"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="3dp"
+                        android:text="" />
+                </LinearLayout>
+            </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -417,32 +431,24 @@
                 android:layout_marginRight="23dp"
                 android:orientation="horizontal"
                 android:layout_marginBottom="3dp">
-                <TextView
-                    android:id="@+id/tmptxt"
-                    style="@style/titleTheme"
-                    android:layout_width="70dp"
-                    android:layout_height="wrap_content"
-                    android:text="剩余次数：" />
-                <TextView
-                    android:id="@+id/numtxt"
-                    style="@style/textnrTheme"
+                <Button
+                    android:id="@+id/tryBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="3dp"
-                    android:text="0" />
-                <TextView
-                    android:id="@+id/tmptimetxt"
-                    style="@style/titleTheme"
-                    android:layout_width="70dp"
-                    android:layout_height="wrap_content"
-                    android:text="到期时间：" />
-                <TextView
-                    android:id="@+id/numtimetxt"
-                    style="@style/textnrTheme"
+                    android:layout_marginRight="0dp"
+                    android:layout_weight="1"
+                    android:text="申请试用（找回）"
+                    android:tooltipText="每个手机号第一次可以申请20次免费授权"
+                    android:textColor="#000000" />
+
+                <Button
+                    android:id="@+id/numBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="3dp"
-                    android:text="" />
+                    android:layout_marginRight="0dp"
+                    android:layout_weight="1"
+                    android:text="剩余次数"
+                    android:textColor="#000000" />
             </LinearLayout>
 
             <LinearLayout
@@ -458,15 +464,16 @@
                     android:layout_width="70dp"
                     android:layout_height="wrap_content"
                     android:text="AppKey：" />
+
                 <TextView
                     android:id="@+id/appkeyTxt"
+                    style="@style/titleTheme"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="8"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="0dp"
                     android:layout_marginRight="3dp"
-                    android:hint="appkey"
-                    style="@style/titleTheme" />
+                    android:layout_weight="8"
+                    android:hint="appkey" />
             </LinearLayout>
 
             <LinearLayout
@@ -483,15 +490,16 @@
                     android:layout_width="70dp"
                     android:layout_height="wrap_content"
                     android:text="Secret：" />
+
                 <TextView
                     android:id="@+id/appSecretTxt"
+                    style="@style/titleTheme"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="8"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="0dp"
                     android:layout_marginRight="3dp"
-                    android:hint="appsecret"
-                    style="@style/titleTheme" />
+                    android:layout_weight="8"
+                    android:hint="appsecret" />
             </LinearLayout>
 
             <LinearLayout
@@ -508,15 +516,32 @@
                     android:layout_width="70dp"
                     android:layout_height="wrap_content"
                     android:text="UserData：" />
+
                 <TextView
                     android:id="@+id/appUserDataTxt"
+                    style="@style/titleTheme"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="8"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="0dp"
                     android:layout_marginRight="3dp"
-                    android:hint="appuserdata"
-                    style="@style/titleTheme" />
+                    android:layout_weight="8"
+                    android:hint="appuserdata" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="23dp"
+                android:layout_marginRight="23dp"
+                android:orientation="horizontal"
+                android:layout_marginBottom="3dp">
+
+                <TextView
+                    android:id="@+id/remarkInfo"
+                    style="@style/titleTheme"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="带有永久授权的读卡器，上面三项可为空" />
             </LinearLayout>
 
             <LinearLayout
@@ -560,7 +585,6 @@
                 android:orientation="horizontal"
                 android:layout_marginBottom="3dp"/>
 
-
             <TextView
                 android:id="@+id/userInfo"
                 style="@style/textnrTheme"
@@ -575,24 +599,108 @@
                 android:layout_height="match_parent"
                 android:layout_marginLeft="23dp"
                 android:layout_marginRight="23dp"
-                android:layout_marginTop="9dp"
-                android:layout_marginBottom="3dp">
+                android:orientation="horizontal">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/Info"
-                    style="@style/titleTheme"
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="9dp">
+
+                        <TextView
+                            android:id="@+id/Info"
+                            style="@style/titleTheme"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="3dp"
+                            android:text="关于我们：" />
+                        <TextView
+                            android:id="@+id/webAddress"
+                            style="@style/titleTheme"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="3dp"
+                            android:autoLink="web"
+                            android:text="http://www.yzfuture.cn" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:id="@+id/devInfo"
+                            style="@style/titleTheme"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="3dp"
+                            android:text="技术支持:" />
+                        <TextView
+                            android:id="@+id/devEmail"
+                            style="@style/titleTheme"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="3dp"
+                            android:autoLink="email"
+                            android:text="faq@yzfuture.cn" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:id="@+id/phoneInfo"
+                            style="@style/titleTheme"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="3dp"
+                            android:text="电话:" />
+                        <TextView
+                            android:id="@+id/webPhone"
+                            style="@style/titleTheme"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="3dp"
+                            android:autoLink="phone"
+                            android:text="028-82880293、85038030" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:id="@+id/hardInfo"
+                            style="@style/titleTheme"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="3dp"
+                            android:text="读卡模块:" />
+
+                        <TextView
+                            android:id="@+id/webHard"
+                            style="@style/titleTheme"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:autoLink="web"
+                            android:maxWidth="150dp"
+                            android:text="https://item.taobao.com/item.htm?id=610814936998" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <Space
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="3dp"
-                    android:text="二次开发请联系我们：" />
-                <TextView
-                    android:id="@+id/webAddress"
-                    style="@style/titleTheme"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="3dp"
-                    android:autoLink="web"
-                    android:text="http://www.yzfuture.cn" />
+                    android:layout_weight="1" />
+
+                <ImageView
+                    android:id="@+id/twoimg"
+                    android:layout_width="90dp"
+                    android:layout_height="90dp"
+                    android:layout_margin="5dp"
+                    android:background="@mipmap/zixun_qrcode" />
             </LinearLayout>
 
             <LinearLayout
@@ -600,98 +708,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginLeft="23dp"
                 android:layout_marginRight="23dp"
-                android:layout_marginBottom="3dp">
-                <TextView
-                    android:id="@+id/devInfo"
-                    style="@style/titleTheme"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="3dp"
-                    android:text="技术支持:" />
-                <TextView
-                    android:id="@+id/devEmail"
-                    style="@style/titleTheme"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="3dp"
-                    android:autoLink="email"
-                    android:text="faq@yzfuture.cn" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="23dp"
-                android:layout_marginRight="23dp"
-                android:layout_marginBottom="3dp">
-                <TextView
-                    android:id="@+id/serviceInfo"
-                    style="@style/titleTheme"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="3dp"
-                    android:text="售后:" />
-                <TextView
-                    android:id="@+id/serviceEmail"
-                    style="@style/titleTheme"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="3dp"
-                    android:autoLink="email"
-                    android:text="sales@yzfuture.cn" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="23dp"
-                android:layout_marginRight="23dp"
-                android:layout_marginBottom="3dp">
-                <TextView
-                    android:id="@+id/phoneInfo"
-                    style="@style/titleTheme"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="3dp"
-                    android:text="电话:" />
-                <TextView
-                    android:id="@+id/webPhone"
-                    style="@style/titleTheme"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="3dp"
-                    android:autoLink="phone"
-                    android:text="028-82880293" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="23dp"
-                android:layout_marginRight="23dp"
-                android:layout_marginBottom="3dp">
-                <TextView
-                    android:id="@+id/hardInfo"
-                    style="@style/titleTheme"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="3dp"
-                    android:text="读卡器:" />
-                <TextView
-                    android:id="@+id/webHard"
-                    style="@style/titleTheme"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:autoLink="web"
-                    android:text="https://item.taobao.com/item.htm?id=610814936998" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="23dp"
-                android:layout_marginRight="23dp"
+                android:orientation="horizontal"
                 android:layout_marginBottom="3dp">
                 <TextView
                     android:id="@+id/twoDevInfo"
@@ -699,7 +716,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="3dp"
-                    android:text="二次开发提供安卓平台NFC和OTG证件解码及Windows平台USB读卡器证件解码，包括：身份证解码、港澳居住证解码、护照解码、EID解码、人脸识别、人脸对比功能接口，方便快速集成" />
+                    android:text="二次开发提供安卓平台NFC和OTG证件解码及Windows平台USB读卡器证件解码，包括：身份证解码、港澳居住证解码、护照解码、CID解码、人脸识别、人脸对比功能接口，方便快速集成" />
             </LinearLayout>
 
         </LinearLayout>

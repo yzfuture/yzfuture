@@ -16,6 +16,10 @@ namespace WindowsFormsApp1
         [DllImport("readCardInfo.dll")]//readCardInfo.dll
         public static extern void setDeviceType(int nDeviceType);// 0-标准读卡器(默认) 1-离线读卡器
 
+        [DllImport("readCardInfo.dll", CharSet = CharSet.Ansi, ExactSpelling = false,
+             CallingConvention = CallingConvention.StdCall)]//readCardInfo.dll
+        public static extern bool loginCardServerEx(string szServerIp, int nServerPort,  ref int nerr);//登录解码服务器
+
         // szAppKey:请参照《NFC服务注册流程 V2.pdf》申请
         // szAppSecret:请参照《NFC服务注册流程 V2.pdf》申请
         // szUserData:请参照《NFC服务注册流程 V2.pdf》申请
@@ -95,13 +99,10 @@ namespace WindowsFormsApp1
              * 以上四个接口就自己按照自己的程序逻辑处理，此处只是展示用法做为示例用
              */
             cardReadInit();
-            string szAppKey = "请参照《NFC服务注册流程 V2.pdf》申请";
-            string szAppSecret = "请参照《NFC服务注册流程 V2.pdf》申请";
-            string szUserData = "请参照《NFC服务注册流程 V2.pdf》申请";
             string szip = "id.yzfuture.cn";
             int nindex = 0;
             int nerr = 0;
-            if (loginCardServer(szip, 443, szAppKey, szAppSecret, szUserData, ref nerr))
+            if (loginCardServerEx(szip, 443, ref nerr))
             {
                 if (!bonLine)
                 {
@@ -114,7 +115,7 @@ namespace WindowsFormsApp1
                     setDeviceType(1);
                 }
 
-                int hlHandle = cardOpenDevice(szAppKey, szAppSecret, szip, 443, szUserData, 2, ref nerr, nindex);
+                int hlHandle = cardOpenDevice(2, ref nerr, nindex);
                 if (hlHandle > 0)
                 {
                     bool bmove = true;

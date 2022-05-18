@@ -60,6 +60,8 @@ Private Declare Sub cardReadInit Lib "readCardInfo.dll" ()
 
 Private Declare Function loginCardServer Lib "readCardInfo.dll" (ByVal szServerIp As String, ByVal nServerPort As Long, ByVal szAppKey As String, ByVal szAppSecret As String, ByVal userData As String, nerr As Long) As Boolean
 
+Private Declare Function loginCardServerEx Lib "readCardInfo.dll" (ByVal szServerIp As String, ByVal nServerPort As Long, nerr As Long) As Boolean
+
 Private Declare Sub setDeviceType Lib "readCardInfo.dll" (ByVal nDeviceType As Long)
 
 Private Declare Function cardOpenDevice Lib "readCardInfo.dll" (ByVal nouttime As Long , nerr As Long, ByVal nDeviceNo As Long) As Boolean
@@ -80,7 +82,7 @@ Private Declare Sub cardReadUninit Lib "readCardInfo.dll" ()
 
             /*
              * cardReadInit
-             * loginCardServer
+             * loginCardServerEx
              * logoutCardServer
              * cardReadUninit
              * 以上四个接口就自己按照自己的程序逻辑处理，此处只是展示用法做为示例用
@@ -88,9 +90,9 @@ Private Declare Sub cardReadUninit Lib "readCardInfo.dll" ()
 
 
 Private Sub Command1_Click()
-    Dim szAppKey As String: szAppKey = "请参照《NFC服务注册流程 V2.pdf》申请"
-    Dim szAppSecret As String: szAppSecret = "请参照《NFC服务注册流程 V2.pdf》申请"
-    Dim szUserData As String: szUserData = "请参照《NFC服务注册流程 V2.pdf》申请"
+    //Dim szAppKey As String: szAppKey = "请参照《NFC服务注册流程 V2.pdf》申请"
+    //Dim szAppSecret As String: szAppSecret = "请参照《NFC服务注册流程 V2.pdf》申请"
+    //Dim szUserData As String: szUserData = "请参照《NFC服务注册流程 V2.pdf》申请"
     Dim szip As String: szip = "id.yzfuture.cn"
     Dim yzwlHandle As Long: yzwlHandle = -1
     Dim nDeviceNo As Long: nDeviceNo = 0
@@ -105,8 +107,8 @@ Private Sub Command1_Click()
     End If
 
     Dim nerr As Long
-    If loginCardServer(szip, 443, szAppKey, szAppSecret, szUserData, nerr) Then
-        yzwlHandle = cardOpenDevice(szAppKey, szAppSecret, szip, 443, szUserData, 2, nerr, 0)
+    If loginCardServerEx(szip, 443, nerr) Then
+        yzwlHandle = cardOpenDevice(2, nerr, 0)
         If yzwlHandle > 0 Then
             If setCardType(yzwlHandle, 1) Then
                 Dim bmove As Long

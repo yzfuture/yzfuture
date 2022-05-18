@@ -1,37 +1,37 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
 	<Transactions>
-    <Transaction>1899-12-30 00:00:00.000.341,C:\Users\tk\Documents\Embarcadero\Studio\Projects\Project1.dproj=C:\Users\tk\Documents\Embarcadero\Studio\Projects\Project1.dproj</Transaction>
-    <Transaction>1899-12-30 00:00:00.000.909,=C:\Users\tk\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
-    <Transaction>1899-12-30 00:00:00.000.471,=C:\Users\tk\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
-    <Transaction>1899-12-30 00:00:00.000.878,=C:\Users\tk\Documents\Embarcadero\Studio\Projects\Unit4.pas</Transaction>
-    <Transaction>1899-12-30 00:00:00.000.775,=C:\Users\tk\Documents\Embarcadero\Studio\Projects\AppletModule1.pas</Transaction>
-    <Transaction>1899-12-30 00:00:00.000.069,=C:\Users\tk\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
     <Transaction>1899-12-30 00:00:00.000.994,=C:\Users\tk\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
     <Transaction>1899-12-30 00:00:00.000.055,=C:\Users\tk\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
     <Transaction>1899-12-30 00:00:00.000.166,=C:\Users\tk\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.069,=C:\Users\tk\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.195,=C:\Users\tk\Desktop\delphiDemo\duNFCReader.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.909,=C:\Users\tk\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.471,=C:\Users\tk\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
     <Transaction>1899-12-30 00:00:00.000.510,=C:\Users\tk\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.733,C:\Users\tk\Documents\Embarcadero\Studio\Projects\Project1.dproj=C:\Users\tk\Desktop\delphiDemo\NFCDemo.dproj</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.631,C:\Users\tk\Documents\Embarcadero\Studio\Projects\Unit4.dfm=C:\Users\tk\Desktop\delphiDemo\fmMain.dfm</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.775,=C:\Users\tk\Documents\Embarcadero\Studio\Projects\AppletModule1.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.341,C:\Users\tk\Documents\Embarcadero\Studio\Projects\Project1.dproj=C:\Users\tk\Documents\Embarcadero\Studio\Projects\Project1.dproj</Transaction>
     <Transaction>1899-12-30 00:00:00.000.721,=C:\Users\tk\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
     <Transaction>1899-12-30 00:00:00.000.428,=C:\Users\tk\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
     <Transaction>1899-12-30 00:00:00.000.211,=C:\Users\tk\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
-    <Transaction>1899-12-30 00:00:00.000.311,=C:\Users\tk\Documents\Embarcadero\Studio\Projects\Unit4.pas</Transaction>
-    <Transaction>1899-12-30 00:00:00.000.796,=C:\Users\tk\Documents\Embarcadero\Studio\Projects\Unit4.pas</Transaction>
-    <Transaction>1899-12-30 00:00:00.000.793,=C:\Users\tk\Documents\Embarcadero\Studio\Projects\Unit4.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.631,C:\Users\tk\Documents\Embarcadero\Studio\Projects\Unit4.pas=C:\Users\tk\Desktop\delphiDemo\fmMain.pas</Transaction>
     <Transaction>1899-12-30 00:00:00.000.168,=C:\Users\tk\Documents\Embarcadero\Studio\Projects\Unit4.pas</Transaction>
     <Transaction>1899-12-30 00:00:00.000.803,=C:\Users\tk\Documents\Embarcadero\Studio\Projects\Unit4.pas</Transaction>
     <Transaction>1899-12-30 00:00:00.000.587,=C:\Users\tk\Documents\Embarcadero\Studio\Projects\Unit4.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.793,=C:\Users\tk\Documents\Embarcadero\Studio\Projects\Unit4.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.878,=C:\Users\tk\Documents\Embarcadero\Studio\Projects\Unit4.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.311,=C:\Users\tk\Documents\Embarcadero\Studio\Projects\Unit4.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.796,=C:\Users\tk\Documents\Embarcadero\Studio\Projects\Unit4.pas</Transaction>
     <Transaction>1899-12-30 00:00:00.000.783,=C:\Users\tk\Documents\Embarcadero\Studio\Projects\Unit4.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.339,=C:\Users\tk\Documents\Embarcadero\Studio\Projects\Unit4.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.871,=C:\Users\tk\Documents\Embarcadero\Studio\Projects\Unit4.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.017,=C:\Users\tk\Documents\Embarcadero\Studio\Projects\Unit4.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.283,=C:\Users\tk\Documents\Embarcadero\Studio\Projects\Unit4.pas</Transaction>
     <Transaction>1899-12-30 00:00:00.000.343,=C:\Users\tk\Documents\Embarcadero\Studio\Projects\Unit4.pas</Transaction>
     <Transaction>1899-12-30 00:00:00.000.424,=C:\Users\tk\Documents\Embarcadero\Studio\Projects\Unit4.pas</Transaction>
     <Transaction>1899-12-30 00:00:00.000.992,=C:\Users\tk\Documents\Embarcadero\Studio\Projects\Unit4.pas</Transaction>
-    <Transaction>1899-12-30 00:00:00.000.283,=C:\Users\tk\Documents\Embarcadero\Studio\Projects\Unit4.pas</Transaction>
-    <Transaction>1899-12-30 00:00:00.000.339,=C:\Users\tk\Documents\Embarcadero\Studio\Projects\Unit4.pas</Transaction>
-    <Transaction>1899-12-30 00:00:00.000.871,=C:\Users\tk\Documents\Embarcadero\Studio\Projects\Unit4.pas</Transaction>
-    <Transaction>2021-07-28 15:13:52.017,=C:\Users\tk\Documents\Embarcadero\Studio\Projects\Unit4.pas</Transaction>
-    <Transaction>2021-07-28 15:14:09.631,C:\Users\tk\Desktop\delphiDemo\fmMain.pas=C:\Users\tk\Documents\Embarcadero\Studio\Projects\Unit4.pas</Transaction>
-    <Transaction>2021-07-28 15:14:09.631,C:\Users\tk\Desktop\delphiDemo\fmMain.dfm=C:\Users\tk\Documents\Embarcadero\Studio\Projects\Unit4.dfm</Transaction>
-    <Transaction>2021-07-28 15:14:31.733,C:\Users\tk\Desktop\delphiDemo\NFCDemo.dproj=C:\Users\tk\Documents\Embarcadero\Studio\Projects\Project1.dproj</Transaction>
-    <Transaction>2021-07-28 15:15:17.195,=C:\Users\tk\Desktop\delphiDemo\duNFCReader.pas</Transaction>
   </Transactions>
 	<ActiveMobileDevice>
 		<NoProfile Android="720" iOSSimulator="iPhone5"/>

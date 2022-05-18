@@ -1,4 +1,3 @@
-1。编译前请先将以下目录拷过来
+编译前请先将以下目录拷过来
     SDK\dll 里面的文件拷到demo\delphiDemo\bin
-2。运行后请填写界面上的AppKey/AppSecret/UserData为你们申请的实际内容，请参照《NFC服务注册流程 V2.pdf》申请
 

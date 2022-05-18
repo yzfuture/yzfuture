@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, duNFCReader,
   ComCtrls,
   pngimage,  Graphics, Forms, Dialogs,
-   Spin, StdCtrls, Controls, ExtCtrls, pngimage_ml, Classes;
+   Spin, StdCtrls, Controls, ExtCtrls, Classes;
 
 type
   TForm4 = class(TForm)
@@ -165,14 +165,14 @@ var
 var
   strIDLen: Integer;
 begin
-  szAppKey := Trim(edtAppKey.Text);
-  szAppSecret := Trim(edtAppSecret.Text);
-  szAppUserData := Trim(edtAppUserData.Text);
+  //szAppKey := Trim(edtAppKey.Text);
+  //szAppSecret := Trim(edtAppSecret.Text);
+  //szAppUserData := Trim(edtAppUserData.Text);
 
   ProgressBar1.Position := 0;
 
   // 登录只做展示用，请自己按需要加入到程序逻辑中
-  if not loginCardServer('id.yzfuture.cn', 443, PAnsiChar(szAppKey), PAnsiChar(szAppSecret),PAnsiChar(szAppUserData), @AErrCode) then
+  if not loginCardServerEx('id.yzfuture.cn', 443, @AErrCode) then
   begin
      WriteLog('登录失败！');
      Exit;

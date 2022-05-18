@@ -1,9 +1,9 @@
 object Form4: TForm4
   Left = 334
   Top = 238
-  Width = 901
-  Height = 559
   Caption = 'Form4'
+  ClientHeight = 520
+  ClientWidth = 885
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -9244,7 +9244,7 @@ object Form4: TForm4
     Width = 233
     Height = 21
     TabOrder = 2
-    Text = #35831#21442#29031#12298'NFC'#26381#21153#27880#20876#27969#31243' V2.pdf'#12299#30003#35831
+    Text = '99ffb2f98a29071107c7a09ad2c6d096'
   end
   object edtAppSecret: TEdit
     Left = 427
@@ -9252,7 +9252,7 @@ object Form4: TForm4
     Width = 233
     Height = 21
     TabOrder = 3
-    Text = #35831#21442#29031#12298'NFC'#26381#21153#27880#20876#27969#31243' V2.pdf'#12299#30003#35831
+    Text = 'ZjZkNDE3ZmEzMjRmNDFlYjYwNjVmYjc4ZjhmNGUzZTI='
   end
   object edtAppUserData: TEdit
     Left = 427
@@ -9260,7 +9260,7 @@ object Form4: TForm4
     Width = 233
     Height = 21
     TabOrder = 4
-    Text = #35831#21442#29031#12298'NFC'#26381#21153#27880#20876#27969#31243' V2.pdf'#12299#30003#35831
+    Text = 'yzserverTestID'
   end
   object meoLog: TMemo
     Left = 337

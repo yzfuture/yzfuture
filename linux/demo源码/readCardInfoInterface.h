@@ -10,8 +10,7 @@ extern "C" {
 
 	typedef void(FBC_API_PUBLIC *cardReadProgress)(void* userData, unsigned int nProgress);
 
-	YZWLHandle FBC_API_PUBLIC cardOpenDevice(char* szAppkey, char* szAppSecret, char* szip, 
-		int nport, char* userData, int nouttime, int &nerr, int nDeviceNo = 0);
+	YZWLHandle FBC_API_PUBLIC cardOpenDeviceEx(char* szip, int nport, int nouttime, int &nerr, int nDeviceNo = 0);
 	bool FBC_API_PUBLIC setCardType(YZWLHandle nDeviceHandle);
 	bool FBC_API_PUBLIC cardFindCard(YZWLHandle nDeviceHandle, bool &bmove);
 
@@ -23,6 +22,8 @@ extern "C" {
 
 	bool FBC_API_PUBLIC cardReadTwoCard(YZWLHandle nDeviceHandle, cardReadProgress cardCB, 
 		void* userData, TwoIdInfoStructEx &cardinfo);
+	bool FBC_API_PUBLIC cardReadTwoCardEx(YZWLHandle nDeviceHandle, cardReadProgress cardCB,
+		void* userData, TwoCardInfoStruct &cardinfo);
 
 	bool FBC_API_PUBLIC cardGetSerialNumber(YZWLHandle nDeviceHandle, char* szSn, int &nSn);
 

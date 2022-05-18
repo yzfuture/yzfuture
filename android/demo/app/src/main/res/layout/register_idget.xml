@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:paddingTop="3dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:layout_marginBottom="5dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/whitecolor"
+        android:orientation="horizontal"
+        android:layout_marginBottom="5dp">
+
+        <EditText
+            android:id="@+id/phonetxt"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginLeft="15dp"
+            android:layout_gravity="center_vertical"
+            android:inputType="number"
+            android:hint="请输入手机号(*)"
+            android:background="@null"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/whitecolor"
+        android:orientation="horizontal"
+        android:layout_marginBottom="5dp" >
+
+        <EditText
+            android:id="@+id/codetxt"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginLeft="15dp"
+            android:layout_gravity="center_vertical"
+            android:inputType="number"
+            android:hint="请输入短信验证码(*)"
+            android:background="@null"/>
+
+        <Button
+            android:id="@+id/timebtn"
+            android:layout_width="98dp"
+            android:layout_height="50dp"
+            android:text="获取"
+            android:textSize="16dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/whitecolor"
+        android:orientation="horizontal"
+        android:layout_marginBottom="5dp" >
+
+        <Button
+            android:id="@+id/trybtn"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="申请"
+            android:textSize="16dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/whitecolor"
+        android:orientation="horizontal"
+        android:layout_marginBottom="5dp" >
+        <TextView
+            android:id="@+id/editTxt"
+            style="@style/textnrTheme"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="3dp"
+            android:text="注意：同一个手机号一天最多只能接受5次验证码" />
+
+    </LinearLayout>
+
+</LinearLayout>

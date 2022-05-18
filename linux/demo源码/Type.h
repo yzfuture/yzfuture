@@ -43,3 +43,39 @@ typedef struct _TwoIdInfoStructEx
 	unsigned char arrTwoIdPhotoJpeg[4096];	//照片信息 JPEG 格式
 	unsigned int  unTwoIdPhotoJpegLength;	//照片信息长度 JPEG格式
 }TwoIdInfoStructEx;
+
+
+
+typedef struct _TwoForeignerInfoStruct // 外国人永久居住证
+{
+	char arrEnName[120];					//英文名
+	char arrSex[2];					//性别 UNICODE
+	char arrNo[30];					//15个字符的居留证号码 UNICODE
+	char arrNation[6];				//国籍 UNICODE GB/T2659-2000
+	char arrCnName[30];				//中文姓名 UNICODE 如果没有中文姓名，则全为0x0020
+	char arrBeginDate[16];			//签发日期 UNICODE YYYYMMDD
+	char arrEndDate[16];			//终止日期 UNICODE YYYYMMDD
+	char arrBirthday[16];			//出生日期 UNICODE YYYYMMDD
+
+	char arrVersion[4]; // 版本号
+	char arrSignedDepartment[8];		//签发机关代码 UNICODE 证件芯片内不存储签发机关
+	char arrType[2];		// 证件类型标识
+	char arrTwoRemark2[6];	// 预留区
+
+	unsigned char arrPhoto[1024];		//照片信息
+	unsigned char arrFingerprint[1024];//指纹信息
+}TwoForeignerInfoStruct;
+
+typedef enum _eCardFormatType
+{
+	eTwoIDType = ' ', // 身份证
+	eTwoGATType = 'J', // 港澳台居民居住证
+	eTwoForeignerType = 'I', // 外国人永久居留身份证
+}eCardFormatType;
+
+typedef struct _TwoCardInfoStruct
+{
+	eCardFormatType etype;
+	TwoIdInfoStructEx twoInfo; // eTwoIDType/eTwoGATType
+	TwoForeignerInfoStruct foreignerInfo; // eTwoForeignerType
+}TwoCardInfoStruct;
