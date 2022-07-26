@@ -1,26 +1,34 @@
 1.
 将SDK中lib和include文件夹整体拷贝到“demo源码”目录下
 拷贝后结构为：
-demo源码->lib->arm_himix200/arm_RaspberryPi/x86_linux
+demo源码->lib->arm_himix200/arm_linux/arm_uclinux/arm-hisiv500-linux/arm_RaspberryPi/x86_linux
 demo源码->include
 
-2.修改CMakeLists.txt
+2.如果只编译部分平台，可以修改 release->CMakeLists.txt
 
-#set(LINUXVERSION "x86_linux")
-#set(LINUXVERSION "arm_Rpi")
-set(LINUXVERSION "arm-himix200")
-上面三行分别对应，x86_64/arm树莓派/arm himix200 三个平台
-将所需要的平台前注释去掉，其它平台请注释掉
+#add_subdirectory(arm_himix200)
+add_subdirectory(arm_linux)
+#add_subdirectory(arm_uclinux)
+#add_subdirectory(arm-hisiv500-linux)
+#add_subdirectory(x86_linux)
+#add_subdirectory(arm_RaspberryPi)
 
-3.创建bin目录，并且在bin目录中执行以下命令进行cmake编译
+将不需要的平台注释掉（行前加#为注释一整行），保留需要编译的平台即可
+
+3.修改编译器路径
+在 release->对应平台->CMakeLists.txt 里面找到CMAKE_CXX_COMPILER和CMAKE_C_COMPILER变量
+将CMAKE_CXX_COMPILER和CMAKE_C_COMPILER变量位置换成对就平台实际g++和gcc编译器的位置
+
+4.创建bin目录，并且在bin目录中执行以下命令进行cmake编译
 >> cmake ..
 >> make
+>> make install
 
-4.连接读卡器，放上身份证，保证网络畅通
+生成的可执行文件在 demo源码->lib->平台对应名称(arm_himix200/arm_linux/arm_uclinux/arm-hisiv500-linux/arm_RaspberryPi/x86_linux)->readCardDemo
 
-5.拷贝Config.ini到bin目录
+5.连接读卡器，放上身份证，保证网络畅通
 
 6. 设置demo源码->lib下对应平台路径到系统变量
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:demo源码/lib/(arm_himix200/arm_RaspberryPi/x86_linux)
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:demo源码/lib/(arm_himix200/arm_linux/arm_uclinux/arm-hisiv500-linux/arm_RaspberryPi/x86_linux)
 
 7.运行./readCardDemo即可

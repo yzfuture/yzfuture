@@ -4,7 +4,6 @@ arm架构下的树莓派
 arm架构下的himix200
 arm架构下的linux
 arm架构下的uclinux
+arm架构下的hisiv500
 
-lib文件夹下对各个平台需要的依赖库，如果与需要的平台不兼容，请自行下载对应的so并安装
-
-libreadCardInfo.so为身份证解码库
+libreadCardInfo_平台名称.so为身份证解码库
