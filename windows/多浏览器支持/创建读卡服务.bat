@@ -11,13 +11,10 @@ cd /d "%~dp0"
 
 sc delete yzwlReadCard
 sc delete yzwlServiceAlive
-copy "%~dp0Config.ini" "c:\\Config.ini"
-sc create yzwlReadCard start= auto binPath= "%~dp0yzwlReadCardServer.exe"
-sc create yzwlServiceAlive start= auto binPath= "%~dp0yzwlServiceAlive.exe"
+sc create yzwlReadCard start= auto binpath= "%~dp0yzwlReadCardServer.exe" DisplayName= "yzwlReadCard读卡驱动"
+sc create yzwlServiceAlive start= auto binpath= "%~dp0yzwlServiceAlive.exe" DisplayName= "yzwlServiceAlive读卡驱动看守"
 sc start yzwlReadCard
 sc start yzwlServiceAlive
-
-
 
 
 
