@@ -32,27 +32,27 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Private Type TwoIdInfoStructEx
-    arrTwoIdName As String * 30            '姓名 UNICODE
-    arrTwoIdSex As String * 2               '性别 UNICODE
-    arrTwoIdNation As String * 4            '民族 UNICODE
-    arrTwoIdBirthday As String * 16         '出生日期 UNICODE YYYYMMDD
-    arrTwoIdAddress As String * 70               '住址 UNICODE
-    arrTwoIdNo As String * 36               '身份证号码 UNICODE
-    arrTwoIdSignedDepartment As String * 30 '签发机关 UNICODE
-    arrTwoIdValidityPeriodBegin As String * 16 '有效期起始日期 UNICODE YYYYMMDD
-    arrTwoIdValidityPeriodEnd As String * 16   '有效期截止日期 UNICODE YYYYMMDD 有效期为长期时存储“长期”
+    arrTwoIdName(29) As Byte            '姓名 UNICODE
+    arrTwoIdSex(1) As Byte               '性别 UNICODE
+    arrTwoIdNation(3) As Byte            '民族 UNICODE
+    arrTwoIdBirthday(15) As Byte         '出生日期 UNICODE YYYYMMDD
+    arrTwoIdAddress(69) As Byte               '住址 UNICODE
+    arrTwoIdNo(35) As Byte               '身份证号码 UNICODE
+    arrTwoIdSignedDepartment(29) As Byte '签发机关 UNICODE
+    arrTwoIdValidityPeriodBegin(15) As Byte '有效期起始日期 UNICODE YYYYMMDD
+    arrTwoIdValidityPeriodEnd(15) As Byte   '有效期截止日期 UNICODE YYYYMMDD 有效期为长期时存储“长期”
     
-    arrTwoOtherNO As String * 18            '通行证类号码
-    arrTwoSignNum As String * 4             '签发次数
-    arrTwoRemark1 As String * 6             '预留区
-    arrTwoType As String * 2                '证件类型标识
-    arrTwoRemark2 As String * 6             '预留区
+    arrTwoOtherNO(17) As Byte            '通行证类号码
+    arrTwoSignNum(3) As Byte             '签发次数
+    arrTwoRemark1(5) As Byte             '预留区
+    arrTwoType(1) As Byte                '证件类型标识
+    arrTwoRemark2(5) As Byte             '预留区
     
-    arrTwoIdNewAddress As String * 70       '最新住址 UNICODE
-    arrReserve As String * 2                '保留字节 字节对齐用
-    arrTwoIdPhoto As String * 1024          '照片信息
-    arrTwoIdFingerprint As String * 1024    '指纹信息
-    arrTwoIdPhotoJpeg As String * 4096      '照片信息 JPEG 格式
+    arrTwoIdNewAddress(69) As Byte       '最新住址 UNICODE
+    arrReserve(1) As Byte                '保留字节 字节对齐用
+    arrTwoIdPhoto(1023) As Byte          '照片信息
+    arrTwoIdFingerprint(1023) As Byte    '指纹信息
+    arrTwoIdPhotoJpeg(4095) As Byte      '照片信息 JPEG 格式
     unTwoIdPhotoJpegLength As Long          '照片信息长度 JPEG格式
 End Type
 
@@ -64,7 +64,7 @@ Private Declare Function loginCardServerEx Lib "readCardInfo.dll" (ByVal szServe
 
 Private Declare Sub setDeviceType Lib "readCardInfo.dll" (ByVal nDeviceType As Long)
 
-Private Declare Function cardOpenDevice Lib "readCardInfo.dll" (ByVal nouttime As Long , nerr As Long, ByVal nDeviceNo As Long) As Boolean
+Private Declare Function cardOpenDevice Lib "readCardInfo.dll" (ByVal nouttime As Long , nerr As Long, ByVal nDeviceNo As Long) As Long
 
 Private Declare Function setCardType Lib "readCardInfo.dll" (ByVal nDeviceHandle As Long, ByVal ctype As Long) As Boolean
 Private Declare Function cardFindCard Lib "readCardInfo.dll" (ByVal nDeviceHandle As Long, bmove As Long) As Boolean
@@ -117,7 +117,15 @@ Private Sub Command1_Click()
                         If cardReadTwoCard(yzwlHandle, 0, tmpCardInfo) Then
                             Call cardBeep(yzwlHandle)
                             Debug.Print "解码成功:"
-                            Debug.Print StrConv(tmpCardInfo.arrTwoIdName, vbFromUnicode)
+                            Debug.Print tmpCardInfo.arrTwoIdName
+                            Debug.Print tmpCardInfo.arrTwoIdSex
+                            Debug.Print tmpCardInfo.arrTwoIdNation
+                            Debug.Print tmpCardInfo.arrTwoIdBirthday
+                            Debug.Print tmpCardInfo.arrTwoIdAddress
+                            Debug.Print tmpCardInfo.arrTwoIdNo
+                            Debug.Print tmpCardInfo.arrTwoIdSignedDepartment
+                            Debug.Print tmpCardInfo.arrTwoIdValidityPeriodBegin
+                            Debug.Print tmpCardInfo.arrTwoIdValidityPeriodEnd
                         End If
                     End If
                 End If
