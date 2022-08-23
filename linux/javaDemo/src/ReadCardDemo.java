@@ -11,7 +11,7 @@ public class ReadCardDemo {
         ReadCardInfoLib lib = Native.load("readCardInfo_x86_linux", ReadCardInfoLib.class);
 
         String  szip = "id.yzfuture.cn";
-        int     nindex = 1001;
+        int     nindex = 0;
         long     yzwlHandle=-1;
 
         IntByReference nerrCode = new IntByReference(100) ;
