@@ -172,15 +172,14 @@ begin
   ProgressBar1.Position := 0;
 
   // 登录只做展示用，请自己按需要加入到程序逻辑中
-  if not loginCardServerEx('id.yzfuture.cn', 443, @AErrCode) then
-  begin
-     WriteLog('登录失败！');
-     Exit;
-  end;
-
   if radbtn.ItemIndex = 0 then //标准读卡器
   begin
     setDeviceType(0);
+    if not loginCardServerEx('id.yzfuture.cn', 443, @AErrCode) then
+    begin
+       WriteLog('登录失败！');
+       Exit;
+    end;
   end
   else
   begin

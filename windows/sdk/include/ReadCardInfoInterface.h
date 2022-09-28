@@ -38,6 +38,8 @@ int __stdcall	cardGetLastErrorCode(YZWLHandle nDeviceHandle);
 const char*	__stdcall cardGetErrorInfo(YZWLHandle nDeviceHandle, int &nlen, int nErrorCode);
 const char*	__stdcall cardGetLastError(YZWLHandle nDeviceHandle, int &nlen);
 
+void __stdcall convertCardInfoToAnsi(TwoIdInfoStructEx &cardinfo);
+
 // srcimage长度固定为1024 
 // outimage大小由外面自己申请，大小不小于40KB
 // outlen传入时为outimage实际大小，传出时为实际图片大小

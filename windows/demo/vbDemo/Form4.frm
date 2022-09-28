@@ -107,7 +107,7 @@ Private Sub Command1_Click()
     End If
 
     Dim nerr As Long
-    If loginCardServerEx(szip, 443, nerr) Then
+    If loginCardServerEx(szip, 443, nerr) Then // 离线读卡器不用登录，直接打开设备就可以用，离线读卡器，这句可以屏蔽
         yzwlHandle = cardOpenDevice(2, nerr, 0)
         If yzwlHandle > 0 Then
             If setCardType(yzwlHandle, 1) Then
@@ -133,7 +133,7 @@ Private Sub Command1_Click()
             Call cardCloseDevice(a)
         End If
     End If
-    logoutCardServer()
+    logoutCardServer() // 离线读卡器不用登录，这句可以屏蔽
 End Sub
 Private Sub Form_Load()
     Call cardReadInit

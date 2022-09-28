@@ -102,39 +102,45 @@ namespace WindowsFormsApp1
             string szip = "id.yzfuture.cn";
             int nindex = 0;
             int nerr = 0;
-            if (loginCardServerEx(szip, 443, ref nerr))
+            if (bonLine)
             {
-                if (!bonLine)
+                nindex = 1001;
+                setDeviceType(1);
+            }
+            else
+            {
+                nindex = 0;
+                setDeviceType(0);
+                if (!loginCardServerEx(szip, 443, ref nerr))
                 {
-                    nindex = 0;
-                    setDeviceType(0);
-                }
-                else
-                {
-                    nindex = 1001;
-                    setDeviceType(1);
-                }
-
-                int hlHandle = cardOpenDevice(2, ref nerr, nindex);
-                if (hlHandle > 0)
-                {
-                    bool bmove = true;
-                    if (setCardType(hlHandle, 1))
-                    {
-                        if (cardFindCard(hlHandle, ref bmove))
-                        {
-                            int cb = 0;
-                            bool bret = cardReadTwoCard(hlHandle, cb, ref sttTwoIdInfo);
-                            if (!bret)
-                            {
-                                MessageBox.Show("解码失败请重试");
-                            }
-                        }
-                    }
-                    cardCloseDevice(hlHandle);
+                    logoutCardServer();
+                    cardReadUninit();
+                    return sttTwoIdInfo;
                 }
             }
-            logoutCardServer();
+
+            int hlHandle = cardOpenDevice(2, ref nerr, nindex);
+            if (hlHandle > 0)
+            {
+                bool bmove = true;
+                if (setCardType(hlHandle, 1))
+                {
+                    if (cardFindCard(hlHandle, ref bmove))
+                    {
+                        int cb = 0;
+                        bool bret = cardReadTwoCard(hlHandle, cb, ref sttTwoIdInfo);
+                        if (!bret)
+                        {
+                            MessageBox.Show("解码失败请重试");
+                        }
+                    }
+                }
+                cardCloseDevice(hlHandle);
+            }
+            if (!bonLine)
+            {
+                logoutCardServer();
+            }
             cardReadUninit();
             return sttTwoIdInfo;
 
