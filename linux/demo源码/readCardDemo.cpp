@@ -31,7 +31,7 @@ int readCardInfo()
 		2,
 		nerr, 
 		nindex);
-	if (hlHandle >= 0)
+	if (hlHandle != -1)
 	{
 		cardBeep(hlHandle);
 		
