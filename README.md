@@ -1,3 +1,7 @@
+目前大版本：V2
+V2会根据安卓系统接口的变化进行不断优化和修改，调用接口基本保持不变
+V1针对原来旧版的安卓设备，目前暂时还支持，后面会逐步停用
+
 由于国内经常连接不上github，所以本SDK以后更新会延迟，如需最新版本，请移步下面网址下载：
 https://www.yzfuture.cn/views/service/index.html?ap=download-center
 
