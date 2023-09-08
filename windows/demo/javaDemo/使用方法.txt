@@ -28,5 +28,5 @@ java.lang.ClassNotFoundException: com.google.wireless.android.sdk.stats.Intellij
 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
 	at java.lang.Thread.run(Thread.java:748)
-请在android studio 中依次进行以下操作
+请在IntelliJ IDEA 中依次进行以下操作
 File->Settings->Build,Execution,Deployment->Compiler->Java Compiler->Use compiler->把javac换成Eclipse->Apply->OK->重新编译

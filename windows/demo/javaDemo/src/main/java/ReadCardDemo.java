@@ -2,6 +2,9 @@ import com.sun.jna.Memory;
 import com.sun.jna.Native;
 import com.sun.jna.ptr.IntByReference;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Scanner;
 
