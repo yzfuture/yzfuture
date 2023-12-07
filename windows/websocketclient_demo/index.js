@@ -1,7 +1,7 @@
 $(document).ready(function(){
   const btnOnWS  = $('#on-websocket')
   const btnOffWS = $('#off-websocket')
-  
+
   const btnWS_ID       = $('#websocket-ID')
   const btnWS_IDSN     = $('#websocket-ID-sn')
   const btnWS_ASN      = $('#websocket-A-sn')
@@ -15,6 +15,9 @@ $(document).ready(function(){
   const connectAddress  = $('#connect-address')
   const processContent  = $('#process-content')
   const btnCleanProcess = $('#clean-process')
+
+  const cardFront  = $('#card-front')
+  const cardBack   = $('#card-back')
 
   const SNContent  = $('#SN-content')
   const image      = $('#image')
@@ -31,7 +34,7 @@ $(document).ready(function(){
 
   let ws = null
 
-  
+
 
   btnOnWS.on('click', conWS)
   btnOffWS.on('click', disconWS)
@@ -62,6 +65,219 @@ $(document).ready(function(){
     return str_list.toString()
   }
 
+  function setDocumentInfo(szparam)
+  {
+    if (szparam.CardType == 74)
+    {
+      // 切换背景图片   83是台湾
+      cardFront.removeClass()
+      cardBack.removeClass()
+      cardFront.addClass('GAT-card')
+      cardFront.addClass('card-hongkong-macao-taiwan-front')
+      cardBack.addClass('GAT-card')
+      let no = hex2a(window.atob(szparam.CardInfo.No))
+      if (no && no.startsWith('83')){
+        cardBack.addClass('card-taiwan-back')
+      }else{
+        cardBack.addClass('card-hongkong-macao-back')
+      }
+      strLog = '读取 港澳台居民居住证 成功\r\n';
+      strLog += 'SN：' + szparam.CardInfo.SN + '\r\n';
+      strLog += '中文名：' + hex2a(window.atob(szparam.CardInfo.Name)) + '\r\n';
+      strLog += '证件号码：' + no + '\r\n';
+      strLog += '性别：' + hex2a(window.atob(szparam.CardInfo.Sex)) + '\r\n';
+      strLog += '出生日期：' + hex2a(window.atob(szparam.CardInfo.Birthday)) + '\r\n';
+      strLog += '民族：' + hex2a(window.atob(szparam.CardInfo.Nation)) + '\r\n';
+      strLog += '地址：' + hex2a(window.atob(szparam.CardInfo.Address)) + '\r\n';
+      strLog += '签发机关：' + hex2a(window.atob(szparam.CardInfo.SignedDepartment)) + '\r\n';
+      strLog += '开始日期：' + hex2a(window.atob(szparam.CardInfo.ValidityPeriodBegin)) + '\r\n';
+      strLog += '结束日期：' + hex2a(window.atob(szparam.CardInfo.ValidityPeriodEnd)) + '\r\n\r\n';
+      strLog += '通行证号码：' + hex2a(window.atob(szparam.CardInfo.OtherNO)) + '\r\n';
+      strLog += '签发次数：' + hex2a(window.atob(szparam.CardInfo.SignNum)) + '\r\n';
+      processContent.text(strLog)
+
+      // 港澳台通行证号码
+      console.log(szparam.CardInfo)
+      cardFront.find('.name').text(hex2a(window.atob(szparam.CardInfo.Name)))
+      cardFront.find('.sex').text(hex2a(window.atob(szparam.CardInfo.Sex)) ==='1'? '男':'女')
+
+      const Birthday = hex2a(window.atob(szparam.CardInfo.Birthday))
+      const birthArr = parseDateString(Birthday , ".", true).split(".")
+      cardFront.find('.year').text(birthArr[0])
+      cardFront.find('.month').text(birthArr[1])
+      cardFront.find('.date').text(birthArr[2])
+
+      cardFront.find('.address').text(hex2a(window.atob(szparam.CardInfo.Address)))
+      cardFront.find('.number').text(hex2a(window.atob(szparam.CardInfo.No)))
+      cardBack.find('.department').text(hex2a(window.atob(szparam.CardInfo.SignedDepartment)))
+      const ValidityPeriodBegin = hex2a(window.atob(szparam.CardInfo.ValidityPeriodBegin))
+      const ValidityPeriodEnd = hex2a(window.atob(szparam.CardInfo.ValidityPeriodEnd)).trim()
+      const expiryBegin = parseDateString(ValidityPeriodBegin, '.')
+      const expiryEnd = ValidityPeriodEnd !== '长期' ? parseDateString(ValidityPeriodEnd, '.') : ValidityPeriodEnd
+      cardBack.find('.expiry').text( expiryBegin + '-' + expiryEnd)
+      cardBack.find('.pass-number').text(  hex2a(window.atob(szparam.CardInfo.OtherNO)))
+    }
+    else if (szparam.CardType == 73)
+    {
+      // 切换背景图片   83是台湾
+      cardFront.removeClass()
+      cardBack.removeClass()
+      cardFront.addClass('WGR-card-1')
+      cardFront.addClass('card-old-foreigner-front')
+      cardBack.addClass('WGR-card-1')
+      cardBack.addClass('card-old-foreigner-back')
+
+      strLog = '读取 外国人永久居留身份证(旧版) 成功\r\n';
+      strLog += 'SN：' + szparam.CardInfo.SN + '\r\n';
+      strLog += '中文名：' + hex2a(window.atob(szparam.CardInfo.Name)) + '\r\n';
+      strLog += '英文名：' + hex2a(window.atob(szparam.CardInfo.EnName)) + '\r\n';
+      strLog += '证件号码：' + hex2a(window.atob(szparam.CardInfo.No)) + '\r\n';
+      strLog += '性别：' + hex2a(window.atob(szparam.CardInfo.Sex)) + '\r\n';
+      strLog += '出生日期：' + hex2a(window.atob(szparam.CardInfo.Birthday)) + '\r\n';
+      strLog += '国籍：' + hex2a(window.atob(szparam.CardInfo.Country)) + '\r\n';
+      strLog += '签发机关：中华人民共和国移民管理局\r\n';
+      strLog += '开始日期：' + hex2a(window.atob(szparam.CardInfo.ValidityPeriodBegin)) + '\r\n';
+      strLog += '结束日期：' + hex2a(window.atob(szparam.CardInfo.ValidityPeriodEnd)) + '\r\n\r\n';
+      strLog += '版本号：' + hex2a(window.atob(szparam.CardInfo.Version)) + '\r\n';
+      processContent.text(strLog)
+
+      let name = hex2a(window.atob(szparam.CardInfo.Name))
+      let enName = hex2a(window.atob(szparam.CardInfo.EnName))
+      let nameText = enName + (name.trim()? ' / '+ name : '')
+      cardFront.find('.name').text(nameText)
+      cardFront.find('.sex').text(hex2a(window.atob(szparam.CardInfo.Sex)) === '1'? '男': '女')
+      const Birthday = hex2a(window.atob(szparam.CardInfo.Birthday))
+      const birthArr = parseDateString(Birthday , ".", true).split(".")
+      cardFront.find('.year').text(birthArr.join('-')) //出生年月
+      cardFront.find('.month').text(hex2a(window.atob(szparam.CardInfo.Country)))//国籍
+      const ValidityPeriodBegin = hex2a(window.atob(szparam.CardInfo.ValidityPeriodBegin))
+      const ValidityPeriodEnd = hex2a(window.atob(szparam.CardInfo.ValidityPeriodEnd)).trim()
+      const expiryBegin = parseDateString(ValidityPeriodBegin, '.')
+      const expiryEnd = ValidityPeriodEnd !== '长期' ? parseDateString(ValidityPeriodEnd, '.') : ValidityPeriodEnd
+      cardFront.find('.date').text(expiryBegin + '-' + expiryEnd)
+      cardFront.find('.address').text('中华人民共和国移民管理局') //
+      cardFront.find('.number').text(hex2a(window.atob(szparam.CardInfo.No)))
+    }
+    else if (szparam.CardType == 89)
+    {
+      // 切换背景图片   83是台湾
+      cardFront.removeClass()
+      cardBack.removeClass()
+      cardFront.addClass('WGR-card')
+      cardFront.addClass('card-new-foreigner-front')
+      cardBack.addClass('WGR-card')
+      cardBack.addClass('card-new-foreigner-back')
+
+      strLog = '读取 外国人永久居留身份证(新版) 成功\r\n';
+      strLog += 'SN：' + szparam.CardInfo.SN + '\r\n';
+      strLog += '中文名：' + hex2a(window.atob(szparam.CardInfo.Name)) + '\r\n';
+      strLog += '英文名：' + hex2a(window.atob(szparam.CardInfo.EnName)) + '\r\n';
+      strLog += '证件号码：' + hex2a(window.atob(szparam.CardInfo.No)) + '\r\n';
+      strLog += '性别：' + hex2a(window.atob(szparam.CardInfo.Sex)) + '\r\n';
+      strLog += '出生日期：' + hex2a(window.atob(szparam.CardInfo.Birthday)) + '\r\n';
+      strLog += '国籍：' + hex2a(window.atob(szparam.CardInfo.Country)) + '\r\n';
+      strLog += '签发机关：中华人民共和国移民管理局\r\n';
+      strLog += '开始日期：' + hex2a(window.atob(szparam.CardInfo.ValidityPeriodBegin)) + '\r\n';
+      strLog += '结束日期：' + hex2a(window.atob(szparam.CardInfo.ValidityPeriodEnd)) + '\r\n\r\n';
+      strLog += '通行证号码：' + hex2a(window.atob(szparam.CardInfo.OtherNO)) + '\r\n';
+      strLog += '签发次数：' + hex2a(window.atob(szparam.CardInfo.SignNum)) + '\r\n';
+      processContent.text(strLog)
+      let name = hex2a(window.atob(szparam.CardInfo.Name))
+      let enName = hex2a(window.atob(szparam.CardInfo.EnName))
+      cardFront.find('.name').text(name)
+      cardFront.find('.enName').text(enName)
+      cardFront.find('.sex').text(hex2a(window.atob(szparam.CardInfo.Sex)) === '1'? '男': '女')
+      const Birthday = hex2a(window.atob(szparam.CardInfo.Birthday))
+      const birthArr = parseDateString(Birthday , ".", true).split(".")
+      cardFront.find('.year').text(birthArr.join('-')) //出生年月
+      cardFront.find('.month').text(hex2a(window.atob(szparam.CardInfo.Country)))//国籍
+      const ValidityPeriodBegin = hex2a(window.atob(szparam.CardInfo.ValidityPeriodBegin))
+      const ValidityPeriodEnd = hex2a(window.atob(szparam.CardInfo.ValidityPeriodEnd)).trim()
+      const expiryBegin = parseDateString(ValidityPeriodBegin, '.')
+      const expiryEnd = ValidityPeriodEnd !== '长期' ? parseDateString(ValidityPeriodEnd, '.') : ValidityPeriodEnd
+      cardFront.find('.date').text(expiryBegin + '-' + expiryEnd)
+      cardFront.find('.number').text(hex2a(window.atob(szparam.CardInfo.No)))
+    }
+    else
+    {
+      cardFront.removeClass()
+      cardBack.removeClass()
+      cardFront.addClass('ID-card')
+      cardFront.addClass('card-front')
+      cardBack.addClass('ID-card')
+      cardBack.addClass('card-back')
+      strLog = '读取 身份证 成功\r\n';
+      strLog += 'SN：' + szparam.CardInfo.SN + '\r\n';
+      strLog += '中文名：' + hex2a(window.atob(szparam.CardInfo.Name)) + '\r\n';
+      strLog += '证件号码：' + hex2a(window.atob(szparam.CardInfo.No)) + '\r\n';
+      strLog += '性别：' + hex2a(window.atob(szparam.CardInfo.Sex)) + '\r\n';
+      strLog += '出生日期：' + hex2a(window.atob(szparam.CardInfo.Birthday)) + '\r\n';
+      strLog += '民族：' + hex2a(window.atob(szparam.CardInfo.Nation)) + '\r\n';
+      strLog += '地址：' + hex2a(window.atob(szparam.CardInfo.Address)) + '\r\n';
+      strLog += '签发机关：' + hex2a(window.atob(szparam.CardInfo.SignedDepartment)) + '\r\n';
+      strLog += '开始日期：' + hex2a(window.atob(szparam.CardInfo.ValidityPeriodBegin)) + '\r\n';
+      strLog += '结束日期：' + hex2a(window.atob(szparam.CardInfo.ValidityPeriodEnd)) + '\r\n\r\n';
+      strLog += '通行证号码：' + hex2a(window.atob(szparam.CardInfo.OtherNO)) + '\r\n';
+      strLog += '签发次数：' + hex2a(window.atob(szparam.CardInfo.SignNum)) + '\r\n';
+      processContent.text(strLog)
+    //  内容填充
+      cardFront.find('.name').text(hex2a(window.atob(szparam.CardInfo.Name)))
+      cardFront.find('.sex').text(hex2a(window.atob(szparam.CardInfo.Sex)))
+      cardFront.find('.nation').text(hex2a(window.atob(szparam.CardInfo.Nation)))
+
+      const Birthday = hex2a(window.atob(szparam.CardInfo.Birthday))
+      const birthArr = parseDateString(Birthday , ".", true).split(".")
+      cardFront.find('.year').text(birthArr[0])
+      cardFront.find('.month').text(birthArr[1])
+      cardFront.find('.date').text(birthArr[2])
+
+      cardFront.find('.address').text(hex2a(window.atob(szparam.CardInfo.Address)))
+      cardFront.find('.number').text(hex2a(window.atob(szparam.CardInfo.No)))
+      cardBack.find('.department').text(hex2a(window.atob(szparam.CardInfo.SignedDepartment)))
+      const ValidityPeriodBegin = hex2a(window.atob(szparam.CardInfo.ValidityPeriodBegin))
+      const ValidityPeriodEnd = hex2a(window.atob(szparam.CardInfo.ValidityPeriodEnd)).trim()
+      const expiryBegin = parseDateString(ValidityPeriodBegin, '.')
+      const expiryEnd = ValidityPeriodEnd !== '长期' ? parseDateString(ValidityPeriodEnd, '.') : ValidityPeriodEnd
+      cardBack.find('.expiry').text( expiryBegin + '-' + expiryEnd)
+    }
+    SNContent.text(szparam.CardInfo.SN)
+    cardFront.find('.image').attr('src','data:image/jpg;base64,' + szparam.BmpInfo)
+    // if (szparam.CardInfo.Name){
+    //   cardFront.find('.name').text(hex2a(window.atob(szparam.CardInfo.Name)))
+    // }
+    // if (szparam.CardInfo.Sex){
+    //   cardFront.find('.sex').text(hex2a(window.atob(szparam.CardInfo.Sex)))
+    // }
+    // if (szparam.CardInfo.Nation){
+    //   cardFront.find('.nation').text(hex2a(window.atob(szparam.CardInfo.Nation)))
+    // }
+    //
+    // const Birthday = hex2a(window.atob(szparam.CardInfo.Birthday))
+    // const birthArr = parseDateString(Birthday , ".", true).split(".")
+    // cardFront.find('.year').text(birthArr[0])
+    // cardFront.find('.month').text(birthArr[1])
+    // cardFront.find('.date').text(birthArr[2])
+    //
+    // if (szparam.CardInfo.Address){
+    //   cardFront.find('.address').text(hex2a(window.atob(szparam.CardInfo.Address)))
+    // }
+    //
+    // if (szparam.CardInfo.No){
+    //   cardFront.find('.number').text(hex2a(window.atob(szparam.CardInfo.No)))
+    // }
+    //
+    // if (szparam.CardInfo.SignedDepartment){
+    //   cardBack.find('.department').text(hex2a(window.atob(szparam.CardInfo.SignedDepartment)))
+    // }
+    //
+    // const ValidityPeriodBegin = hex2a(window.atob(szparam.CardInfo.ValidityPeriodBegin))
+    // const ValidityPeriodEnd = hex2a(window.atob(szparam.CardInfo.ValidityPeriodEnd)).trim()
+    // const expiryBegin = parseDateString(ValidityPeriodBegin, '.')
+    // const expiryEnd = ValidityPeriodEnd !== '长期' ? parseDateString(ValidityPeriodEnd, '.') : ValidityPeriodEnd
+    // cardBack.find('.expiry').text( expiryBegin + '-' + expiryEnd)
+
+  }
+
   function conWS() {
     const webUrl = 'ws://' + connectAddress.val() + '/ws'
     ws = new WebSocket(webUrl)
@@ -80,34 +296,9 @@ $(document).ready(function(){
       const jsonobject = JSON.parse(messageEvent.data)
       if (jsonobject.Ret == 0) {
         if (jsonobject.Cmd == 10001) {
-          cleanMsg()          
-          processContent.text('websocket 协议 读取身份证成功')
+          cleanMsg()
           const szparam = JSON.parse(window.atob(jsonobject.UserParam))
-
-          SNContent.text(szparam.CardInfo.SN)
-          name.text(hex2a(window.atob(szparam.CardInfo.Name)))
-          sex.text(hex2a(window.atob(szparam.CardInfo.Sex)))
-          nation.text(hex2a(window.atob(szparam.CardInfo.Nation)))
-  
-          const Birthday = hex2a(window.atob(szparam.CardInfo.Birthday))
-          const birthArr = parseDateString(Birthday , ".", true).split(".")
-          year.text(birthArr[0])
-          month.text(birthArr[1])
-          date.text(birthArr[2])
-  
-          address.text(hex2a(window.atob(szparam.CardInfo.Address)))
-          number.text(hex2a(window.atob(szparam.CardInfo.No)))
-          
-          department.text(hex2a(window.atob(szparam.CardInfo.SignedDepartment)))
-  
-          const ValidityPeriodBegin = hex2a(window.atob(szparam.CardInfo.ValidityPeriodBegin))
-          const ValidityPeriodEnd = hex2a(window.atob(szparam.CardInfo.ValidityPeriodEnd)).trim()
-          const expiryBegin = parseDateString(ValidityPeriodBegin, '.')
-          const expiryEnd = ValidityPeriodEnd !== '长期' ? parseDateString(ValidityPeriodEnd, '.') : ValidityPeriodEnd
-          expiry.text( expiryBegin + '-' + expiryEnd)
-  
-          image.attr('src','data:image/jpg;base64,' + szparam.BmpInfo)
-
+          setDocumentInfo(szparam);
         } else if (jsonobject.Cmd == 30401) {
           const szparam = JSON.parse(window.atob(jsonobject.UserParam))
           processContent.text('websocket 协议 读取A卡SN成功：' + szparam.SN)
@@ -141,17 +332,19 @@ $(document).ready(function(){
   function cleanMsg() {
     processContent.text('')
     SNContent.text('')
-    name.text('')
-    sex.text('')
-    nation.text('')
-    year.text('')
-    month.text('')
-    date.text('')
-    address.text('')
-    number.text('')
-    department.text('')
-    expiry.text('')
-    image.attr('src', '')
+    cardFront.find('.name').text('')
+    cardFront.find('.enName').text('')
+    cardFront.find('.sex').text('')
+    cardFront.find('.nation').text('')
+    cardFront.find('.year').text('')
+    cardFront.find('.month').text('')
+    cardFront.find('.date').text('')
+    cardFront.find('.address').text('')
+    cardFront.find('.number').text('')
+    cardBack.find('.department').text('')
+    cardBack.find('.expiry').text('')
+    cardBack.find('.pass-number').text('')
+    cardFront.find('.image').attr('src', '')
   }
 
   function WS_GetASN() {
@@ -184,31 +377,7 @@ $(document).ready(function(){
       success: function (result) {
         processContent.text('web api接口：' + webUrl + ' 读取身份证信息成功')
         const szparam = result
-
-        SNContent.text(szparam.CardInfo.SN)
-          name.text(hex2a(window.atob(szparam.CardInfo.Name)))
-          sex.text(hex2a(window.atob(szparam.CardInfo.Sex)))
-          nation.text(hex2a(window.atob(szparam.CardInfo.Nation)))
-  
-          const Birthday = hex2a(window.atob(szparam.CardInfo.Birthday))
-          const birthArr = parseDateString(Birthday , ".", true).split(".")
-          year.text(birthArr[0])
-          month.text(birthArr[1])
-          date.text(birthArr[2])
-  
-          address.text(hex2a(window.atob(szparam.CardInfo.Address)))
-          number.text(hex2a(window.atob(szparam.CardInfo.No)))
-          
-          department.text(hex2a(window.atob(szparam.CardInfo.SignedDepartment)))
-  
-          const ValidityPeriodBegin = hex2a(window.atob(szparam.CardInfo.ValidityPeriodBegin))
-          const ValidityPeriodEnd = hex2a(window.atob(szparam.CardInfo.ValidityPeriodEnd)).trim()
-          const expiryBegin = parseDateString(ValidityPeriodBegin, '.')
-          const expiryEnd = ValidityPeriodEnd !== '长期' ? parseDateString(ValidityPeriodEnd, '.') : ValidityPeriodEnd
-          expiry.text( expiryBegin + '-' + expiryEnd)
-  
-          image.attr('src','data:image/jpg;base64,' + szparam.BmpInfo)
-
+        setDocumentInfo(szparam);
       },
       error: function (jqXHR, textStatus, errorThrown) {
         processContent.text('web api接口：' + webUrl + ' 读取身份证失败，原因:' + hex2a(window.atob(errorThrown)))

@@ -24,7 +24,7 @@ extern "C" {
 	bool FBC_API_PUBLIC cardReadTwoCard(YZWLHandle nDeviceHandle, cardReadProgress cardCB, 
 		void* userData, TwoIdInfoStructEx &cardinfo);
 	bool FBC_API_PUBLIC cardReadTwoCardEx(YZWLHandle nDeviceHandle, cardReadProgress cardCB,
-		void* userData, TwoCardInfoStruct &cardinfo);
+		void* userData, CardInfoStruct &cardinfo);
 
 	bool FBC_API_PUBLIC cardGetSerialNumber(YZWLHandle nDeviceHandle, char* szSn, int &nSn);
 
@@ -35,6 +35,8 @@ extern "C" {
 	bool	FBC_API_PUBLIC cardGetLastError(YZWLHandle nDeviceHandle, char* szErr, int &nlen);
 
 	void FBC_API_PUBLIC cardCloseDevice(YZWLHandle nDeviceHandle);
+
+	int	FBC_API_PUBLIC	convertUncodeToUtf8(char* Src, int nsrc, char* strOut);
 
 	// srcimage长度固定为1024 
 	// outimage大小由外面自己申请，大小不小于40KB

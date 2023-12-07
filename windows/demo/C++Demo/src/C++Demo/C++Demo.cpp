@@ -33,7 +33,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	std::string szServerIP = "id.yzfuture.cn";
 	int			nServerPort = 443;
 	int			nindex = 0;
-	TwoIdInfoStructEx cardinfo;
+	CardInfoStruct cardinfo;
 	int			nerr;
 
 	if (ctype == '0')
@@ -65,34 +65,64 @@ int _tmain(int argc, _TCHAR* argv[])
 			bool		bfind(cardFindCard(hlHandle, bmove));
 			if (bfind)
 			{
-				bool		bret = cardReadTwoCard(hlHandle, &onCardReadProgress, cardinfo);
+				bool		bret = cardReadTwoCardEx(hlHandle, &onCardReadProgress, cardinfo);
 				if (bret)
 				{
 					cardBeep(hlHandle);
-					convertCardInfoToAnsi(cardinfo);
-
-					printf("身份证号：%s\r\n", cardinfo.arrTwoIdNo);
-					printf("姓名：%s\r\n", cardinfo.arrTwoIdName);
-					printf("地址：%s\r\n", cardinfo.arrTwoIdAddress);
-					printf("出生日期：%s\r\n", cardinfo.arrTwoIdBirthday);
-					printf("有效期：%s~%s\r\n", cardinfo.arrTwoIdValidityPeriodBegin, cardinfo.arrTwoIdValidityPeriodEnd);
-					printf("签发机关：%s\r\n", cardinfo.arrTwoIdSignedDepartment);
-
-					char szBmp[1024 * 40] = { 0 };
-					int outlen = 1024 * 40;
-					if (decodeCardImage(cardinfo.arrTwoIdPhoto, szBmp, outlen))
+					convertCardInfoToAnsiEx(cardinfo);
+					unsigned char*	lpphoto = nullptr;
+					if (cardinfo.etype == eOldForeignerType)
 					{
-						FILE* fpwlt(fopen("a.wlt", "wb"));
-						if (fpwlt)
+						printf("\r\n========旧版外国人居住证==========\r\n");
+						printf("英文名：%s\r\n", cardinfo.info.foreigner.arrEnName);
+						printf("中文姓名：%s\r\n", cardinfo.info.foreigner.arrName);
+						printf("性别：%s\r\n", cardinfo.info.foreigner.arrSex);
+						printf("居留证号码：%s\r\n", cardinfo.info.foreigner.arrNo);
+						printf("国籍：%s\r\n", cardinfo.info.foreigner.arrCountry);
+						printf("签发日期：%s\r\n", cardinfo.info.foreigner.arrValidityPeriodBegin);
+						lpphoto = cardinfo.info.foreigner.arrPhoto;
+					}
+					else if (cardinfo.etype == eNewForeignerType)
+					{
+						printf("\r\n========新版外国人居住证==========\r\n");
+						printf("外文姓名：%s\r\n", cardinfo.info.newForeigner.arrEnName);
+						printf("中文姓名：%s\r\n", cardinfo.info.newForeigner.arrName);
+						printf("居留证号：%s\r\n", cardinfo.info.newForeigner.arrNo);
+						printf("国籍：%s\r\n", cardinfo.info.newForeigner.arrCountry);
+						printf("出生日期：%s\r\n", cardinfo.info.newForeigner.arrBirthday);
+						printf("有效期：%s~%s\r\n", cardinfo.info.newForeigner.arrValidityPeriodBegin, cardinfo.info.newForeigner.arrValidityPeriodEnd);
+						lpphoto = cardinfo.info.newForeigner.arrPhoto;
+					}
+					else
+					{
+						if (cardinfo.etype == eTwoGATType) printf("\r\n========港澳台居住证==========\r\n");
+						else printf("\r\n========身份证==========\r\n");
+						printf("身份证号：%s\r\n", cardinfo.info.twoId.arrNo);
+						printf("姓名：%s\r\n", cardinfo.info.twoId.arrName);
+						printf("地址：%s\r\n", cardinfo.info.twoId.arrAddress);
+						printf("出生日期：%s\r\n", cardinfo.info.twoId.arrBirthday);
+						printf("有效期：%s~%s\r\n", cardinfo.info.twoId.arrValidityPeriodBegin, cardinfo.info.twoId.arrValidityPeriodEnd);
+						printf("签发机关：%s\r\n", cardinfo.info.twoId.arrSignedDepartment);
+						lpphoto = cardinfo.info.twoId.arrPhoto;
+					}
+					if (lpphoto)
+					{
+						char szBmp[1024 * 40] = { 0 };
+						int outlen = 1024 * 40;
+						if (decodeCardImage(lpphoto, szBmp, outlen))
 						{
-							fwrite(cardinfo.arrTwoIdPhoto, 1024, 1, fpwlt);
-							fclose(fpwlt);
-						}
-						FILE* fp(fopen("a.bmp", "wb"));
-						if (fp)
-						{
-							fwrite(szBmp, outlen, 1, fp);
-							fclose(fp);
+							FILE* fpwlt(fopen("a.wlt", "wb"));
+							if (fpwlt)
+							{
+								fwrite(lpphoto, 1024, 1, fpwlt);
+								fclose(fpwlt);
+							}
+							FILE* fp(fopen("a.bmp", "wb"));
+							if (fp)
+							{
+								fwrite(szBmp, outlen, 1, fp);
+								fclose(fp);
+							}
 						}
 					}
 				}

@@ -18,7 +18,7 @@ bool __stdcall loginCardServer(char* szip, int nport, char* szAppkey, char* szAp
 YZWLHandle __stdcall cardOpenDevice(int nouttime, int &nerr, int nDeviceNo = 0);
 
 bool __stdcall cardReadTwoCard(YZWLHandle nDeviceHandle, cardReadProgress cardCB, TwoIdInfoStructEx &cardinfo);
-bool __stdcall cardReadTwoCardEx(YZWLHandle nDeviceHandle, cardReadProgress cardCB, TwoCardInfoStruct& cardinfo);
+bool __stdcall cardReadTwoCardEx(YZWLHandle nDeviceHandle, cardReadProgress cardCB, CardInfoStruct& cardinfo);
 
 const char* __stdcall cardGetSerialNumber(YZWLHandle nDeviceHandle);
 
@@ -39,6 +39,7 @@ const char*	__stdcall cardGetErrorInfo(YZWLHandle nDeviceHandle, int &nlen, int 
 const char*	__stdcall cardGetLastError(YZWLHandle nDeviceHandle, int &nlen);
 
 void __stdcall convertCardInfoToAnsi(TwoIdInfoStructEx &cardinfo);
+void __stdcall convertCardInfoToAnsiEx(CardInfoStruct &cardinfo);
 
 // srcimage长度固定为1024 
 // outimage大小由外面自己申请，大小不小于40KB

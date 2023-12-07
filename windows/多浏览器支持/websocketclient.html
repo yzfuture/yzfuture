@@ -29,6 +29,7 @@
                 <button onclick="Http_ReadInfo()">读身份证</button>
                 <button onclick="Http_GetASN()">读A卡SN</button>
                 <button onclick="Http_GetBCardNo()">读身份证SN</button>
+                <button onclick="Http_GetDevState()">读卡器状态</button>
             </th>
         </tr>
     </table>
@@ -38,11 +39,13 @@
     <label for="male" size="90" id="cHelp"></label>
     <br />
     <button onclick="cleanMsg()" style="width:660px;">清空</button>
-    <br />SN
+    <br />证件类型
+    <input type="text" size="30" id="cCardType" value="" disabled="true" />
+    SN
     <input type="text" size="30" id="cSN" value="" disabled="true" />
     <br />姓名
     <input type="text" size="30" id="cName" value="" disabled="true" leftmargin="300" />
-    身份证号码
+    证件号码
     <input type="text" size="20" id="cNo" value="" disabled="true" />
     <br />性别
     <input type="text" size="8" id="cSex" value="" disabled="true" />
@@ -58,9 +61,26 @@
     <input type="text" size="8" id="cBegin" value="" disabled="true" />
     -
     <input type="text" size="8" id="cEnd" value="" disabled="true" />
+    <br />
+    <br />
+    英文名
+    <input type="text" size="30" id="cEnName" value="" disabled="true" leftmargin="300" />
+    国籍
+    <input type="text" size="30" id="cCountry" value="" disabled="true" leftmargin="300" />
+    <br />通行证号码
+    <input type="text" size="20" id="cOtherNO" value="" disabled="true" />
+    版本
+    <input type="text" size="10" id="cVersion" value="" disabled="true" />
+    签发次数
+    <input type="text" size="20" id="cSignNum" value="" disabled="true" />
+    <br />
     <br />照片
     <br />
     <img style="WIDTH: 124px; HEIGHT: 150px" id="PhotoDisplay" />
+    <br />
+    <br />证件照
+    <br />
+    <img style="WIDTH: 428px; HEIGHT: 546px" id="cardPhotoDisplay" />
     <br />
     <script src="jquery-1.8.2.js"></script>
     <script type="application/javascript">
@@ -76,6 +96,77 @@
       }
 
       return str_list.toString();
+    }
+
+    function setDocumentInfo(szparam)
+    {
+      if (szparam.CardType == 74)
+      {
+        document.getElementById("cCardType").value = "港澳台居民居住证"
+        document.getElementById("cName").value = hex2a(window.atob(szparam.CardInfo.Name));
+        document.getElementById("cSN").value = szparam.CardInfo.SN;
+        document.getElementById("cNo").value = hex2a(window.atob(szparam.CardInfo.No));
+        document.getElementById("cSex").value = hex2a(window.atob(szparam.CardInfo.Sex));
+        document.getElementById("cBirthday").value = hex2a(window.atob(szparam.CardInfo.Birthday));
+        document.getElementById("cNation").value = hex2a(window.atob(szparam.CardInfo.Nation));
+        document.getElementById("cAddress").value = hex2a(window.atob(szparam.CardInfo.Address));
+        document.getElementById("cDepartment").value = hex2a(window.atob(szparam.CardInfo.SignedDepartment));
+        document.getElementById("cBegin").value = hex2a(window.atob(szparam.CardInfo.ValidityPeriodBegin));
+        document.getElementById("cEnd").value = hex2a(window.atob(szparam.CardInfo.ValidityPeriodEnd));
+        document.getElementById("cOtherNO").value = hex2a(window.atob(szparam.CardInfo.OtherNO));
+        document.getElementById("cSignNum").value = hex2a(window.atob(szparam.CardInfo.SignNum));
+        document.getElementById("PhotoDisplay").src = 'data:image/jpg;base64,' + szparam.BmpInfo;
+      }
+      else if (szparam.CardType == 73)
+      {
+        document.getElementById("cCardType").value = "外国人永久居留身份证(旧版)"
+        document.getElementById("cName").value = hex2a(window.atob(szparam.CardInfo.Name));
+        document.getElementById("cSN").value = szparam.CardInfo.SN;
+        document.getElementById("cNo").value = hex2a(window.atob(szparam.CardInfo.No));
+        document.getElementById("cSex").value = hex2a(window.atob(szparam.CardInfo.Sex));
+        document.getElementById("cBirthday").value = hex2a(window.atob(szparam.CardInfo.Birthday));
+        document.getElementById("cCountry").value = hex2a(window.atob(szparam.CardInfo.Country));
+        document.getElementById("cEnName").value = hex2a(window.atob(szparam.CardInfo.EnName));
+        document.getElementById("cDepartment").value = "中华人民共和国移民管理局";
+        document.getElementById("cBegin").value = hex2a(window.atob(szparam.CardInfo.ValidityPeriodBegin));
+        document.getElementById("cEnd").value = hex2a(window.atob(szparam.CardInfo.ValidityPeriodEnd));
+        document.getElementById("cVersion").value = hex2a(window.atob(szparam.CardInfo.Version));
+        document.getElementById("PhotoDisplay").src = 'data:image/jpg;base64,' + szparam.BmpInfo;
+      }
+      else if (szparam.CardType == 89)
+      {
+        document.getElementById("cCardType").value = "外国人永久居留身份证(新版)"
+        document.getElementById("cSN").value = szparam.CardInfo.SN;
+        document.getElementById("cName").value = hex2a(window.atob(szparam.CardInfo.Name));
+        document.getElementById("cSex").value = hex2a(window.atob(szparam.CardInfo.Sex));
+        document.getElementById("cNation").value = hex2a(window.atob(szparam.CardInfo.Nation));
+        document.getElementById("cBirthday").value = hex2a(window.atob(szparam.CardInfo.Birthday));
+        document.getElementById("cEnName").value = hex2a(window.atob(szparam.CardInfo.EnName));
+        document.getElementById("cNo").value = hex2a(window.atob(szparam.CardInfo.No));
+        document.getElementById("cDepartment").value = "中华人民共和国移民管理局";
+        document.getElementById("cBegin").value = hex2a(window.atob(szparam.CardInfo.ValidityPeriodBegin));
+        document.getElementById("cEnd").value = hex2a(window.atob(szparam.CardInfo.ValidityPeriodEnd));
+        document.getElementById("cCountry").value = hex2a(window.atob(szparam.CardInfo.Country));
+        document.getElementById("cOtherNO").value = hex2a(window.atob(szparam.CardInfo.OtherNO));
+        document.getElementById("cSignNum").value = hex2a(window.atob(szparam.CardInfo.SignNum));
+        document.getElementById("PhotoDisplay").src = 'data:image/jpg;base64,' + szparam.BmpInfo;
+      }
+      else
+      {
+        document.getElementById("cCardType").value = "身份证"
+        document.getElementById("cName").value = hex2a(window.atob(szparam.CardInfo.Name));
+        document.getElementById("cSN").value = szparam.CardInfo.SN;
+        document.getElementById("cNo").value = hex2a(window.atob(szparam.CardInfo.No));
+        document.getElementById("cSex").value = hex2a(window.atob(szparam.CardInfo.Sex));
+        document.getElementById("cBirthday").value = hex2a(window.atob(szparam.CardInfo.Birthday));
+        document.getElementById("cNation").value = hex2a(window.atob(szparam.CardInfo.Nation));
+        document.getElementById("cAddress").value = hex2a(window.atob(szparam.CardInfo.Address));
+        document.getElementById("cDepartment").value = hex2a(window.atob(szparam.CardInfo.SignedDepartment));
+        document.getElementById("cBegin").value = hex2a(window.atob(szparam.CardInfo.ValidityPeriodBegin));
+        document.getElementById("cEnd").value = hex2a(window.atob(szparam.CardInfo.ValidityPeriodEnd));
+        document.getElementById("PhotoDisplay").src = 'data:image/jpg;base64,' + szparam.BmpInfo;
+        document.getElementById("cardPhotoDisplay").src = 'data:image/jpg;base64,' + szparam.CardPhoto;
+      }
     }
 
     function disconWS() {
@@ -104,17 +195,7 @@
             cleanMsg();
             document.getElementById("cHelp").value = "websocket 协议 读取身份证成功";
             szparam = JSON.parse(window.atob(jsonobject.UserParam));
-            document.getElementById("cName").value = hex2a(window.atob(szparam.CardInfo.Name));
-            document.getElementById("cSN").value = szparam.CardInfo.SN;
-            document.getElementById("cNo").value = hex2a(window.atob(szparam.CardInfo.No));
-            document.getElementById("cSex").value = hex2a(window.atob(szparam.CardInfo.Sex));
-            document.getElementById("cBirthday").value = hex2a(window.atob(szparam.CardInfo.Birthday));
-            document.getElementById("cNation").value = hex2a(window.atob(szparam.CardInfo.Nation));
-            document.getElementById("cAddress").value = hex2a(window.atob(szparam.CardInfo.Address));
-            document.getElementById("cDepartment").value = hex2a(window.atob(szparam.CardInfo.SignedDepartment));
-            document.getElementById("cBegin").value = hex2a(window.atob(szparam.CardInfo.ValidityPeriodBegin));
-            document.getElementById("cEnd").value = hex2a(window.atob(szparam.CardInfo.ValidityPeriodEnd));
-            document.getElementById("PhotoDisplay").src = 'data:image/jpg;base64,' + szparam.BmpInfo;
+            setDocumentInfo(szparam);
           } else if (jsonobject.Cmd == 30401) {
             szparam = JSON.parse(window.atob(jsonobject.UserParam));
             document.getElementById("cHelp").value = "websocket 协议 读取A卡SN成功：" + szparam.SN;
@@ -125,9 +206,7 @@
             szparam = JSON.parse(window.atob(jsonobject.UserParam));
             if (szparam.State == 0)
             {
-            	document.getElementById("cHelp").value = "读卡器已被拔出";
             }
-            else document.getElementById("cHelp").value = "读卡器已插入";
           }
         }
         else{
@@ -137,6 +216,12 @@
     }
 
     function cleanMsg() {
+      document.getElementById("cCardType").value = "";
+      document.getElementById("cVersion").value = "";
+      document.getElementById("cOtherNO").value = "";
+      document.getElementById("cSignNum").value = "";
+      document.getElementById("cCountry").value = "";
+      document.getElementById("cEnName").value = "";
       document.getElementById("cHelp").value = "";
       document.getElementById("cName").value = "";
       document.getElementById("cSN").value = "";
@@ -149,6 +234,7 @@
       document.getElementById("cBegin").value = "";
       document.getElementById("cEnd").value = "";
       document.getElementById("PhotoDisplay").src = 'data:image/jpg;base64,' + "";
+      document.getElementById("cardPhotoDisplay").src = 'data:image/jpg;base64,' + "";
     }
 
     function WS_GetASN() {
@@ -177,17 +263,7 @@
         success: function(result) {
           document.getElementById("cHelp").value = "web api接口：" + webUrl + " 读取身份证信息成功";
           szparam = result;
-          document.getElementById("cName").value = hex2a(window.atob(szparam.CardInfo.Name));
-          document.getElementById("cSN").value = szparam.CardInfo.SN;
-          document.getElementById("cNo").value = hex2a(window.atob(szparam.CardInfo.No));
-          document.getElementById("cSex").value = hex2a(window.atob(szparam.CardInfo.Sex));
-          document.getElementById("cBirthday").value = hex2a(window.atob(szparam.CardInfo.Birthday));
-          document.getElementById("cNation").value = hex2a(window.atob(szparam.CardInfo.Nation));
-          document.getElementById("cAddress").value = hex2a(window.atob(szparam.CardInfo.Address));
-          document.getElementById("cDepartment").value = hex2a(window.atob(szparam.CardInfo.SignedDepartment));
-          document.getElementById("cBegin").value = hex2a(window.atob(szparam.CardInfo.ValidityPeriodBegin));
-          document.getElementById("cEnd").value = hex2a(window.atob(szparam.CardInfo.ValidityPeriodEnd));
-          document.getElementById("PhotoDisplay").src = 'data:image/jpg;base64,' + szparam.BmpInfo;
+          setDocumentInfo(szparam);
         },
         error: function(jqXHR, textStatus, errorThrown) {
           document.getElementById("cHelp").value = "web api接口：" + webUrl + " 读取身份证失败，原因:"+hex2a(window.atob(errorThrown));
@@ -210,6 +286,30 @@
         }
       });
     }
+    function Http_GetDevState() {
+
+      var webUrl = "http://" + document.getElementById("cConnect").value + "/api/devstate";
+      $.ajax({
+        url: webUrl,
+        type: "GET",
+        dataType: "json",
+        success: function(result) {
+          szparam = result;
+          if (szparam.State==1)
+          {
+          document.getElementById("cHelp").value = "web api接口：" + webUrl + " 读取成功。读卡器已连接";
+          }
+          else
+          {
+          document.getElementById("cHelp").value = "web api接口：" + webUrl + " 读取成功。读卡器已拔出";
+          }
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          document.getElementById("cHelp").value = "web api接口：" + webUrl + " 读取读卡器状态失败";
+        }
+      });
+    }
+
     function Http_GetBCardNo() {
 
       var webUrl = "http://" + document.getElementById("cConnect").value + "/api/bsn";

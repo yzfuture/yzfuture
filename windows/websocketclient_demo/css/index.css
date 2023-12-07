@@ -20,7 +20,7 @@ body{
 }
 
 .container>.content {
-  background-color: #FFF;  
+  background-color: #FFF;
   border: 1px solid #eee;
   box-shadow: 0px 0px 10px #ccc;
   border-radius: 5px;
@@ -116,8 +116,8 @@ body{
 }
 
 
-.ID-card{
-  height: 235px;  
+.ID-card, .GAT-card, .WGR-card, .WGR-card-1{
+  height: 235px;
   background-size: 90%;
   background-position: center;
   background-repeat: no-repeat;
@@ -131,76 +131,97 @@ body{
   background-image: url(../images/card_back.png);
 }
 
-.ID-card>p{
+.GAT-card.card-hongkong-macao-taiwan-front{
+  background-image: url(../images/card-hongkong-macao-taiwan-front.png);
+  margin-bottom: 20px;
+}
+.GAT-card.card-hongkong-macao-back{
+  background-image: url(../images/card-hongkong-macao-back.png);
+}
+.GAT-card.card-taiwan-back{
+  background-image: url(../images/card-taiwan-back.png);
+}
+.WGR-card-1.card-old-foreigner-front{
+  background-image: url(../images/card-old-foreigner-front.png);
+}
+.WGR-card-1.card-old-foreigner-back{
+  background-image: url(../images/card-old-foreigner-back.png);
+}
+.WGR-card.card-new-foreigner-front{
+  background-image: url(../images/card-new-foreigner-front.png);
+}
+.WGR-card.card-new-foreigner-back{
+  background-image: url(../images/card-new-foreigner-back.png);
+}
+
+#card-front>p{
   margin: 0;
   position: absolute;
   font-size: 13px;
   font-weight: 600;
 }
 
-
-#image{
+.image{
   position: absolute;
   top: 40px;
   right: 40px;
   width: 100px;
   height: 120px;
 }
-#image[src=""],#image:not([src]){
+.image[src=""],.image:not([src]){
   opacity: 0;
 }
 
-#name{
-  top: 35px;
+.ID-card>.name{
+  top: 39px;
   left: 90px;
   font-size: 16px;
 }
-#sex{
+.ID-card>.sex{
   top: 66px;
   left: 90px;
 }
-#nation{
+.ID-card>.nation{
   top: 66px;
   left: 175px;
 }
-#year{
+.ID-card>.year{
   top: 94px;
   left: 90px;
 }
-#month{
+.ID-card>.month{
   top: 94px;
   left: 145px;
   width: 25px;
   text-align: center;
 }
-#date{
+.ID-card>.date{
   top: 94px;
   left: 183px;
   width: 25px;
   text-align: center;
 }
-#address{
+.ID-card>.address{
   top: 121px;
   left: 90px;
   width: 180px;
   text-align: left;
   letter-spacing: 2px;
 }
-#number{
+.ID-card>.number{
   top: 190px;
   left: 150px;
   font-size: 15px;
   letter-spacing: 2px;
 }
-#department{
+.ID-card>.department{
   bottom: 54px;
   left: 175px;
 }
-#expiry{
-  bottom: 25px;
+.ID-card>.expiry{
+  bottom: 26px;
   left: 175px;
 }
-
 
 .copyright{
   font-size: 14px;
@@ -210,4 +231,148 @@ body{
 }
 .copyright .copyright-item{
   margin-right: 10px;
+}
+/*外国人永久居住证--- 旧版*/
+.WGR-card-1>.name{
+  top: 35px;
+  left: 51px;
+  font-size: 16px;
+}
+.WGR-card-1>.sex{
+  top: 80px;
+  left: 51px;
+}
+
+.WGR-card-1>.year{
+  top: 80px;
+  left: 134px;
+}
+.WGR-card-1>.month{
+  top: 110px;
+  left: 51px;
+}
+.WGR-card-1>.date{
+  top: 141px;
+  left: 51px;
+}
+.WGR-card-1>.address{
+  top: 172px;
+  left: 51px;
+  width: 180px;
+  text-align: left;
+  letter-spacing: 2px;
+}
+.WGR-card-1>.number{
+  top: 205px;
+  left: 51px;
+  font-size: 15px;
+  letter-spacing: 2px;
+}
+
+/*外国人永久居住证--- 新版*/
+.WGR-card>.name{
+  top: 48px;
+  left: 51px;
+  font-size: 16px;
+}
+.WGR-card>.enName{
+  top: 66px;
+  left: 51px;
+  font-size: 16px;
+}
+.WGR-card>.sex{
+  top: 102px;
+  left: 51px;
+}
+
+.WGR-card>.year{
+  top: 102px;
+  left: 134px;
+}
+.WGR-card>.month{
+  top: 138px;
+  left: 51px;
+}
+.WGR-card>.date{
+  top: 176px;
+  left: 51px;
+}
+.WGR-card>.address{
+  top: 172px;
+  left: 51px;
+  width: 180px;
+  text-align: left;
+  letter-spacing: 2px;
+}
+.WGR-card>.number{
+  top: 210px;
+  left: 51px;
+  font-size: 15px;
+  letter-spacing: 2px;
+}
+
+
+
+/*港澳台通行证*/
+.GAT-card>.name{
+  top: 29px;
+  left: 90px;
+  font-size: 16px;
+}
+.GAT-card>.sex{
+  top: 58px;
+  left: 90px;
+}
+.GAT-card>.year{
+  top: 86px;
+  left: 90px;
+}
+.GAT-card>.month{
+  top: 86px;
+  left: 145px;
+  width: 25px;
+  text-align: center;
+}
+.GAT-card>.date{
+  top: 86px;
+  left: 180px;
+  width: 25px;
+  text-align: center;
+}
+.GAT-card>.address{
+  top: 118px;
+  left: 90px;
+  width: 180px;
+  text-align: left;
+  letter-spacing: 2px;
+}
+.GAT-card>.number{
+  top: 194px;
+  left: 150px;
+  font-size: 15px;
+  letter-spacing: 2px;
+}
+.GAT-card>.department{
+  bottom: 61px;
+  left: 185px;
+}
+.GAT-card>.expiry{
+  bottom: 43px;
+  left: 185px;
+}
+.GAT-card>.pass-number{
+  bottom: 25px;
+  left: 185px;
+}
+.card-hongkong-macao-back> .expiry{
+  bottom: 42px;
+}
+.card-hongkong-macao-back > .pass-number{
+  bottom: 24px;
+}
+.ID-card>p, .card-hongkong-macao-back>p, .card-taiwan-back>p {
+  margin: 0;
+  position: absolute;
+  font-size: 12px;
+  font-weight: 600;
 }

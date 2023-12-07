@@ -17,7 +17,7 @@
     <div class="head flex justify-start align-center" style="margin-bottom: 20px;">
       <img class="logo" src="./images/logo.png" alt="LOGO">
       <h2>鱼住未来身份识别服务使用 Demo</h2>
-    </div>    
+    </div>
 
     <div class="content flex justify-start">
       <!-- 功能使用  -->
@@ -39,7 +39,7 @@
               <div class="flex flex-wrap">
                 <button id="websocket-ID" class="flex-sub">身份证</button>
                 <button id="websocket-ID-sn" class="flex-sub">身份证SN</button>
-                <button id="websocket-A-sn" class="flex-sub">A卡SN</button>            
+                <button id="websocket-A-sn" class="flex-sub">A卡SN</button>
                 <button id="websocket-device-No" class="flex-sub">设备唯一号</button>
               </div>
             </div>
@@ -72,20 +72,22 @@
           <p>SN 号：</p>
           <p id="SN-content"></p>
         </div>
-        <div class="ID-card card-front">
-          <img id="image" src="" alt="证件照">
-          <p id="name"></p>
-          <p id="sex"></p>
-          <p id="nation"></p>
-          <p id="year"></p>
-          <p id="month"></p>
-          <p id="date"></p>
-          <p id="address"></p>
-          <p id="number"></p>          
+        <div id="card-front" class="ID-card card-front">
+          <img class="image" src="" alt="证件照">
+          <p class="name"></p>
+          <p class="enName"></p>
+          <p class="sex"></p>
+          <p class="nation"></p>
+          <p class="year"></p>
+          <p class="month"></p>
+          <p class="date"></p>
+          <p class="address"></p>
+          <p class="number"></p>
         </div>
-        <div class="ID-card card-back">
-          <p id="department"></p>
-          <p id="expiry"></p>
+        <div id="card-back" class="ID-card card-back">
+          <p class="department"></p>
+          <p class="expiry"></p>
+          <p class="pass-number"></p>
         </div>
 
         <div class="flex justify-center">

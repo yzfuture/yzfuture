@@ -1,6 +1,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <iostream>
 #include <map>
 #include <chrono>
@@ -57,9 +58,9 @@ int readCardInfo()
 				if (cardGetCardSN(hlHandle, szSN, nSNlen))
 				{
 					printf("cardGetCardSN[%s]\r\n", szSN);
-					
-					TwoIdInfoStructEx cardinfo;
-					bool		bret = cardReadTwoCard(hlHandle, &onCardReadProgress, NULL, cardinfo);
+
+					CardInfoStruct cardinfo;
+					bool		bret = cardReadTwoCardEx(hlHandle, &onCardReadProgress, NULL, cardinfo);
 					int		nSerialNumber(0);
 					char	szSerialNumber[1024] = { 0 };
 					cardGetSerialNumber(hlHandle, szSerialNumber, nSerialNumber);
@@ -75,65 +76,91 @@ int readCardInfo()
 						bsuccess = true;
 						printf("Decode success, converting Unicode to ANSI to get Chinese  +++++++++++++\r\n");
 						
-						char szBmp[1024 * 40] = { 0 };
-						int outlen = 1024 * 40;
-						if (decodeCardImage((unsigned char*)cardinfo.arrTwoIdPhoto, (char*)szBmp, &outlen))
+						unsigned char*	lpphoto = nullptr;
+						if (cardinfo.etype == eOldForeignerType)
 						{
-							FILE* fp(fopen("a.bmp", "wb"));
-							if (fp)
-							{
-								fwrite(szBmp, outlen, 1, fp);
-								fclose(fp);
-							}
+							printf("\r\n========Foreigner's Residence Permit(old)==========\r\n");
+							ForeignerInfoOld	oldInfo;
+							memset(&oldInfo, 0, sizeof(ForeignerInfoOld));
+							convertUncodeToUtf8(cardinfo.info.foreigner.arrEnName, sizeof(cardinfo.info.foreigner.arrEnName), oldInfo.arrEnName);
+							printf("EnName:%s\r\n", oldInfo.arrEnName);
+							convertUncodeToUtf8(cardinfo.info.foreigner.arrName, sizeof(cardinfo.info.foreigner.arrName), oldInfo.arrName);
+							printf("Name:%s\r\n", oldInfo.arrName);
+							convertUncodeToUtf8(cardinfo.info.foreigner.arrSex, sizeof(cardinfo.info.foreigner.arrSex), oldInfo.arrSex);
+							printf("Sex:%s\r\n", oldInfo.arrSex);
+							convertUncodeToUtf8(cardinfo.info.foreigner.arrNo, sizeof(cardinfo.info.foreigner.arrNo), oldInfo.arrNo);
+							printf("NO:%s\r\n", oldInfo.arrNo);
+							convertUncodeToUtf8(cardinfo.info.foreigner.arrCountry, sizeof(cardinfo.info.foreigner.arrCountry), oldInfo.arrCountry);
+							printf("Country:%s\r\n", oldInfo.arrCountry);
+							convertUncodeToUtf8(cardinfo.info.foreigner.arrBirthday, sizeof(cardinfo.info.foreigner.arrBirthday), oldInfo.arrBirthday);
+							printf("Birthday:%s\r\n", oldInfo.arrBirthday);
+							convertUncodeToUtf8(cardinfo.info.foreigner.arrValidityPeriodBegin, sizeof(cardinfo.info.foreigner.arrValidityPeriodBegin), oldInfo.arrValidityPeriodBegin);
+							printf("BeginData:%s\r\n", oldInfo.arrValidityPeriodBegin);
+							convertUncodeToUtf8(cardinfo.info.foreigner.arrValidityPeriodEnd, sizeof(cardinfo.info.foreigner.arrValidityPeriodEnd), oldInfo.arrValidityPeriodEnd);
+							printf("EndDate:%s\r\n", oldInfo.arrValidityPeriodEnd);
+							lpphoto = cardinfo.info.foreigner.arrPhoto;
 						}
-					}					
-					
-					/*
-					
-					TwoCardInfoStruct cardinfo;
-					bool		bret = cardReadTwoCardEx(hlHandle, &onCardReadProgress, NULL, cardinfo);
-					int		nSerialNumber(0);
-					char	szSerialNumber[1024] = { 0 };
-					cardGetSerialNumber(hlHandle, szSerialNumber, nSerialNumber);
-					printf("Serial Number [%s]\r\n", szSerialNumber);
-					if (!bret)
-					{
-						int		nlen(0);
-						char	szError[1024] = { 0 };
-						cardGetErrorInfo(hlHandle, szError, nlen, cardGetLastErrorCode(hlHandle));
-					}
-					else
-					{
-						bsuccess = true;
-						if (cardinfo.etype == eTwoIDType || cardinfo.etype == eTwoGATType)
+						else if (cardinfo.etype == eNewForeignerType)
 						{
-							// eTwoIDType 身份证
-							// eTwoGATType 港澳台居民居住证
-							printf("user NO:%s\r\n", WcharToChar((char*)cardinfo.twoInfo.arrTwoIdNo, sizeof(cardinfo.twoInfo.arrTwoIdNo)).c_str());
-							printf("user Name:%s\r\n", WcharToChar((char*)cardinfo.twoInfo.arrTwoIdName, sizeof(cardinfo.twoInfo.arrTwoIdName)).c_str());
-							printf("user Address:%s\r\n", WcharToChar((char*)cardinfo.twoInfo.arrTwoIdAddress, sizeof(cardinfo.twoInfo.arrTwoIdAddress)).c_str());
-							printf("user Birthday:%s\r\n", WcharToChar((char*)cardinfo.twoInfo.arrTwoIdBirthday, sizeof(cardinfo.twoInfo.arrTwoIdBirthday)).c_str());
-							printf("user Period:%s~%s\r\n", WcharToChar((char*)cardinfo.twoInfo.arrTwoIdValidityPeriodBegin, sizeof(cardinfo.twoInfo.arrTwoIdValidityPeriodBegin)).c_str(), WcharToChar((char*)cardinfo.twoInfo.arrTwoIdValidityPeriodEnd, sizeof(cardinfo.twoInfo.arrTwoIdValidityPeriodEnd)).c_str());
-							printf("user Department:%s\r\n", WcharToChar((char*)cardinfo.twoInfo.arrTwoIdSignedDepartment, sizeof(cardinfo.twoInfo.arrTwoIdSignedDepartment)).c_str());
-                        
+							printf("\r\n========Foreigner's Residence Permit(new)==========\r\n");
+							ForeignerInfoNew newForeigner;
+							convertUncodeToUtf8(cardinfo.info.newForeigner.arrEnName, sizeof(cardinfo.info.newForeigner.arrEnName), newForeigner.arrEnName);
+							printf("EnName:%s\r\n", newForeigner.arrEnName);
+							convertUncodeToUtf8(cardinfo.info.newForeigner.arrName, sizeof(cardinfo.info.newForeigner.arrName), newForeigner.arrName);
+							printf("Name:%s\r\n", newForeigner.arrName);
+							convertUncodeToUtf8(cardinfo.info.newForeigner.arrNo, sizeof(cardinfo.info.newForeigner.arrNo), newForeigner.arrNo);
+							printf("NO:%s\r\n", newForeigner.arrNo);
+							convertUncodeToUtf8(cardinfo.info.newForeigner.arrCountry, sizeof(cardinfo.info.newForeigner.arrCountry), newForeigner.arrCountry);
+							printf("Country:%s\r\n", newForeigner.arrCountry);
+							convertUncodeToUtf8(cardinfo.info.newForeigner.arrBirthday, sizeof(cardinfo.info.newForeigner.arrBirthday), newForeigner.arrBirthday);
+							printf("Birthday:%s\r\n", newForeigner.arrBirthday);
+							convertUncodeToUtf8(cardinfo.info.newForeigner.arrValidityPeriodBegin, sizeof(cardinfo.info.newForeigner.arrValidityPeriodBegin), newForeigner.arrValidityPeriodBegin);
+							printf("BeginData:%s\r\n", newForeigner.arrValidityPeriodBegin);
+							convertUncodeToUtf8(cardinfo.info.newForeigner.arrValidityPeriodEnd, sizeof(cardinfo.info.newForeigner.arrValidityPeriodEnd), newForeigner.arrValidityPeriodEnd);
+							printf("EndDate:%s\r\n", newForeigner.arrValidityPeriodEnd);
+							lpphoto = cardinfo.info.newForeigner.arrPhoto;
+						}
+						else
+						{
+							if (cardinfo.etype == eTwoGATType) printf("\r\n========Hong Kong, Macao, and Taiwan Residence Permit==========\r\n");
+							else printf("\r\n========TwoID==========\r\n");
+							TwoIdInfoStruct twoId;
+							convertUncodeToUtf8(cardinfo.info.twoId.arrNo, sizeof(cardinfo.info.twoId.arrNo), twoId.arrNo);
+							printf("NO:%s\r\n", twoId.arrNo);
+							convertUncodeToUtf8(cardinfo.info.twoId.arrName, sizeof(cardinfo.info.twoId.arrName), twoId.arrName);
+							printf("Name:%s\r\n", twoId.arrName);
+							convertUncodeToUtf8(cardinfo.info.twoId.arrAddress, sizeof(cardinfo.info.twoId.arrAddress), twoId.arrAddress);
+							printf("Address:%s\r\n", twoId.arrAddress);
+							convertUncodeToUtf8(cardinfo.info.twoId.arrBirthday, sizeof(cardinfo.info.twoId.arrBirthday), twoId.arrBirthday);
+							printf("Birthday:%s\r\n", twoId.arrBirthday);
+							convertUncodeToUtf8(cardinfo.info.twoId.arrValidityPeriodBegin, sizeof(cardinfo.info.twoId.arrValidityPeriodBegin), twoId.arrValidityPeriodBegin);
+							convertUncodeToUtf8(cardinfo.info.twoId.arrValidityPeriodEnd, sizeof(cardinfo.info.twoId.arrValidityPeriodEnd), twoId.arrValidityPeriodEnd);
+							printf("Date:%s~%s\r\n", twoId.arrValidityPeriodBegin, twoId.arrValidityPeriodEnd);
+							convertUncodeToUtf8(cardinfo.info.twoId.arrSignedDepartment, sizeof(cardinfo.info.twoId.arrSignedDepartment), twoId.arrSignedDepartment);
+							printf("SignedDepartment:%s\r\n", twoId.arrSignedDepartment);
+							lpphoto = cardinfo.info.twoId.arrPhoto;
+						}
+						if (lpphoto)
+						{
 							char szBmp[1024 * 40] = { 0 };
 							int outlen = 1024 * 40;
-							if (decodeCardImage((unsigned char*)cardinfo.twoInfo.arrTwoIdPhoto, (char*)szBmp, &outlen))
+							if (decodeCardImage(lpphoto, szBmp, &outlen))
 							{
+								FILE* fpwlt(fopen("a.wlt", "wb"));
+								if (fpwlt)
+								{
+									fwrite(lpphoto, 1024, 1, fpwlt);
+									fclose(fpwlt);
+								}
 								FILE* fp(fopen("a.bmp", "wb"));
 								if (fp)
 								{
 									fwrite(szBmp, outlen, 1, fp);
 									fclose(fp);
 								}
-							}							
+							}
 						}
-						else if (cardinfo.etype == eTwoForeignerType)
-						{
-							// 外国人永久居住证
-							printf("En name:%s\r\n", cardinfo.foreignerInfo.arrEnName);
-						}
-					}*/
+					}		
 				}
 			}
 		}
