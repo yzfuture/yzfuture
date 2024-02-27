@@ -41,10 +41,16 @@ const char*	__stdcall cardGetLastError(YZWLHandle nDeviceHandle, int &nlen);
 void __stdcall convertCardInfoToAnsi(TwoIdInfoStructEx &cardinfo);
 void __stdcall convertCardInfoToAnsiEx(CardInfoStruct &cardinfo);
 
+// 解码身份证头像
 // srcimage长度固定为1024 
-// outimage大小由外面自己申请，大小不小于40KB
+// outimage大小由外面自己申请，大小不小于40KB，生成身份证头像bmp格式
 // outlen传入时为outimage实际大小，传出时为实际图片大小
 bool __stdcall decodeCardImage(unsigned char* srcimage, char* outimage, int& outlen);
+
+// 合成身份证图片正反面
+// outimage大小由外面自己申请，大小不小于200KB，生成身份证图片正反面bmp格式
+// outlen传入时为outimage实际大小，传出时为实际图片大小
+bool __stdcall psInfoToImage(CardInfoStruct cardinfo, char* outimage, int& outlen);
 
 void __stdcall logoutCardServer();
 
