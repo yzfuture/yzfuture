@@ -46,10 +46,19 @@ namespace WindowsFormsApp1
         [return: MarshalAs(UnmanagedType.I1)]
         public static extern bool cardReadTwoCard(int nDeviceHandle, int cardCB, ref TwoIdInfoStruct cardinfo);//读卡
 
+        [DllImport("readCardInfo.dll", CharSet = CharSet.Ansi, ExactSpelling = false,
+             CallingConvention = CallingConvention.StdCall)]//readCardInfo.dll
+        [return: MarshalAs(UnmanagedType.I1)]
+        public static extern bool cardReadTwoCardEx(int nDeviceHandle, int cardCB, ref CardInfoStruct cardinfo);//读卡
+
         [DllImport("readCardInfo.dll")]//readCardInfo.dll
         [return: MarshalAs(UnmanagedType.I1)]
         public static extern bool decodeCardImage(byte[] srcimage, byte[] outimage, ref int outlen);
 
+        [DllImport("readCardInfo.dll")]//readCardInfo.dll
+        [return: MarshalAs(UnmanagedType.I1)]
+        public static extern bool twoIdToImage(TwoIdInfoStructEx twoId, byte[] outimage, ref int outlen);
+        
         [DllImport("readCardInfo.dll")]//readCardInfo.dll
         [return: MarshalAs(UnmanagedType.I1)]
         public static extern bool cardCloseDevice(int nDeviceHandle);//关闭
@@ -64,32 +73,42 @@ namespace WindowsFormsApp1
         {
             return decodeCardImage(srcimage, outimage, ref outlen);
         }
-
-        public static TwoIdInfoStruct ReadCardNo(Boolean bonLine)
+        public static byte[] ToByteArray(CardInfoStruct cardinfo)
         {
-            TwoIdInfoStruct sttTwoIdInfo = new TwoIdInfoStruct();
-            sttTwoIdInfo.arrTwoIdName = new byte[30];					//姓名 UNICODE
-            sttTwoIdInfo.arrTwoIdSex = new byte[2];					//性别 UNICODE
-            sttTwoIdInfo.arrTwoIdNation = new byte[4];					//民族 UNICODE
-            sttTwoIdInfo.arrTwoIdBirthday = new byte[16];				//出生日期 UNICODE YYYYMMDD
-            sttTwoIdInfo.arrTwoIdAddress = new byte[70];				//住址 UNICODE
-            sttTwoIdInfo.arrTwoIdNo = new byte[36];					//身份证号码 UNICODE
-            sttTwoIdInfo.arrTwoIdSignedDepartment = new byte[30];		//签发机关 UNICODE
-            sttTwoIdInfo.arrTwoIdValidityPeriodBegin = new byte[16];	//有效期起始日期 UNICODE YYYYMMDD
-            sttTwoIdInfo.arrTwoIdValidityPeriodEnd = new byte[16];		//有效期截止日期 UNICODE YYYYMMDD 有效期为长期时存储“长期”
-            
-            sttTwoIdInfo.arrTwoOtherNO = new byte[18];
-            sttTwoIdInfo.arrTwoSignNum = new byte[4];
-            sttTwoIdInfo.arrTwoRemark1 = new byte[6];
-            sttTwoIdInfo.arrTwoType = new byte[2];
-            sttTwoIdInfo.arrTwoRemark2 = new byte[6];
+            int size = Marshal.SizeOf(cardinfo);
+            IntPtr ptr = Marshal.AllocHGlobal(size);
+            Marshal.StructureToPtr(cardinfo, ptr, false);
+            byte[] bytes = new byte[size];
+            Marshal.Copy(ptr, bytes, 0, size);
+            Marshal.FreeHGlobal(ptr);
+            return bytes;
+        }
+        public static byte[] StructToBytes(CardInfoStruct structure)
+        {
+            int size = Marshal.SizeOf(structure);
+            byte[] buffer = new byte[size];
 
-            sttTwoIdInfo.arrTwoIdNewAddress = new byte[70];			//最新住址 UNICODE
-            sttTwoIdInfo.arrReserve = new byte[2];			//最新住址 UNICODE
-            sttTwoIdInfo.arrTwoIdPhoto = new byte[1024];		//照片信息
-            sttTwoIdInfo.arrTwoIdFingerprint = new byte[1024];//指纹信息
-            sttTwoIdInfo.arrTwoIdPhotoJpeg = new byte[4096];	//照片信息 JPEG 格式
-            sttTwoIdInfo.unTwoIdPhotoJpegLength = 0;	//照片信息长度 JPEG格式
+            IntPtr ptr = Marshal.AllocHGlobal(size);
+            try
+            {
+                Marshal.StructureToPtr(structure, ptr, false);
+                Marshal.Copy(ptr, buffer, 0, size);
+            }
+            finally
+            {
+                Marshal.FreeHGlobal(ptr);
+            }
+
+            return buffer;
+        }
+        public static bool getSFZBmp(CardInfoStruct cardinfo, byte[] outimage, ref int outlen)
+        {
+            return twoIdToImage(cardinfo.info.twoId, outimage, ref outlen);
+        }
+
+        public static CardInfoStruct ReadCardNo(Boolean bonLine)
+        {
+            CardInfoStruct sttTwoIdInfo = new CardInfoStruct();
 
             /*
              * cardReadInit
@@ -126,9 +145,9 @@ namespace WindowsFormsApp1
                 if (setCardType(hlHandle, 1))
                 {
                     if (cardFindCard(hlHandle, ref bmove))
-                    {
+                    { 
                         int cb = 0;
-                        bool bret = cardReadTwoCard(hlHandle, cb, ref sttTwoIdInfo);
+                        bool bret = cardReadTwoCardEx(hlHandle, cb, ref sttTwoIdInfo);
                         if (!bret)
                         {
                             MessageBox.Show("解码失败请重试");
@@ -202,4 +221,143 @@ namespace WindowsFormsApp1
 
     }
 
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct TwoIdInfoStructEx
+    {
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 30)]
+        public byte[] arrName;					//姓名 UNICODE
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
+        public byte[] arrSex;					//性别 UNICODE
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+        public byte[] arrNation;					//民族 UNICODE
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
+        public byte[] arrBirthday;				//出生日期 UNICODE YYYYMMDD
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 70)]
+        public byte[] arrAddress;				//住址 UNICODE
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 36)]
+        public byte[] arrNo;					//身份证号码 UNICODE
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 30)]
+        public byte[] arrSignedDepartment;		//签发机关 UNICODE
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
+        public byte[] arrValidityPeriodBegin;	//有效期起始日期 UNICODE YYYYMMDD
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
+        public byte[] arrValidityPeriodEnd;		//有效期截止日期 UNICODE YYYYMMDD 有效期为长期时存储“长期”
+        
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 18)]
+        public byte[] arrOtherNO;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+        public byte[] arrSignNum;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 6)]
+        public byte[] arrRemark1;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
+        public byte[] arrType;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 6)]
+        public byte[] arrRemark2;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 1024)]
+        public byte[] arrPhoto;		//照片信息
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 1024)]
+        public byte[] arrFingerprint;//指纹信息
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct ForeignerInfoOld
+    {
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 120)]
+        public byte[] arrEnName;					//英文名
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
+        public byte[] arrSex;					//性别 UNICODE
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 30)]
+        public byte[] arrNo;					//15个字符的居留证号码 UNICODE
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 6)]
+        public byte[] arrCountry;				//国籍 UNICODE GB/T2659-2000
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 30)]
+        public byte[] arrName;				//中文姓名 UNICODE 如果没有中文姓名，则全为0x0020
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
+        public byte[] arrValidityPeriodBegin;	//签发日期 UNICODE YYYYMMDD
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
+        public byte[] arrValidityPeriodEnd;		//终止日期 UNICODE YYYYMMDD
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
+        public byte[] arrBirthday;		//出生日期 UNICODE YYYYMMDD
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+        public byte[] arrVersion;// 版本号
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
+        public byte[] arrSignedDepartment;//签发机关代码 UNICODE 证件芯片内不存储签发机关
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
+        public byte[] arrType;// 证件类型标识
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 6)]
+        public byte[] arrRemark2;// 预留区
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 1024)]
+        public byte[] arrPhoto;		//照片信息
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 1024)]
+        public byte[] arrFingerprint;//指纹信息
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct ForeignerInfoNew
+    {
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 30)]
+        public byte[] arrName;					//姓名 UNICODE
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
+        public byte[] arrSex;					//性别 UNICODE
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+        public byte[] arrNation;					//民族 UNICODE
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
+        public byte[] arrBirthday;				//出生日期 UNICODE YYYYMMDD
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 70)]
+        public byte[] arrEnName;				//外文姓名 UNICODE
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 36)]
+        public byte[] arrNo;					//身份证号码 UNICODE
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 30)]
+        public byte[] arrSignedDepartment;		//签发机关 UNICODE
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
+        public byte[] arrValidityPeriodBegin;	//有效期起始日期 UNICODE YYYYMMDD
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
+        public byte[] arrValidityPeriodEnd;		//有效期截止日期 UNICODE YYYYMMDD 有效期为长期时存储“长期”
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 18)]
+        public byte[] arrOtherNO;// 通行证类号码
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+        public byte[] arrSignNum;// 签发次数
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 6)]
+        public byte[] arrCountry;//国籍 UNICODE GB/T2659-2000
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
+        public byte[] arrType;// 证件类型标识
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 6)]
+        public byte[] arrRemark2;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 1024)]
+        public byte[] arrPhoto;		//照片信息
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 1024)]
+        public byte[] arrFingerprint;//指纹信息
+    }
+    public enum ECardFormatType : byte
+    {
+        TwoIDType = (byte)' ',   // 身份证
+        TwoGATType = (byte)'J',   // 港澳台居民居住证
+        OldForeignerType = (byte)'I',  // 外国人永久居留身份证
+        NewForeignerType = (byte)'Y'   // 外国人永久居留身份证(新版)
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct CardInfoStruct
+    {
+        public byte etype;  // eCardFormatType
+        public InfoUnion info;
+    }
+
+    [StructLayout(LayoutKind.Explicit)]
+    public struct InfoUnion
+    {
+        [FieldOffset(0)]
+        public TwoIdInfoStructEx twoId;  // 身份证/港澳台居民居住证
+
+        [FieldOffset(0)]
+        public ForeignerInfoOld foreigner;  // 旧版外国人永久居住证
+
+        [FieldOffset(0)]
+        public ForeignerInfoNew newForeigner;  // 新版外国人永久居住证
+    }
 }

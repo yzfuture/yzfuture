@@ -19,6 +19,7 @@ YZWLHandle __stdcall cardOpenDevice(int nouttime, int &nerr, int nDeviceNo = 0);
 
 bool __stdcall cardReadTwoCard(YZWLHandle nDeviceHandle, cardReadProgress cardCB, TwoIdInfoStructEx &cardinfo);
 bool __stdcall cardReadTwoCardEx(YZWLHandle nDeviceHandle, cardReadProgress cardCB, CardInfoStruct& cardinfo);
+bool __stdcall cardReadTwoCardBase(YZWLHandle nDeviceHandle, cardReadProgress cardCB, char* szbase, int& nlen, char	&ctype, bool boldSdt=false);// szbase大小不小于256+1024+1024，存储结构与具体证件对应结构体相同  nlen传入值不得小于256+1024+1024，传出值为实际大小
 
 const char* __stdcall cardGetSerialNumber(YZWLHandle nDeviceHandle);
 
@@ -50,7 +51,10 @@ bool __stdcall decodeCardImage(unsigned char* srcimage, char* outimage, int& out
 // 合成身份证图片正反面
 // outimage大小由外面自己申请，大小不小于200KB，生成身份证图片正反面bmp格式
 // outlen传入时为outimage实际大小，传出时为实际图片大小
-bool __stdcall psInfoToImage(CardInfoStruct cardinfo, char* outimage, int& outlen);
+bool __stdcall cardInfoToImage(CardInfoStruct cardinfo, char* outimage, int& outlen);
+bool __stdcall twoIdToImage(TwoIdInfoStruct twoId, char* outimage, int& outlen);
+bool __stdcall oldForeignerToImage(ForeignerInfoOld foreigner, char* outimage, int& outlen);
+bool __stdcall newForeignerToImage(ForeignerInfoNew foreigner, char* outimage, int& outlen);
 
 void __stdcall logoutCardServer();
 
