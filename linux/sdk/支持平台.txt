@@ -7,6 +7,7 @@ arm架构下的uclinux
 arm架构下的hisiv500
 
 国产操作系统
-飞腾cpu，银河麒麟操作系统 请使用arm_RaspberryPi
+银河麒麟操作系统下的鲲鹏/飞腾cpu 请使用arm64_linux
+银河麒麟操作系统下的x86_64CPU/AMD64版/兆芯/海光,请使用x86_linux
 
 libreadCardInfo_平台名称.so为身份证解码库

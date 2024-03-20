@@ -16,11 +16,10 @@ void onCardReadProgress(void* userData, unsigned int nProgress)
 	printf("read progress[%u]\r\n", nProgress);
 }
 
-int readCardInfo()
+int readCardInfo(int nindex)
 {
 	std::string szServerIP = "id.yzfuture.cn";
 	int			nServerPort = 443;
-	int			nindex = 0;
 
 	bool		bsuccess(false);
 	std::string	szerror = "";
@@ -32,7 +31,7 @@ int readCardInfo()
 		2,
 		nerr, 
 		nindex);
-	if (hlHandle != -1)
+	if (hlHandle >= 0)
 	{
 		cardBeep(hlHandle);
 		
@@ -74,7 +73,7 @@ int readCardInfo()
 					else
 					{
 						bsuccess = true;
-						printf("Decode success, converting Unicode to ANSI to get Chinese  +++++++++++++\r\n");
+						printf("\033[34mDecode success, converting Unicode to ANSI to get Chinese  +++++++++++++\r\n");
 						
 						unsigned char*	lpphoto = nullptr;
 						if (cardinfo.etype == eOldForeignerType)
@@ -160,6 +159,7 @@ int readCardInfo()
 								}
 							}
 						}
+						printf("\033[0m");
 					}		
 				}
 			}
@@ -190,11 +190,18 @@ int main(int argc, char *argv[])
 	char	cexit = '0';
 	do
 	{
-		readCardInfo();
-		//
-		printf("\r\nenter any key continet, 'q' or 'Q' exit.\r\n");
+		printf("\r\nPlease enter the device index number:\r\n 0	- YZWL Standard card reader\r\n 1	- SDT Offline card reader\r\n q/Q	- exit\r\n");
 		cexit = getchar();
+		if (cexit == '0' || cexit == '1')
+		{
+			if (cexit == '1') readCardInfo(1001);
+			else readCardInfo(0);
+		}
 		if ((cexit == 'q') || (cexit == 'Q')) break;
+		while ((cexit = getchar()) != '\n' && cexit != EOF) 
+		{
+			continue;
+		}
 	} while (true);
 	getchar();
 	return 0;
