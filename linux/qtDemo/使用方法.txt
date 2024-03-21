@@ -1,0 +1,21 @@
+将各个平台对应的libreadCardInfo_XXXXXX.so拷贝到/usr/lib目录
+如果有libwlt.so也放到和libreadCardInfo_XXXXXX.so相同目录
+文本编辑器修改test.pro文件
+
+将
+unix:!macx: LIBS += -lreadCardInfo_x86_linux
+修改为
+unix:!macx: LIBS += -lreadCardInfo_XXXXXX   // _XXXXXX为对应平台后缀
+
+打开终端，切换到qtcreate安装目录
+运行以下命令，然后在qtcreator里面打开本工程后运行调试即可
+sudo ./qtcreator
+
+注：如果不用管理员权限打开qtcreator的话，那运行程序或调试会报打开设备失败
+
+
+
+如果需要直接运行可执行程序也需要用管理员权限
+sudo ./test
+不然会报：Open device failed:error code[-1]
+

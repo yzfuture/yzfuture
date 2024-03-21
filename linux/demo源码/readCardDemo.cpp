@@ -76,7 +76,7 @@ int readCardInfo(int nindex)
 						printf("\033[34mDecode success, converting Unicode to ANSI to get Chinese  +++++++++++++\r\n");
 						
 						unsigned char*	lpphoto = nullptr;
-						if (cardinfo.etype == eOldForeignerType)
+						if (cardinfo.etype == (char)eOldForeignerType)
 						{
 							printf("\r\n========Foreigner's Residence Permit(old)==========\r\n");
 							ForeignerInfoOld	oldInfo;
@@ -99,7 +99,7 @@ int readCardInfo(int nindex)
 							printf("EndDate:%s\r\n", oldInfo.arrValidityPeriodEnd);
 							lpphoto = cardinfo.info.foreigner.arrPhoto;
 						}
-						else if (cardinfo.etype == eNewForeignerType)
+						else if (cardinfo.etype == (char)eNewForeignerType)
 						{
 							printf("\r\n========Foreigner's Residence Permit(new)==========\r\n");
 							ForeignerInfoNew newForeigner;
@@ -121,7 +121,7 @@ int readCardInfo(int nindex)
 						}
 						else
 						{
-							if (cardinfo.etype == eTwoGATType) printf("\r\n========Hong Kong, Macao, and Taiwan Residence Permit==========\r\n");
+							if (cardinfo.etype == (char)eTwoGATType) printf("\r\n========Hong Kong, Macao, and Taiwan Residence Permit==========\r\n");
 							else printf("\r\n========TwoID==========\r\n");
 							TwoIdInfoStruct twoId;
 							convertUncodeToUtf8(cardinfo.info.twoId.arrNo, sizeof(cardinfo.info.twoId.arrNo), twoId.arrNo);
@@ -169,6 +169,7 @@ int readCardInfo(int nindex)
 			int		nlen(0);
 			char	szError[1024] = { 0 };
 			cardGetErrorInfo(hlHandle, szError, nlen, cardGetLastErrorCode(hlHandle));
+			printf("set card type failed\r\n");
 		}
 	}
 	else
@@ -176,6 +177,7 @@ int readCardInfo(int nindex)
 		int		nlen(0);
 		char	szError[1024] = { 0 };
 		cardGetErrorInfo(hlHandle, szError, nlen, -19997);
+		printf("open device failed\r\n");
 	}
 	if (hlHandle >= 0)
 	{

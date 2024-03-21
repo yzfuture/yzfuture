@@ -10,6 +10,8 @@ typedef long long YZWLHandle;
 typedef long YZWLHandle;
 #endif
 
+#pragma pack(push)
+#pragma pack(1)
 typedef enum cardType
 {
 	unkwonType = -1,
@@ -44,9 +46,6 @@ typedef struct _TwoIdInfoStructEx
 	unsigned int  unTwoIdPhotoJpegLength;	//照片信息长度 JPEG格式
 }TwoIdInfoStructEx;
 
-
-#pragma pack(push)
-#pragma pack(1)
 //二代证信息结构
 typedef struct _TwoIdInfoStruct
 {
@@ -130,4 +129,5 @@ typedef struct _CardInfoStruct
 		ForeignerInfoNew newForeigner; // 新版外国人永久居住证
 	}info;
 }CardInfoStruct;
+
 #pragma pack(pop)
