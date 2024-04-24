@@ -1,0 +1,10 @@
+
+1.将SDK中lib文件夹下对应平台的so拷贝到多浏览器插件对应平台目录，并在此目录设置：
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:./
+
+2.给可执行程序授权 
+chrom a+x yzwlReadCardServer_平台名称
+
+3.管理员权限运行./yzwlReadCardServer_平台名称 即可
+
+

@@ -4,6 +4,6 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:./
 
 2.连接读卡器，放上身份证，保证网络畅通
 
-3.运行./readCardDemo_平台名称 即可
+3.管理员权限运行./readCardDemo_平台名称 即可
 
 
