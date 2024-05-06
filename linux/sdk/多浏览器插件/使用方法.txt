@@ -7,4 +7,7 @@ chrom a+x yzwlReadCardServer_平台名称
 
 3.管理员权限运行./yzwlReadCardServer_平台名称 即可
 
+支持websocket和webapi两种方式调用
 
+调用方法：
+参照websocketclient_web.html文件
