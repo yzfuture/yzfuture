@@ -57,7 +57,7 @@ namespace WindowsFormsApp1
 
         [DllImport("readCardInfo.dll")]//readCardInfo.dll
         [return: MarshalAs(UnmanagedType.I1)]
-        public static extern bool twoIdToImage(TwoIdInfoStructEx twoId, byte[] outimage, ref int outlen);
+        public static extern bool twoIdToImage(TwoIdInfoStructEx twoId, byte[] outimage, ref int outlen, int ntype, int nformat);
         
         [DllImport("readCardInfo.dll")]//readCardInfo.dll
         [return: MarshalAs(UnmanagedType.I1)]
@@ -103,7 +103,7 @@ namespace WindowsFormsApp1
         }
         public static bool getSFZBmp(CardInfoStruct cardinfo, byte[] outimage, ref int outlen)
         {
-            return twoIdToImage(cardinfo.info.twoId, outimage, ref outlen);
+            return twoIdToImage(cardinfo.info.twoId, outimage, ref outlen, 3, 1);
         }
 
         public static CardInfoStruct ReadCardNo(Boolean bonLine)
