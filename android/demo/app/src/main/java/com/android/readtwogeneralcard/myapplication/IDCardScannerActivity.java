@@ -537,37 +537,97 @@ public class IDCardScannerActivity extends Activity implements ActiveCallBack {
         }
         else if (msg.what == 1)
         {
-            if (readCard.GetTwoCardInfo().arrTwoIdPhoto != null) {
-                idimg.setBackground(new BitmapDrawable(Bytes2Bimap(readCard.GetTwoCardInfo().arrTwoIdPhoto)));
-            }
-            if (readCard.GetTwoCardInfo().szTwoType.equals("J")) {
-                edtype.setText("港澳居民居住证");
-                othernoTrue.setText(readCard.GetTwoCardInfo().szTwoOtherNO);
-                signTrue.setText(readCard.GetTwoCardInfo().szTwoSignNum);
-            } else {
-                edtype.setText("居民身份证");
-                othernoTrue.setText("");
-                signTrue.setText("");
-            }
-            edid.setText(readCard.GetTwoCardInfo().szTwoIdNo.trim());
-            edname.setText(readCard.GetTwoCardInfo().szTwoIdName.trim());
-            addTrue.setText(readCard.GetTwoCardInfo().szTwoIdAddress.trim());
-            sexTrue.setText(readCard.GetTwoCardInfo().szTwoIdSex.trim());
-            mzTrue.setText(readCard.GetTwoCardInfo().szTwoIdNation.trim() + "族");
-            gjTrue.setText("中国");
-            jgTrue.setText(readCard.GetTwoCardInfo().szTwoIdSignedDepartment.trim());
-            birthTrue.setText(readCard.GetTwoCardInfo().szTwoIdBirthday.substring(0, 4) + "-" + readCard.GetTwoCardInfo().szTwoIdBirthday.substring(4, 6) + "-" + readCard.GetTwoCardInfo().szTwoIdBirthday.substring(6, 8));
+            if (readCard.GetBCardInfo().type == 3) // 外国人永久居留身份证
+            {
+                if (readCard.GetBCardInfo().foreigner.photo != null) {
+                    idimg.setBackground(new BitmapDrawable(Bytes2Bimap(readCard.GetBCardInfo().foreigner.photo)));
+                }
+                edtype.setText(readCard.GetBCardInfo().foreigner.type);
+                edname.setText(readCard.GetBCardInfo().foreigner.name.trim());
+                sexTrue.setText(readCard.GetBCardInfo().foreigner.sex.trim());
+                gjTrue.setText(readCard.GetBCardInfo().foreigner.country.trim());
+                mzTrue.setText(readCard.GetBCardInfo().foreigner.nation.trim());
+                birthTrue.setText(readCard.GetBCardInfo().foreigner.birthday.trim());
+                edenname.setText(readCard.GetBCardInfo().foreigner.enName.trim());
+                edid.setText(readCard.GetBCardInfo().foreigner.no.trim());
+                addTrue.setText("");
+                jgTrue.setText(readCard.GetBCardInfo().foreigner.department.trim());
 
-            String startDate = readCard.GetTwoCardInfo().szTwoIdValidityPeriodBegin.substring(0, 4) + "-" + readCard.GetTwoCardInfo().szTwoIdValidityPeriodBegin.substring(4, 6) + "-" + readCard.GetTwoCardInfo().szTwoIdValidityPeriodBegin.substring(6, 8);
-            String endDate = "";
-            int nlen = readCard.GetTwoCardInfo().szTwoIdValidityPeriodEnd.indexOf("长期");
-            if (nlen != -1) {
-                endDate = "长期";
-            } else {
-                endDate = readCard.GetTwoCardInfo().szTwoIdValidityPeriodEnd.substring(0, 4) + "-" + readCard.GetTwoCardInfo().szTwoIdValidityPeriodEnd.substring(4, 6) + "-" + readCard.GetTwoCardInfo().szTwoIdValidityPeriodEnd.substring(6, 8);
+                String startDate = readCard.GetBCardInfo().foreigner.beginTime.substring(0, 4) + "-" + readCard.GetBCardInfo().foreigner.beginTime.substring(4, 6) + "-" + readCard.GetBCardInfo().foreigner.beginTime.substring(6, 8);
+                String endDate = "";
+                int nlen = readCard.GetBCardInfo().foreigner.endTime.indexOf("长期");
+                if (nlen != -1) {
+                    endDate = "长期";
+                } else {
+                    endDate = readCard.GetBCardInfo().foreigner.endTime.substring(0, 4) + "-" + readCard.GetBCardInfo().foreigner.endTime.substring(4, 6) + "-" + readCard.GetBCardInfo().foreigner.endTime.substring(6, 8);
+                }
+                yxqTrue.setText(startDate + "~" + endDate);
+                signTrue.setText(readCard.GetBCardInfo().foreigner.signNum.trim());
+                othernoTrue.setText(readCard.GetBCardInfo().foreigner.otherNo.trim());
             }
-            yxqTrue.setText(startDate + "~" + endDate);
-            //process.setText("100");
+            else if (readCard.GetBCardInfo().type == 4) // 外国人永久居留身份证（旧版）
+            {
+                if (readCard.GetBCardInfo().foreignerOld.photo != null) {
+                    idimg.setBackground(new BitmapDrawable(Bytes2Bimap(readCard.GetBCardInfo().foreignerOld.photo)));
+                }
+                edtype.setText(readCard.GetBCardInfo().foreignerOld.type);
+                edname.setText(readCard.GetBCardInfo().foreignerOld.name.trim());
+                sexTrue.setText(readCard.GetBCardInfo().foreignerOld.sex.trim());
+                gjTrue.setText(readCard.GetBCardInfo().foreignerOld.country.trim());
+                mzTrue.setText("");
+                birthTrue.setText(readCard.GetBCardInfo().foreignerOld.birthday.trim());
+                edenname.setText(readCard.GetBCardInfo().foreignerOld.enName.trim());
+                edid.setText(readCard.GetBCardInfo().foreignerOld.no.trim());
+                addTrue.setText("");
+                jgTrue.setText(readCard.GetBCardInfo().foreignerOld.department.trim());
+
+                String startDate = readCard.GetBCardInfo().foreignerOld.beginTime.substring(0, 4) + "-" + readCard.GetBCardInfo().foreignerOld.beginTime.substring(4, 6) + "-" + readCard.GetBCardInfo().foreignerOld.beginTime.substring(6, 8);
+                String endDate = "";
+                int nlen = readCard.GetBCardInfo().foreignerOld.endTime.indexOf("长期");
+                if (nlen != -1) {
+                    endDate = "长期";
+                } else {
+                    endDate = readCard.GetBCardInfo().foreignerOld.endTime.substring(0, 4) + "-" + readCard.GetBCardInfo().foreignerOld.endTime.substring(4, 6) + "-" + readCard.GetBCardInfo().foreignerOld.endTime.substring(6, 8);
+                }
+                yxqTrue.setText(startDate + "~" + endDate);
+                signTrue.setText("");
+                othernoTrue.setText("");
+            }
+            else
+            {
+                if (readCard.GetBCardInfo().sfz.photo != null) {
+                    idimg.setBackground(new BitmapDrawable(Bytes2Bimap(readCard.GetBCardInfo().sfz.photo)));
+                }
+                edtype.setText(readCard.GetBCardInfo().sfz.type);
+                if (readCard.GetBCardInfo().type == 1) {
+                    othernoTrue.setText(readCard.GetBCardInfo().sfz.otherNo);
+                    signTrue.setText(readCard.GetBCardInfo().sfz.signNum);
+                } else if (readCard.GetBCardInfo().type == 2) {
+                    othernoTrue.setText(readCard.GetBCardInfo().sfz.otherNo);
+                    signTrue.setText(readCard.GetBCardInfo().sfz.signNum);
+                } else{
+                    othernoTrue.setText("");
+                    signTrue.setText("");
+                }
+                edid.setText(readCard.GetBCardInfo().sfz.no.trim());
+                edname.setText(readCard.GetBCardInfo().sfz.name.trim());
+                addTrue.setText(readCard.GetBCardInfo().sfz.address.trim());
+                sexTrue.setText(readCard.GetBCardInfo().sfz.sex.trim());
+                mzTrue.setText(readCard.GetBCardInfo().sfz.nation.trim() + "族");
+                gjTrue.setText("中国");
+                jgTrue.setText(readCard.GetBCardInfo().sfz.department.trim());
+                birthTrue.setText(readCard.GetBCardInfo().sfz.birthday.substring(0, 4) + "-" + readCard.GetBCardInfo().sfz.birthday.substring(4, 6) + "-" + readCard.GetBCardInfo().sfz.birthday.substring(6, 8));
+
+                String startDate = readCard.GetBCardInfo().sfz.beginTime.substring(0, 4) + "-" + readCard.GetBCardInfo().sfz.beginTime.substring(4, 6) + "-" + readCard.GetBCardInfo().sfz.beginTime.substring(6, 8);
+                String endDate = "";
+                int nlen = readCard.GetBCardInfo().sfz.endTime.indexOf("长期");
+                if (nlen != -1) {
+                    endDate = "长期";
+                } else {
+                    endDate = readCard.GetBCardInfo().sfz.endTime.substring(0, 4) + "-" + readCard.GetBCardInfo().sfz.endTime.substring(4, 6) + "-" + readCard.GetBCardInfo().sfz.endTime.substring(6, 8);
+                }
+                yxqTrue.setText(startDate + "~" + endDate);
+            }
         }
         if (msg.what == -9999)
         {
@@ -656,7 +716,7 @@ public class IDCardScannerActivity extends Activity implements ActiveCallBack {
                 {
                     readCard.setDeviceType(1);
                 }
-                tt = readCard.NfcReadCard(intent);
+                tt = readCard.ReadBCard(intent);
                 if (tt == 41)
                 {
                     mHandler.sendEmptyMessageDelayed(-9999, 0);
