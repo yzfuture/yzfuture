@@ -134,21 +134,46 @@ public class MainActivity extends AppCompatActivity{
                     //设置读卡器类型 0联网 1离线，可以只设置一次
                     mReadCardAPI.setDeviceType(0);
                     //与手机读卡调用方法一至 读卡句柄填空即可
-                    int num =  mReadCardAPI.NfcReadCard(intent);
+                    int num =  mReadCardAPI.ReadBCard(intent);
                     if (num == 90) {
                         //读卡成功 获取读卡信息然后根据需求刷新UI
-                        TwoCardInfo cardInfo = mReadCardAPI.GetTwoCardInfo();
+                        CardInfo cardInfo = mReadCardAPI.GetBCardInfo();
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Log.e(NFC_TAG, "姓名：" + cardInfo.szTwoIdName);
-                                Log.e(NFC_TAG, "性别：" + cardInfo.szTwoIdSex);
-                                Log.e(NFC_TAG, "民族：" + cardInfo.szTwoIdNation);
-                                Log.e(NFC_TAG, "出生日期：" + cardInfo.szTwoIdBirthday);
-                                Log.e(NFC_TAG, "住址：" + cardInfo.szTwoIdAddress);
-                                Log.e(NFC_TAG, "身份证号：" + cardInfo.szTwoIdNo);
-                                Log.e(NFC_TAG, "签发机关：" + cardInfo.szTwoIdSignedDepartment);
-                                Log.e(NFC_TAG, "有限期限：" + cardInfo.szTwoIdValidityPeriodBegin + "-" + cardInfo.szTwoIdValidityPeriodEnd);
+
+                                if (cardInfo.type == 3) // 外国人永久居留身份证
+                                {
+                                    Log.e(NFC_TAG, "姓名：" + cardInfo.foreigner.name);
+                                    Log.e(NFC_TAG, "性别：" + cardInfo.foreigner.sex);
+                                    Log.e(NFC_TAG, "国家：" + cardInfo.foreigner.country);
+                                    Log.e(NFC_TAG, "出生日期：" + cardInfo.foreigner.birthday);
+                                    Log.e(NFC_TAG, "英文名：" + cardInfo.foreigner.enName);
+                                    Log.e(NFC_TAG, "身份证号：" + cardInfo.foreigner.no);
+                                    Log.e(NFC_TAG, "签发机关：" + cardInfo.foreigner.department);
+                                    Log.e(NFC_TAG, "有限期限：" + cardInfo..foreigner.beginTime + "-" + cardInfo.foreigner.endTime);
+                                }
+                                else if (cardInfo.type == 4) // 外国人永久居留身份证（旧版）
+                                {
+                                    Log.e(NFC_TAG, "姓名：" + cardInfo.foreignerOld.name);
+                                    Log.e(NFC_TAG, "性别：" + cardInfo.foreignerOld.sex);
+                                    Log.e(NFC_TAG, "国家：" + cardInfo.foreignerOld.country);
+                                    Log.e(NFC_TAG, "出生日期：" + cardInfo.foreignerOld.birthday);
+                                    Log.e(NFC_TAG, "居住证号：" + cardInfo.foreignerOld.no);
+                                    Log.e(NFC_TAG, "签发机关：" + cardInfo.foreignerOld.department);
+                                    Log.e(NFC_TAG, "有限期限：" + cardInfo..foreignerOld.beginTime + "-" + cardInfo.foreignerOld.endTime);
+                                }
+                                else
+                                {
+                                    Log.e(NFC_TAG, "姓名：" + cardInfo.sfz.name);
+                                    Log.e(NFC_TAG, "性别：" + cardInfo.sfz.sex);
+                                    Log.e(NFC_TAG, "民族：" + cardInfo.sfz.nation);
+                                    Log.e(NFC_TAG, "出生日期：" + cardInfo.sfz.birthday);
+                                    Log.e(NFC_TAG, "住址：" + cardInfo.sfz.address);
+                                    Log.e(NFC_TAG, "身份证号：" + cardInfo.sfz.no);
+                                    Log.e(NFC_TAG, "签发机关：" + cardInfo.sfz.department);
+                                    Log.e(NFC_TAG, "有限期限：" + cardInfo..sfz.beginTime + "-" + cardInfo.sfz.endTime);
+                                }
 
                             }
                         });
