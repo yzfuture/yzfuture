@@ -6,6 +6,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+#if _WIN64
+using DeviceHandle = System.Int64;
+#else
+using DeviceHandle = System.Int32;
+#endif
+
 namespace WindowsFormsApp1
 {
     public static class ReadCard
@@ -30,26 +36,26 @@ namespace WindowsFormsApp1
 
         [DllImport("readCardInfo.dll", CharSet = CharSet.Ansi, ExactSpelling = false,
              CallingConvention = CallingConvention.StdCall)]//readCardInfo.dll
-        public static extern int cardOpenDevice(int nouttime, ref int nerr, int nDeviceNo);//打开读卡器硬件设备
+        public static extern DeviceHandle cardOpenDevice(int nouttime, ref int nerr, int nDeviceNo);//打开读卡器硬件设备
 
         [DllImport("readCardInfo.dll")]//readCardInfo.dll
         [return: MarshalAs(UnmanagedType.I1)]
-        public static extern bool setCardType(int nDeviceHandle, int ctype);//设置卡片类型 0-A卡   1-B卡
+        public static extern bool setCardType(DeviceHandle nDeviceHandle, int ctype);//设置卡片类型 0-A卡   1-B卡
 
 
         [DllImport("readCardInfo.dll")]//readCardInfo.dll
         [return: MarshalAs(UnmanagedType.I1)]
-        public static extern bool cardFindCard(int nDeviceHandle, ref bool bmove);//寻卡
+        public static extern bool cardFindCard(DeviceHandle nDeviceHandle, ref bool bmove);//寻卡
 
         [DllImport("readCardInfo.dll",CharSet = CharSet.Ansi, ExactSpelling = false,
              CallingConvention = CallingConvention.StdCall)]//readCardInfo.dll
         [return: MarshalAs(UnmanagedType.I1)]
-        public static extern bool cardReadTwoCard(int nDeviceHandle, int cardCB, ref TwoIdInfoStruct cardinfo);//读卡
+        public static extern bool cardReadTwoCard(DeviceHandle nDeviceHandle, int cardCB, ref TwoIdInfoStruct cardinfo);//读卡
 
         [DllImport("readCardInfo.dll", CharSet = CharSet.Ansi, ExactSpelling = false,
              CallingConvention = CallingConvention.StdCall)]//readCardInfo.dll
         [return: MarshalAs(UnmanagedType.I1)]
-        public static extern bool cardReadTwoCardEx(int nDeviceHandle, int cardCB, ref CardInfoStruct cardinfo);//读卡
+        public static extern bool cardReadTwoCardEx(DeviceHandle nDeviceHandle, int cardCB, ref CardInfoStruct cardinfo);//读卡
 
         [DllImport("readCardInfo.dll")]//readCardInfo.dll
         [return: MarshalAs(UnmanagedType.I1)]
@@ -57,11 +63,11 @@ namespace WindowsFormsApp1
 
         [DllImport("readCardInfo.dll")]//readCardInfo.dll
         [return: MarshalAs(UnmanagedType.I1)]
-        public static extern bool twoIdToImage(TwoIdInfoStructEx twoId, byte[] outimage, ref int outlen, int ntype, int nformat);
+        public static extern bool twoIdToImage(TwoIdInfoStructEx twoId, byte[] outimage, ref int outlen, int ntype, int nformat, string szwatermark);
         
         [DllImport("readCardInfo.dll")]//readCardInfo.dll
         [return: MarshalAs(UnmanagedType.I1)]
-        public static extern bool cardCloseDevice(int nDeviceHandle);//关闭
+        public static extern bool cardCloseDevice(DeviceHandle nDeviceHandle);//关闭
 
         [DllImport("readCardInfo.dll")]//readCardInfo.dll
         public static extern void logoutCardServer();// 登出服务器
@@ -103,7 +109,7 @@ namespace WindowsFormsApp1
         }
         public static bool getSFZBmp(CardInfoStruct cardinfo, byte[] outimage, ref int outlen)
         {
-            return twoIdToImage(cardinfo.info.twoId, outimage, ref outlen, 3, 1);
+            return twoIdToImage(cardinfo.info.twoId, outimage, ref outlen, 3, 1, "这里是水印");
         }
 
         public static CardInfoStruct ReadCardNo(Boolean bonLine)
@@ -138,7 +144,7 @@ namespace WindowsFormsApp1
                 }
             }
 
-            int hlHandle = cardOpenDevice(2, ref nerr, nindex);
+            DeviceHandle hlHandle = cardOpenDevice(2, ref nerr, nindex);
             if (hlHandle > 0)
             {
                 bool bmove = true;
