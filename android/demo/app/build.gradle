@@ -1,15 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 31
     buildToolsVersion '28.0.3'
 //    enforceUniquePackageName = false
     defaultConfig {
         applicationId "com.android.readtwogeneralcard.myapplication"
         minSdkVersion 16
-        targetSdkVersion 26
-        versionCode 9
-        versionName "9.0"
+        targetSdkVersion 31
+        versionCode 10
+        versionName "10.0"
         multiDexEnabled = true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 

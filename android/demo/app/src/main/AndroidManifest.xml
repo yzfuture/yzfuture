@@ -44,10 +44,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity
-            android:name=".ui.login.testJump"
-            android:label="@string/title_activity_test_jump" />
-        <activity android:name=".IDCardScannerActivity">
+        <activity android:name=".IDCardScannerActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

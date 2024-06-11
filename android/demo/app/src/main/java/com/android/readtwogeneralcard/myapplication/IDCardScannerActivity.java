@@ -2,6 +2,7 @@ package com.android.readtwogeneralcard.myapplication;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Application;
 import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -12,6 +13,7 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
@@ -46,21 +48,27 @@ import com.readTwoGeneralCard.Serverinfo;
 import com.readTwoGeneralCard.clientAuthInfo;
 import com.readTwoGeneralCard.eCardType;
 import com.readePassport.ePassportInfo;
-import com.recognition.BaseRecognitionActivity;
-import com.util.GASystemCamera;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.lang.ref.WeakReference;
+import java.net.Socket;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -124,8 +132,6 @@ public class IDCardScannerActivity extends Activity implements ActiveCallBack {
     TextView process;
     @Bind(R.id.progressBar)
     ProgressBar progressBar;
-    @Bind(R.id.deviceType)
-    Switch deviceTypeBtn;
     @Bind(R.id.tryBtn)
     Button tryBtn;
 
@@ -135,6 +141,17 @@ public class IDCardScannerActivity extends Activity implements ActiveCallBack {
     Button secretBtn;
     @Bind(R.id.userBtn)
     Button userBtn;
+    @Bind(R.id.testBtn)
+    Button testBtn;
+
+    @Bind(R.id.ping0Txt)
+    TextView ping0Txt;
+    @Bind(R.id.ping1Txt)
+    TextView ping1Txt;
+    @Bind(R.id.ping2Txt)
+    TextView ping2Txt;
+    @Bind(R.id.ping3Txt)
+    TextView ping3Txt;
 
     private NfcAdapter      mAdapter = null;
     private PendingIntent   pi = null;
@@ -154,7 +171,6 @@ public class IDCardScannerActivity extends Activity implements ActiveCallBack {
 
     private String          m_szServerIP = "id.yzfuture.cn";
     private int             m_nServerPort = 443;
-    private boolean         m_bonDevice = true;
 
     private Button          timeButton = null;
 
@@ -170,15 +186,16 @@ public class IDCardScannerActivity extends Activity implements ActiveCallBack {
         filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
 
         String dataDir = this.getApplicationContext().getFilesDir().getAbsolutePath();
+        OTGDeviceHelper.init((Application) getApplicationContext());
 
         progressBar.setVisibility(View.VISIBLE);
         appkeyTxt.setTextIsSelectable(true);
         appSecretTxt.setTextIsSelectable(true);
         appUserDataTxt.setTextIsSelectable(true);
 
-        String  szkey = SPUtils.getInstance(SP_FILE).getString(SPKEY_APPKEY, "");
-        String   szsecret = SPUtils.getInstance(SP_FILE).getString(SPKEY_SECRET, "");
-        String  szuser = SPUtils.getInstance(SP_FILE).getString(SPKEY_USERDATA, "");
+        String  szkey = SPUtils.getInstance(SP_FILE).getString(SPKEY_APPKEY, "E9A5C126A5DA38CF9F41ACDAB97BE00D");
+        String   szsecret = SPUtils.getInstance(SP_FILE).getString(SPKEY_SECRET, "Nzk5NjM0MGEwMjkxN2Q4YTI4MzU4ZWZlMDc3MTUzMzM=");
+        String  szuser = SPUtils.getInstance(SP_FILE).getString(SPKEY_USERDATA, "UD100001");
         appkeyTxt.setText(szkey);
         appSecretTxt.setText(szsecret);
         appUserDataTxt.setText(szuser);
@@ -195,24 +212,6 @@ public class IDCardScannerActivity extends Activity implements ActiveCallBack {
         resetBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 resetText();
-            }
-        });
-        deviceTypeBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if(isChecked){
-                    if (readCard != null)
-                    {
-                        readCard.setDeviceType(1);
-                        m_bonDevice = false;
-                    }
-                }else{
-                    if (readCard != null)
-                    {
-                        readCard.setDeviceType(0);
-                        m_bonDevice = true;
-                    }
-                }
             }
         });
         tryBtn.setOnClickListener(new View.OnClickListener() {
@@ -243,7 +242,99 @@ public class IDCardScannerActivity extends Activity implements ActiveCallBack {
                 modifyValue(appUserDataTxt, SPKEY_USERDATA);
             }
         });
+        testBtn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Socket client = new Socket("testwork.yzfuture.com.cn",12182);
+                            OutputStream    out = client.getOutputStream();
+                            InputStream     in = client.getInputStream();
+                            byte[]          data = new byte[512];
+                            int             len = -1;
+                            while ((len = in.read(data)) != -1)
+                            {
+                                out.write(data, 0, len);
+                            }
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                        Log.e("zyfuture", "tcp 测试完成");
+                    }
+                }).start();
+            }
+        });
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                isNetworkHasTraffic();
+            }
+        }).start();
     }
+
+    private boolean isNetworkHasTraffic()
+    {
+        java.lang.Process ipProcess = null;
+        ArrayList<String> stringList = new ArrayList<>();
+        stringList.add("id.yzfuture.cn");
+        stringList.add("idcode1.aiinside.com.cn");
+        stringList.add("idcode81.aiinside.com.cn");
+        stringList.add("testwork.yzfuture.com.cn");
+        int    nloop = 0;
+        while (true)
+        {
+            int     nindex = nloop++ % stringList.size();
+            if (nloop >= 10000)
+            {
+                nloop = 0;
+            }
+            try {
+                ipProcess = Runtime.getRuntime().exec("ping -c 1 " + stringList.get(nindex));
+                InputStream inputStrem = ipProcess.getInputStream();
+                BufferedReader in = new BufferedReader(new InputStreamReader(inputStrem));
+                StringBuffer stringBuffer = new StringBuffer();
+                String content = "";
+
+                while ((content = in.readLine()) != null) {
+                    stringBuffer.append(content + "\r\n");
+                }
+                //Log.i("YZWL_CARD_DRIVER", stringBuffer.toString());
+
+                int exitValue = ipProcess.waitFor();
+                Message msg = Message.obtain();
+                msg.what = -10;
+                msg.arg1 = nindex;
+                msg.arg2 = -1;
+                if (exitValue == 0)
+                {
+                    String pattern = "time=(\\d+\\.\\d+)";
+                    Pattern r = Pattern.compile(pattern);
+                    Matcher m = r.matcher(stringBuffer.toString());
+                    if (m.find())
+                    {
+                        String pingTime = m.group(1);
+                        msg.arg2 =  (int) Math.round(Double.parseDouble(pingTime));
+                    }
+                }
+                mHandler.sendMessageDelayed(msg, 0);
+            } catch(IOException | InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                if (ipProcess != null) {
+                    ipProcess.destroy();
+                }
+            }
+            try {
+                // 等待1秒
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     //倒计时函数
     private class MyCountDownTimer extends CountDownTimer {
 
@@ -634,6 +725,36 @@ public class IDCardScannerActivity extends Activity implements ActiveCallBack {
             String  szerr = readCard.GetErrorInfo();
             setdialog(szerr);
         }
+        else if (msg.what == -10)
+        {
+            String      szpingTxt = Integer.toString(msg.arg2) + " ms";
+            int       ncolor = Color.rgb(255,255,255);
+            if (msg.arg2 < 0) ncolor = Color.RED;
+            else if (msg.arg2 < 45) ncolor = Color.GREEN;
+            else if (msg.arg2 < 80) ncolor = Color.YELLOW;
+            else ncolor = Color.RED;
+            if (msg.arg1 == 0)
+            {
+                ping0Txt.setText(szpingTxt);
+                if (msg.arg2 < 0) ping0Txt.setTextColor(Color.RED);
+                else ping0Txt.setTextColor(Color.GREEN);
+            }
+            else if (msg.arg1 == 1)
+            {
+                ping1Txt.setText(szpingTxt);
+                ping1Txt.setTextColor(ncolor);
+            }
+            else if (msg.arg1 == 2)
+            {
+                ping2Txt.setText(szpingTxt);
+                ping2Txt.setTextColor(ncolor);
+            }
+            else if (msg.arg1 == 3)
+            {
+                ping3Txt.setText(szpingTxt);
+                ping3Txt.setTextColor(ncolor);
+            }
+        }
     }
 
     public Bitmap Bytes2Bimap(byte[] b) {
@@ -679,6 +800,11 @@ public class IDCardScannerActivity extends Activity implements ActiveCallBack {
         //m_szUserInfo += s + "\r\n";
     }
 
+    @Override
+    public void upgradeInfo(String s) {
+
+    }
+
     private void getAuthInfo()
     {
         clientAuthInfo authInfo = readCard.GetAppKeyUseNum();
@@ -702,20 +828,13 @@ public class IDCardScannerActivity extends Activity implements ActiveCallBack {
     private void startReadCard(final Intent intent){
         progressBar.setProgress(0);
         process.setText("");
+        eCardType etype = readCard.cardType(intent);
 
         getAuthInfo();
         new Thread(new Runnable() {
             @Override
             public void run() {
                 int     tt = 0;
-                if (m_bonDevice)
-                {
-                    readCard.setDeviceType(0);
-                }
-                else
-                {
-                    readCard.setDeviceType(1);
-                }
                 tt = readCard.ReadBCard(intent);
                 if (tt == 41)
                 {

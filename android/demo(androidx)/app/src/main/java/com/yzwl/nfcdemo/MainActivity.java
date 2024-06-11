@@ -151,7 +151,7 @@ public class MainActivity extends AppCompatActivity{
                                     Log.e(NFC_TAG, "英文名：" + cardInfo.foreigner.enName);
                                     Log.e(NFC_TAG, "身份证号：" + cardInfo.foreigner.no);
                                     Log.e(NFC_TAG, "签发机关：" + cardInfo.foreigner.department);
-                                    Log.e(NFC_TAG, "有限期限：" + cardInfo..foreigner.beginTime + "-" + cardInfo.foreigner.endTime);
+                                    Log.e(NFC_TAG, "有限期限：" + cardInfo.foreigner.beginTime + "-" + cardInfo.foreigner.endTime);
                                 }
                                 else if (cardInfo.type == 4) // 外国人永久居留身份证（旧版）
                                 {
@@ -161,7 +161,7 @@ public class MainActivity extends AppCompatActivity{
                                     Log.e(NFC_TAG, "出生日期：" + cardInfo.foreignerOld.birthday);
                                     Log.e(NFC_TAG, "居住证号：" + cardInfo.foreignerOld.no);
                                     Log.e(NFC_TAG, "签发机关：" + cardInfo.foreignerOld.department);
-                                    Log.e(NFC_TAG, "有限期限：" + cardInfo..foreignerOld.beginTime + "-" + cardInfo.foreignerOld.endTime);
+                                    Log.e(NFC_TAG, "有限期限：" + cardInfo.foreignerOld.beginTime + "-" + cardInfo.foreignerOld.endTime);
                                 }
                                 else
                                 {
@@ -172,7 +172,7 @@ public class MainActivity extends AppCompatActivity{
                                     Log.e(NFC_TAG, "住址：" + cardInfo.sfz.address);
                                     Log.e(NFC_TAG, "身份证号：" + cardInfo.sfz.no);
                                     Log.e(NFC_TAG, "签发机关：" + cardInfo.sfz.department);
-                                    Log.e(NFC_TAG, "有限期限：" + cardInfo..sfz.beginTime + "-" + cardInfo.sfz.endTime);
+                                    Log.e(NFC_TAG, "有限期限：" + cardInfo.sfz.beginTime + "-" + cardInfo.sfz.endTime);
                                 }
 
                             }
