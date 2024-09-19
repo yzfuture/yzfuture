@@ -1,21 +1,18 @@
 package com.android.readtwogeneralcard.myapplication;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Application;
 import android.app.Dialog;
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
-import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.nfc.NfcAdapter;
 import android.nfc.tech.NfcA;
@@ -23,7 +20,6 @@ import android.nfc.tech.NfcB;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.os.StrictMode;
 import android.text.TextUtils;
@@ -32,125 +28,107 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.blankj.utilcode.util.PermissionUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.readTwoGeneralCard.ActiveCallBack;
 import com.readTwoGeneralCard.OTGReadCardAPI;
-import com.readTwoGeneralCard.PermissionUtil;
-import com.readTwoGeneralCard.Serverinfo;
 import com.readTwoGeneralCard.clientAuthInfo;
 import com.readTwoGeneralCard.eCardType;
 import com.readePassport.ePassportInfo;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.lang.ref.WeakReference;
 import java.net.Socket;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static java.lang.Thread.sleep;
-
 public class IDCardScannerActivity extends Activity implements ActiveCallBack {
-    @Bind(R.id.edid)
+    @BindView(R.id.edid)
     TextView edid;
-    @Bind(R.id.edname)
+    @BindView(R.id.edname)
     TextView edname;
-    @Bind(R.id.edenname)
+    @BindView(R.id.edenname)
     TextView edenname;
 
-    @Bind(R.id.addTrue)
+    @BindView(R.id.addTrue)
     TextView addTrue;
-    @Bind(R.id.sexTrue)
+    @BindView(R.id.sexTrue)
     TextView sexTrue;
-    @Bind(R.id.mzTrue)
+    @BindView(R.id.mzTrue)
     TextView mzTrue;
-    @Bind(R.id.gjTrue)
+    @BindView(R.id.gjTrue)
     TextView gjTrue;
-    @Bind(R.id.jgTrue)
+    @BindView(R.id.jgTrue)
     TextView jgTrue;
-    @Bind(R.id.yxqTrue)
+    @BindView(R.id.yxqTrue)
     TextView yxqTrue;
-    @Bind(R.id.birthTrue)
+    @BindView(R.id.birthTrue)
     TextView birthTrue;
-    @Bind(R.id.userInfo)
+    @BindView(R.id.userInfo)
     TextView userInfo;
 
-    @Bind(R.id.numtxt)
+    @BindView(R.id.numtxt)
     TextView numtxt;
-    @Bind(R.id.numtimetxt)
+    @BindView(R.id.numtimetxt)
     TextView numtimetxt;
 
-    @Bind(R.id.appkeyTxt)
+    @BindView(R.id.appkeyTxt)
     TextView appkeyTxt;
-    @Bind(R.id.appSecretTxt)
+    @BindView(R.id.appSecretTxt)
     TextView appSecretTxt;
-    @Bind(R.id.appUserDataTxt)
+    @BindView(R.id.appUserDataTxt)
     TextView appUserDataTxt;
 
-    @Bind(R.id.edtype)
+    @BindView(R.id.edtype)
     TextView edtype;
-    @Bind(R.id.othernoTrue)
+    @BindView(R.id.othernoTrue)
     TextView othernoTrue;
-    @Bind(R.id.signTrue)
+    @BindView(R.id.signTrue)
     TextView signTrue;
 
-    @Bind(R.id.idimg)
+    @BindView(R.id.idimg)
     ImageView idimg;
-    @Bind(R.id.resetBtn)
+    @BindView(R.id.resetBtn)
     Button resetBtn;
-    @Bind(R.id.otgBtn)
+    @BindView(R.id.otgBtn)
     Button otgBtn;
-    @Bind(R.id.numBtn)
+    @BindView(R.id.numBtn)
     Button numBtn;
 
-    @Bind(R.id.process)
+    @BindView(R.id.process)
     TextView process;
-    @Bind(R.id.progressBar)
+    @BindView(R.id.progressBar)
     ProgressBar progressBar;
-    @Bind(R.id.tryBtn)
+    @BindView(R.id.tryBtn)
     Button tryBtn;
 
-    @Bind(R.id.appkeyBtn)
+    @BindView(R.id.appkeyBtn)
     Button appkeyBtn;
-    @Bind(R.id.secretBtn)
+    @BindView(R.id.secretBtn)
     Button secretBtn;
-    @Bind(R.id.userBtn)
+    @BindView(R.id.userBtn)
     Button userBtn;
-    @Bind(R.id.testBtn)
+    @BindView(R.id.testBtn)
     Button testBtn;
 
-    @Bind(R.id.ping0Txt)
+    @BindView(R.id.ping0Txt)
     TextView ping0Txt;
-    @Bind(R.id.ping1Txt)
+    @BindView(R.id.ping1Txt)
     TextView ping1Txt;
-    @Bind(R.id.ping2Txt)
+    @BindView(R.id.ping2Txt)
     TextView ping2Txt;
-    @Bind(R.id.ping3Txt)
+    @BindView(R.id.ping3Txt)
     TextView ping3Txt;
 
     private NfcAdapter      mAdapter = null;
@@ -193,9 +171,9 @@ public class IDCardScannerActivity extends Activity implements ActiveCallBack {
         appSecretTxt.setTextIsSelectable(true);
         appUserDataTxt.setTextIsSelectable(true);
 
-        String  szkey = SPUtils.getInstance(SP_FILE).getString(SPKEY_APPKEY, "E9A5C126A5DA38CF9F41ACDAB97BE00D");
-        String   szsecret = SPUtils.getInstance(SP_FILE).getString(SPKEY_SECRET, "Nzk5NjM0MGEwMjkxN2Q4YTI4MzU4ZWZlMDc3MTUzMzM=");
-        String  szuser = SPUtils.getInstance(SP_FILE).getString(SPKEY_USERDATA, "UD100001");
+        String  szkey = SPUtils.getInstance(SP_FILE).getString(SPKEY_APPKEY, "162E334F646EA986A6853F82F6C3336E");
+        String   szsecret = SPUtils.getInstance(SP_FILE).getString(SPKEY_SECRET, "YzYzN2M5NDViNzk5ZGMyZTNlNjI2ZWEwMTQzY2NhMmQ=");
+        String  szuser = SPUtils.getInstance(SP_FILE).getString(SPKEY_USERDATA, "001");
         appkeyTxt.setText(szkey);
         appSecretTxt.setText(szsecret);
         appUserDataTxt.setText(szuser);
@@ -225,7 +203,8 @@ public class IDCardScannerActivity extends Activity implements ActiveCallBack {
                 startReadCard(null);
             }
         });
-        PermissionUtil.grantNeedPermission(this);
+        PermissionUtils.permission(Manifest.permission.READ_PHONE_STATE).request();
+//        PermissionUtil.grantNeedPermission(this);
 
         appkeyBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -652,6 +631,24 @@ public class IDCardScannerActivity extends Activity implements ActiveCallBack {
                 yxqTrue.setText(startDate + "~" + endDate);
             }
         }
+        else if (msg.what == 2)
+        {
+            // 护照
+            ePassportInfo passportinfo = readCard.GetPassportInfo();
+            idimg.setBackground(new BitmapDrawable(passportinfo.faceImage));
+            edname.setText(passportinfo.szCNName.trim());
+            edenname.setText(passportinfo.szENName.trim());
+            edid.setText(passportinfo.szIdNo.trim());
+
+            addTrue.setText("");
+            sexTrue.setText(passportinfo.szSex);
+            mzTrue.setText("");
+            jgTrue.setText(passportinfo.szSignedDepartment);
+            birthTrue.setText(passportinfo.szBirthday);
+
+            yxqTrue.setText(passportinfo.szValidityPeriodEnd);
+            gjTrue.setText(passportinfo.szCountry);
+        }
         if (msg.what == -9999)
         {
             String  szerr = readCard.GetErrorInfo();
@@ -756,7 +753,6 @@ public class IDCardScannerActivity extends Activity implements ActiveCallBack {
         msg.arg1 = nprocess;
         mHandler.sendMessageDelayed(msg, 0);
     }
-
     private void startReadCard(final Intent intent){
         progressBar.setProgress(0);
         process.setText("");

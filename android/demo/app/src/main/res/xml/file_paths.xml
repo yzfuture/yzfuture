@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <paths>
-        <!--<external-path path="" name="download"/>-->
-        <files-path path ="./" name = "download"/>
-        <root-path name="cache" path="Cache/" />
-        <root-path path="" name="camera_photos" />
-        <root-path name="my_images" path="Android/data/demo/files/Pictures/" />
-        <root-path name="images" path="Pictures/" />
-        <root-path name="dcim" path="DCIM/" />
-    </paths>
-</resources>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--    表示 content.getFileDir() 获取到的目录-->
+    <files-path name="files-path" path="." />
+    <!--    表示 content.getCacheDir() 获取到的目录-->
+    <cache-path  name="cache-path" path="." />
+    <!--    表示Environment.getExternalStorageDirectory() 指向的目录-->
+    <external-path name="external_storage_root"   path="." />
+    <!--    表示 ContextCompat.getExternalFilesDirs() 获取到的目录-->
+    <external-files-path   name="external_file_path" path="." />
+    <!--    表示 ContextCompat.getExternalCacheDirs() 获取到的目录-->
+    <external-cache-path  name="external_cache_path"   path="." />
+    <!--    表示根目录-->
+    <root-path  name="root-path"  path="" />
+</paths>
