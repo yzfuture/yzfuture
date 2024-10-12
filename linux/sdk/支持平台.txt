@@ -5,6 +5,7 @@ arm架构下的himix200
 arm架构下的linux
 arm架构下的uclinux
 arm架构下的hisiv500
+x86_64架构下的龙芯(LoongArch64)
 
 国产操作系统
 银河麒麟操作系统下的鲲鹏/飞腾cpu 请使用arm64_linux
@@ -12,5 +13,6 @@ arm架构下的hisiv500
 
 统信操作系统下的鲲鹏/飞腾cpu 请使用arm64_linux
 统信操作系统下的x86_64CPU/AMD64版/兆芯/海光,请使用x86_linux
+统信操作系统下的龙芯cpu 请使用LoongArch
 
 libreadCardInfo_平台名称.so为身份证解码库

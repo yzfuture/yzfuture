@@ -171,9 +171,9 @@ public class IDCardScannerActivity extends Activity implements ActiveCallBack {
         appSecretTxt.setTextIsSelectable(true);
         appUserDataTxt.setTextIsSelectable(true);
 
-        String  szkey = SPUtils.getInstance(SP_FILE).getString(SPKEY_APPKEY, "162E334F646EA986A6853F82F6C3336E");
-        String   szsecret = SPUtils.getInstance(SP_FILE).getString(SPKEY_SECRET, "YzYzN2M5NDViNzk5ZGMyZTNlNjI2ZWEwMTQzY2NhMmQ=");
-        String  szuser = SPUtils.getInstance(SP_FILE).getString(SPKEY_USERDATA, "001");
+        String  szkey = SPUtils.getInstance(SP_FILE).getString(SPKEY_APPKEY, "");
+        String   szsecret = SPUtils.getInstance(SP_FILE).getString(SPKEY_SECRET, "");
+        String  szuser = SPUtils.getInstance(SP_FILE).getString(SPKEY_USERDATA, "");
         appkeyTxt.setText(szkey);
         appSecretTxt.setText(szsecret);
         appUserDataTxt.setText(szuser);

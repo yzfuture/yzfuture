@@ -12,6 +12,7 @@ add_subdirectory(arm_linux)
 #add_subdirectory(arm-hisiv500-linux)
 #add_subdirectory(x86_linux)
 #add_subdirectory(arm64_linux)
+#add_subdirectory(LoongArch)
 
 将不需要的平台注释掉（行前加#为注释一整行），保留需要编译的平台即可
 
@@ -24,11 +25,11 @@ add_subdirectory(arm_linux)
 >> make
 >> make install
 
-生成的可执行文件在 demo源码->lib->平台对应名称(arm_himix200/arm_linux/arm_uclinux/arm-hisiv500-linux/arm64_linux/x86_linux)->readCardDemo
+生成的可执行文件在 demo源码->lib->平台对应名称(arm_himix200/arm_linux/arm_uclinux/arm-hisiv500-linux/arm64_linux/x86_linux/LoongArch)->readCardDemo
 
 5.连接读卡器，放上身份证，保证网络畅通
 
 6. 设置demo源码->lib下对应平台路径到系统变量
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:demo源码/lib/(arm_himix200/arm_linux/arm_uclinux/arm-hisiv500-linux/arm64_linux/x86_linux)
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:demo源码/lib/(arm_himix200/arm_linux/arm_uclinux/arm-hisiv500-linux/arm64_linux/x86_linux/LoongArch)
 
 7.运行./readCardDemo即可
