@@ -8,6 +8,7 @@ typedef long long YZWLHandle;
 typedef long YZWLHandle;				
 #endif
 
+// Deprecated
 typedef enum cardType
 {
 	unkwonType = -1,
@@ -15,6 +16,7 @@ typedef enum cardType
 	BCardType = 1
 };
 
+// Deprecated
 typedef struct TwoIdInfoStructEx
 {
 	char arrTwoIdName[30];					//姓名 UNICODE
@@ -127,5 +129,29 @@ typedef struct _CardInfoStruct
 		ForeignerInfoNew newForeigner; // 新版外国人永久居住证
 	}info;
 }CardInfoStruct;
+
+typedef struct _strEpassportInfo
+{
+	char	arrPaperType[2]; // decumentCode:mrz前两位  证件类型(缩写)
+	char	arrTypeFullName[99]; // 证件类型（全称）
+	char	arrSignedDepartment[99]; // 签发国家或签发机构
+
+	char	arrENName[48]; // 按照机读区插入填充符<
+	char	arrPrimaryName[48]; // 姓
+	char	arrSecondName[48]; // 名
+	char	arrOtherName[99]; // 其它姓名
+
+	char	arrName[48]; // utf8
+	char	arrNo[16]; // 证件号码
+	char	arrDocumentID[16]; // 个人编码
+
+	char	arrCountry[3]; // 国籍编码
+	char	arrBirthday[6];// 生日 YYMMDD
+	char	cSex; // 性别 M/F
+	char	arrValidityPeriodEnd[6];// 有效期 YYMMDD
+
+	char	arrFaceJpg[100 * 1024]; // 人脸，jpg格式
+	int	nFaceLen;
+}epassportInfo;
 
 #pragma pack(pop)

@@ -11,8 +11,8 @@ cd /d "%~dp0"
 
 sc delete yzwlReadCard
 sc delete yzwlServiceAlive
-sc create yzwlReadCard start= auto binpath= "%~dp0yzwlReadCardServer.exe" DisplayName= "yzwlReadCardè¯»å¡é©±åŠ¨"
-sc create yzwlServiceAlive start= auto binpath= "%~dp0yzwlServiceAlive.exe" DisplayName= "yzwlServiceAliveè¯»å¡é©±åŠ¨çœ‹å®ˆ"
+sc create yzwlReadCard start= auto binpath= "%~dp0yzwlReadCardServer.exe" DisplayName= "yzwlReadCard¶Á¿¨Çı¶¯"
+sc create yzwlServiceAlive start= auto binpath= "%~dp0yzwlServiceAlive.exe" DisplayName= "yzwlServiceAlive¶Á¿¨Çı¶¯¿´ÊØ"
 sc start yzwlReadCard
 sc start yzwlServiceAlive
 
